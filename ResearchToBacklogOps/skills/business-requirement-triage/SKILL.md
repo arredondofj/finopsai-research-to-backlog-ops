@@ -34,6 +34,8 @@ Generate:
 - update `notes/output_catalog.md`
 
 ## Rules
+- Use `skills/research-markdown-authoring/SKILL.md` when writing markdown
+  artifacts for this lane or later shared workflow phases.
 - Normalize the request into one primary work item where possible.
 - If multiple independent work items are present, split or explicitly record
   the need to split.
@@ -45,6 +47,9 @@ Generate:
 - Hand off to `RESEARCH_WORKFLOW_USAGE.md` and
   `finopsai_research-to-backlog_workflow.md` when later workflow phases are
   requested.
+- Ensure the triage artifact exposes stable surfaces for later workflow phases:
+  core requirement, expected outcome, scope boundary, design-readiness signal,
+  recommended disposition, and verification notes.
 
 ## Workflow
 ### Step 1: Requirement triage

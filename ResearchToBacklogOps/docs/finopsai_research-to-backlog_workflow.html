@@ -946,6 +946,14 @@
               <div class="lane-card">
                 <div>
                   <div class="lane-label">Lane 3</div>
+                  <div class="lane-title">Web source intake</div>
+                  <div class="lane-desc">Capture citation-ready internet source metadata and analyze the page or document before any mapping.</div>
+                </div>
+                <div class="lane-output">web capture + source analysis; optional mapping</div>
+              </div>
+              <div class="lane-card">
+                <div>
+                  <div class="lane-label">Lane 4</div>
                   <div class="lane-title">Business requirement intake</div>
                   <div class="lane-desc">Turn raw Product Owner intent into scoped triage or design workflow routing.</div>
                 </div>
@@ -953,7 +961,7 @@
               </div>
               <div class="lane-card">
                 <div>
-                  <div class="lane-label">Lane 4</div>
+                  <div class="lane-label">Lane 5</div>
                   <div class="lane-title">Accounting domain intake</div>
                   <div class="lane-desc">Review bookkeeping, tax, reconciliation, reporting, and compliance material.</div>
                 </div>
@@ -961,7 +969,7 @@
               </div>
               <div class="lane-card">
                 <div>
-                  <div class="lane-label">Lane 5</div>
+                  <div class="lane-label">Lane 6</div>
                   <div class="lane-title">Workflow content intake</div>
                   <div class="lane-desc">Separate process improvements from product features and harness tooling.</div>
                 </div>
@@ -1058,7 +1066,7 @@
                     </thead>
                     <tbody>
                       <tr><td>Source</td><td>URL, local file path, local repo path, or raw requirement text.</td></tr>
-                      <tr><td>Source type</td><td>YouTube transcript, GitHub repository, business requirement, accounting/bookkeeping content, or product workflow content.</td></tr>
+                      <tr><td>Source type</td><td>YouTube transcript, GitHub repository, web/internet source, business requirement, accounting/bookkeeping content, or product workflow content.</td></tr>
                       <tr><td>Purpose</td><td>The question the research should answer, such as source analysis, FinOpsAI mapping, roadmap fit, or card-candidate readiness.</td></tr>
                       <tr><td>Target area</td><td>Relevant FinOpsAI product, codebase, workflow, docs, accounting domain, or ClickUp area if known.</td></tr>
                       <tr><td>Access needs</td><td>Whether CodeX needs network access, an external repo clone, a local file, or a target repo read.</td></tr>
@@ -1094,6 +1102,7 @@
                     <tbody>
                       <tr><td>YouTube URL, VTT file, or raw transcript</td><td>YouTube transcript lane</td><td>Cleaned transcript + analysis report</td></tr>
                       <tr><td>External GitHub repo or local clone</td><td>GitHub repository lane</td><td>GitHub repo assessment</td></tr>
+                      <tr><td>Web article, documentation page, benchmark post, or other internet source</td><td>Web source research lane</td><td>Web capture + source analysis report</td></tr>
                       <tr><td>Raw Product Owner or stakeholder request</td><td>Business requirement lane</td><td>Requirement triage report</td></tr>
                       <tr><td>Accounting, bookkeeping, finance, tax, reconciliation, reporting, compliance, or advisory content</td><td>Accounting/bookkeeping domain lane</td><td>Domain analysis report</td></tr>
                       <tr><td>Product development, human-in-the-loop, agentic workflow, backlog refinement, QA, review, or delivery material</td><td>Product development workflow lane</td><td>Workflow analysis report</td></tr>
@@ -1209,7 +1218,7 @@
               </div>
               <div class="callout guide" style="margin-bottom:2rem;">
                 <div class="callout-icon">&#9670;</div>
-                <div class="callout-body"><strong>Implemented rule:</strong> Produce lane-specific source analysis before deciding whether FinOpsAI mapping is needed.</div>
+                <div class="callout-body"><strong>Implemented rule:</strong> Produce lane-specific source analysis before deciding whether FinOpsAI mapping is needed. For any durable markdown artifact written under <code>output/</code>, use the shared <code>skills/research-markdown-authoring/SKILL.md</code> contract so later phases can extract summary, evidence, candidate, exclusion, and recommendation surfaces without guessing.</div>
               </div>
               <div class="matrix phase1-lanes">
         <div class="matrix-card">
@@ -1272,16 +1281,55 @@ Assessment question:
 
 Instructions:
 1. Record repo source, branch or commit if known, and access needs.
-2. Inspect only the files needed to answer the assessment question.
-3. Identify repo purpose, architecture, reusable patterns, dependencies, tests, docs, and license/security concerns when evidence is available.
-4. Distinguish reusable ideas from code reuse; do not copy code or recommend reuse without explicit review.
-5. Save a GitHub repo assessment artifact using output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_github_repo_assessment_YYYY_MM_DD.md.
-6. Map to FinOpsAI only if requested or clearly useful.</div>
+2. If this is a remote GitHub URL and no local clone is provided, record the acquisition method first. Use GitHub web/raw views first; widen to a local clone only when the assessment question cannot be answered credibly from web-visible repo surfaces or when a local clone path is provided or approved.
+3. Capture canonical repo URL, default branch when visible, access method, and any visible commit or tag anchor used for evidence.
+4. Inspect only the files needed to answer the assessment question.
+5. Identify repo purpose, architecture, reusable patterns, dependencies, tests, docs, and license/security concerns when evidence is available.
+6. Distinguish reusable ideas from code reuse; do not copy code or recommend reuse without explicit review.
+7. Save a GitHub repo assessment artifact using output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_github_repo_assessment_YYYY_MM_DD.md.
+8. If the assessment is based on web-visible repo surfaces only, say so explicitly and record what was not inspected because no local clone or test environment was used.
+9. Map to FinOpsAI only if requested or clearly useful.</div>
             </div>
           </div>
         </div>
         <div class="matrix-card">
-          <div class="matrix-title">Lane 3: Product requirement triage</div>
+          <div class="matrix-title">Lane 3: Web source research</div>
+          <p>Validate the URL, preserve citation-ready source metadata, and produce a durable source-capture artifact before analysis.</p>
+          <div class="accordion guide-accordion" id="lane-web-accordion">
+            <button class="accordion-toggle" type="button" onclick="toggleAccordion('lane-web-accordion', 'lane-web-panel')">
+              <span class="accordion-label">
+                <span class="accordion-title">How To Run This Lane</span>
+                <span class="accordion-sub">Assess an article, documentation page, benchmark post, or other internet source before any FinOpsAI mapping.</span>
+              </span>
+              <span class="accordion-chevron">&#9654;</span>
+            </button>
+            <div class="ref-panel" id="lane-web-panel">
+              <div class="lane-prompt">Follow RESEARCH_WORKFLOW_USAGE.md and PIPELINE_USAGE.md.
+
+Phase 1 Step 2: Complete intake and routing before proceeding.
+Lane: Web source research
+
+Source URL:
+&lt;article, documentation page, benchmark post, announcement, or other web URL&gt;
+
+Research question:
+&lt;what should be assessed, extracted, or tested against FinOpsAI relevance&gt;
+
+Instructions:
+1. Validate the URL and confirm it is the intended source.
+2. Prefer running <code>skills/web-source-research/scripts/capture_web_source.sh &lt;url&gt; output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_web_capture_YYYY_MM_DD.md</code> for deterministic capture when possible.
+3. Record original URL, canonical URL if different, page title, publisher/site name when available, access date, and acquisition method.
+4. Save a durable source-capture artifact using output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_web_capture_YYYY_MM_DD.md.
+5. Produce a source-analysis artifact that separates source summary, evidence-backed claims, weak or unverified claims, candidate ideas, caveats/exclusions, and recommended next step / disposition.
+6. Save that analysis using output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_source_analysis_YYYY_MM_DD.md.
+7. If scripted capture fails or is unsuitable, record the fallback acquisition method explicitly.
+8. If the source is time-sensitive, record the freshness note explicitly.
+9. Do not start FinOpsAI repo mapping unless explicitly approved.</div>
+            </div>
+          </div>
+        </div>
+        <div class="matrix-card">
+          <div class="matrix-title">Lane 4: Product requirement triage</div>
           <p>Normalize raw Product Owner intent into one work item, or route to design if product definition is incomplete.</p>
           <div class="accordion guide-accordion" id="lane-requirement-accordion">
             <button class="accordion-toggle" type="button" onclick="toggleAccordion('lane-requirement-accordion', 'lane-requirement-panel')">
@@ -1311,7 +1359,7 @@ Instructions:
           </div>
         </div>
         <div class="matrix-card">
-          <div class="matrix-title">Lane 4: Accounting domain review</div>
+          <div class="matrix-title">Lane 5: Accounting domain review</div>
           <p>Capture jurisdiction, user profile, domain reliability, compliance caveats, and product relevance.</p>
           <div class="accordion guide-accordion" id="lane-domain-accordion">
             <button class="accordion-toggle" type="button" onclick="toggleAccordion('lane-domain-accordion', 'lane-domain-panel')">
@@ -1344,7 +1392,7 @@ Instructions:
           </div>
         </div>
         <div class="matrix-card">
-          <div class="matrix-title">Lane 5: Product workflow analysis</div>
+          <div class="matrix-title">Lane 6: Product workflow analysis</div>
           <p>Separate process changes from product features and identify whether the idea affects human or agentic workflows.</p>
           <div class="accordion guide-accordion" id="lane-workflow-accordion">
             <button class="accordion-toggle" type="button" onclick="toggleAccordion('lane-workflow-accordion', 'lane-workflow-panel')">
@@ -1386,7 +1434,7 @@ Instructions:
                   <strong>Phase 1 exit gate:</strong> Before proceeding, confirm the lane run is complete and recorded.
                   <div class="gate-checks">
                     <span>Lane artifact saved with the expected naming pattern</span>
-                    <span>Source summary, caveats, and confidence captured in the lane artifact and Phase 1 completion display</span>
+                    <span>Source summary, caveats, confidence, and recommendation boundary captured in the lane artifact and Phase 1 completion display</span>
                     <span>Cross-lane signal detection completed and any approved secondary lane runs finished</span>
                     <span>Generated file paths and verification notes added to <code>notes/output_catalog.md</code></span>
                     <span>FinOpsAI mapping decision recorded: proceed to Phase 2 or stop at catalog-only</span>
@@ -2452,6 +2500,7 @@ Before finalizing, verify collision/no-overwrite behavior and ensure the artifac
             <tbody>
               <tr><td>Cleaned transcript</td><td>Transcript-only artifact that preserves source content for later analysis.</td><td>Phase 1</td><td>Workspace text artifact</td><td><code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_cleaned_YYYY_MM_DD.txt</code></td></tr>
               <tr><td>Transcript analysis</td><td>Structured transcript analysis after cleanup.</td><td>Phase 1</td><td>Workspace markdown artifact</td><td><code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_analysis_YYYY_MM_DD.md</code></td></tr>
+              <tr><td>Web source capture</td><td>Preserve canonical URL, title, publisher, access date, acquisition method, and citation-ready source context for an internet page.</td><td>Phase 1</td><td>Workspace markdown artifact</td><td><code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_web_capture_YYYY_MM_DD.md</code></td></tr>
               <tr><td>Source analysis</td><td>Summarize source claims, caveats, risks, and candidate ideas.</td><td>Phase 1</td><td>Workspace markdown artifact</td><td><code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_source_analysis_YYYY_MM_DD.md</code></td></tr>
               <tr><td>GitHub repo assessment</td><td>Assess external repository patterns, tooling, compatibility, and risks.</td><td>Phase 1</td><td>Workspace markdown artifact</td><td><code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_github_repo_assessment_YYYY_MM_DD.md</code></td></tr>
               <tr><td>Domain analysis</td><td>Review accounting, bookkeeping, finance operations, tax, reconciliation, reporting, compliance, or advisory content.</td><td>Phase 1</td><td>Workspace markdown artifact</td><td><code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_domain_analysis_YYYY_MM_DD.md</code></td></tr>
@@ -2488,6 +2537,7 @@ Before finalizing, verify collision/no-overwrite behavior and ensure the artifac
         <tbody>
           <tr><td>YouTube transcript</td><td>Cleaned transcript + analysis report</td><td>Repo mapping report</td><td>Only after mapping and approval</td></tr>
           <tr><td>GitHub repo</td><td>GitHub repo assessment</td><td>Repo mapping report</td><td>Only for high-confidence compatible ideas</td></tr>
+          <tr><td>Web article / documentation / internet source</td><td>Web capture + source analysis report</td><td>Repo mapping report</td><td>Only after mapping and approval</td></tr>
           <tr><td>Business requirement</td><td>Requirement triage report</td><td>Roadmap fit or design referral</td><td>Yes, if task-card gates pass</td></tr>
           <tr><td>Accounting/bookkeeping content</td><td>Domain analysis report</td><td>Domain applicability or repo mapping report</td><td>Only after domain and roadmap approval</td></tr>
           <tr><td>Product workflow content</td><td>Workflow analysis report</td><td>Workflow applicability or repo mapping report</td><td>Usually <code>docs</code> or <code>chore</code>, only after approval</td></tr>
@@ -2587,6 +2637,12 @@ Before finalizing, verify collision/no-overwrite behavior and ensure the artifac
             <td><span class="status-pill choice">&#9679; Choice</span><br>Run when external repo patterns need FinOpsAI compatibility assessment.</td>
             <td><span class="status-pill choice">&#9679; Choice</span><br>Run if compatible ideas may affect roadmap, workflow, tooling, or architecture.</td>
             <td><span class="status-pill choice">&#9679; Choice</span><br>Run only for high-confidence compatible ideas after approval.</td>
+          </tr>
+          <tr>
+            <td>Web source research</td>
+            <td><span class="status-pill choice">&#9679; Choice</span><br>Run when the internet source produces concrete FinOpsAI-relevant ideas requiring repo-grounded assessment.</td>
+            <td><span class="status-pill choice">&#9679; Choice</span><br>Run when the analyzed source could affect roadmap, workflow, tooling, product, or backlog decisions.</td>
+            <td><span class="status-pill choice">&#9679; Choice</span><br>Run only after mapping, roadmap fit, and human approval.</td>
           </tr>
           <tr>
             <td>Business requirement</td>

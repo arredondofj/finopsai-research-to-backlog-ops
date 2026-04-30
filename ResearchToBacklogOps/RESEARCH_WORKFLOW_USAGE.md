@@ -49,6 +49,7 @@ Do not treat all research as the same pipeline.
 Use one shared harness with separate workflow lanes:
 - YouTube Transcript.
 - GitHub repo assessment.
+- Web source research.
 - Product requirement triage.
 - Accounting domain review.
 - Product workflow analysis.
@@ -72,6 +73,7 @@ Typical work:
 
 Use:
 - `PIPELINE_USAGE.md`
+- `skills/research-markdown-authoring/SKILL.md`
 - `skills/youtube-transcript-pipeline/SKILL.md`
 
 ### GitHub Repository
@@ -93,7 +95,31 @@ Typical work:
 Do not copy code or recommend code reuse without explicit review.
 
 Use:
+- `skills/research-markdown-authoring/SKILL.md`
 - `skills/github-repo-assessment/SKILL.md`
+
+### Web Source
+
+Use for:
+- web articles,
+- documentation pages,
+- benchmark or eval posts,
+- announcements,
+- standards/RFC-style pages,
+- and other internet-published material that is not primarily a YouTube
+  transcript or GitHub repository.
+
+Typical work:
+- validate and normalize the URL,
+- capture canonical source metadata and access date,
+- prefer deterministic scripted capture when possible,
+- preserve citation-ready evidence context,
+- analyze the source content,
+- and optionally map the result to FinOpsAI.
+
+Use:
+- `skills/research-markdown-authoring/SKILL.md`
+- `skills/web-source-research/SKILL.md`
 
 ### Business Requirement
 
@@ -112,6 +138,7 @@ Typical work:
 - decide whether ClickUp card drafting is appropriate.
 
 Use:
+- `skills/research-markdown-authoring/SKILL.md`
 - `skills/business-requirement-triage/SKILL.md`
 
 ### Accounting And Bookkeeping Domain Content
@@ -129,6 +156,7 @@ Typical work:
 Do not turn tax, compliance, or accounting advice into implementation tasks without human approval and appropriate professional review.
 
 Use:
+- `skills/research-markdown-authoring/SKILL.md`
 - `skills/accounting-domain-review/SKILL.md`
 
 ### Product Development Workflow Content
@@ -147,7 +175,31 @@ Typical work:
 - map workflow/tooling ideas to FinOpsAI when repo-grounded evidence is requested or needed.
 
 Use:
+- `skills/research-markdown-authoring/SKILL.md`
 - `skills/product-workflow-analysis/SKILL.md`
+
+### Shared Research Markdown Authoring
+
+Use for:
+- any durable markdown artifact under `output/`,
+- lane analysis artifacts,
+- applicability or repo-mapping artifacts,
+- roadmap-fit artifacts,
+- run summaries,
+- and revisions needed to make those artifacts easier for later phases to
+  consume.
+
+Typical work:
+- expose summary, evidence, caveats, candidate ideas, exclusions, disposition,
+  and verification surfaces consistently,
+- keep recommendation candidates distinct instead of blending them into one
+  narrative,
+- make scope and next-step guidance explicit before roadmap-fit or card work,
+- and reduce interpretation loss between Phase 1, Phase 2, Phase 3, and
+  Phase 4.
+
+Use:
+- `skills/research-markdown-authoring/SKILL.md`
 
 ## Routing Table
 
@@ -155,6 +207,7 @@ Use:
 | --- | --- | --- | --- | --- |
 | YouTube transcript | Cleaned transcript + analysis report | Repo mapping report | Optional | Only after mapping and approval |
 | GitHub repo | GitHub repo assessment with applicability recommendation | Repo mapping report | Usually yes if FinOpsAI relevance is requested and the assessment recommends moving forward | Only for high-confidence compatible ideas |
+| Web article / documentation / internet source | Web capture + source analysis report | Repo mapping report | Optional when the source produces concrete FinOpsAI-relevant ideas | Only after mapping and approval |
 | Business requirement | Requirement triage report | Roadmap fit or design referral | As needed | Yes, if task-card gates pass |
 | Accounting/bookkeeping content | Domain analysis report | Domain applicability or repo mapping report | Only when product-relevant | Only after domain and roadmap approval |
 | Product workflow content | Workflow analysis report | Workflow applicability or repo mapping report | Only if it affects FinOpsAI docs/tooling/process | Usually `docs` or `chore`, only after approval |
@@ -178,6 +231,7 @@ Transcript artifacts:
 - `output/<n>_YYYY_MM_DD/<n>_repo_mapping_YYYY_MM_DD.md`
 
 Shared research artifacts:
+- `output/<n>_YYYY_MM_DD/<n>_web_capture_YYYY_MM_DD.md`
 - `output/<n>_YYYY_MM_DD/<n>_source_analysis_YYYY_MM_DD.md`
 - `output/<n>_YYYY_MM_DD/<n>_github_repo_assessment_YYYY_MM_DD.md`
 - `output/<n>_YYYY_MM_DD/<n>_domain_analysis_YYYY_MM_DD.md`
@@ -204,6 +258,41 @@ Catalog:
 - Verification metadata such as line counts is optional. If recorded, it must
   be measured from the saved artifact after write and before the catalog entry
   is finalized.
+
+## External Source Evidence Discipline
+
+For internet-derived sources, record enough metadata that a later reviewer can
+understand what was accessed and when.
+
+Required for web-source and remote-GitHub research artifacts:
+- original URL,
+- canonical URL when different,
+- source title / page title when available,
+- publisher or site name when available,
+- access date,
+- acquisition method,
+- and whether the evidence came from web-visible pages only or from a local
+  clone / local file as well.
+
+Preferred capture rule for general web sources:
+- When possible, use
+  `skills/web-source-research/scripts/capture_web_source.sh <url> <output.md>`
+  to create the `_web_capture_YYYY_MM_DD.md` artifact deterministically.
+- If scripted capture fails or is unsuitable for the source, record the failure
+  mode and the fallback acquisition method explicitly in the artifact.
+
+Freshness rule:
+- If a source claim is time-sensitive, product-changing, benchmark-sensitive,
+  or likely to drift, re-check it before finalizing Phase 2 or later-phase
+  recommendations.
+- If the source could not be re-checked, record the freshness gap explicitly.
+
+Citation rule:
+- Prefer primary sources over commentary when both are available.
+- Keep quotes minimal.
+- Attribute important claims to the specific source artifact or web page used.
+- If a critical claim rests on weak or secondary evidence, mark that caveat in
+  the analysis artifact instead of smoothing it over.
 
 ## Repo-Mapping Categories
 
@@ -496,14 +585,14 @@ transition into the run-closure sequence:
 2. Produce lane-specific source analysis.
 3. Run cross-lane applicability detection when the active lane defines one:
    - For the YouTube transcript lane: evaluate the analysis report and cleaned
-     transcript for content signals that indicate any of the other four lanes
+     transcript for content signals that indicate any of the other five lanes
      are relevant. Record flagged lanes with rationale and confidence level. If
      no signals are detected, record that explicitly. See `PIPELINE_USAGE.md`
      for detection criteria.
    - For the GitHub repo lane: evaluate the repo assessment for workflow and
-     operating-model signals that indicate Lane 5 Product Workflow Analysis is
-     relevant. Record the Lane 5 result with rationale and confidence level. If
-     no Lane 5 signal is detected, record that explicitly.
+     operating-model signals that indicate Lane 6 Product Workflow Analysis is
+     relevant. Record the Lane 6 result with rationale and confidence level. If
+     no Lane 6 signal is detected, record that explicitly.
 4. Update `notes/output_catalog.md` with the Phase 1 artifact and any
    cross-lane detection results before generating the Phase 1 completion
    display.
@@ -681,10 +770,10 @@ Required tracker rows:
 Phase 1 cross-lane rows use lane-specific applicability rules:
 - For the YouTube transcript lane, Steps 2–7 apply to any flagged secondary
   lane.
-- For the GitHub repo lane, Step 2 and Step 3 apply to the Lane 5 Product
+- For the GitHub repo lane, Step 2 and Step 3 apply to the Lane 6 Product
   Workflow Analysis check. Mark Step 4 through Step 6 as `Skipped` unless one
   of those lanes is separately introduced by another source in the same run.
-  Use Step 7 when Lane 5 workflow analysis is approved and run.
+  Use Step 7 when Lane 6 workflow analysis is approved and run.
 - For other lanes, mark Steps 2–7 as `Skipped` with a note identifying the
   active lane unless a lane-local rule later defines a cross-lane check.
 
@@ -920,7 +1009,7 @@ Before starting Phase 2 Step 1 repo-evidence review, print a concise
 Repo scope rule for Phase 2:
 - Do not review the entire FinOpsAI repo by default.
 - Start with repo guidance first.
-- For Lane 5 Product Workflow Analysis, begin with
+- For Lane 6 Product Workflow Analysis, begin with
   `/Users/Sites/Repo-FinOpsAI/docs/engineering/` and other obviously relevant
   workflow/process docs.
 - Expand only when needed to enforcement surfaces such as CI workflows,

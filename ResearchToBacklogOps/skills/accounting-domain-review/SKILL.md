@@ -37,6 +37,8 @@ Optional:
 - `output/<name>_YYYY_MM_DD/<name>_repo_mapping_YYYY_MM_DD.md`
 
 ## Rules
+- Use `skills/research-markdown-authoring/SKILL.md` when writing markdown
+  artifacts for this lane or later shared workflow phases.
 - Separate domain education from product-feature recommendations.
 - Preserve deterministic accounting, review, approval, posting, credential,
   dependency, privacy, and testing constraints.
@@ -47,6 +49,9 @@ Optional:
 - If the run needs roadmap-fit, approval gating, or ClickUp-ready drafting,
   hand off to `RESEARCH_WORKFLOW_USAGE.md` and
   `finopsai_research-to-backlog_workflow.md` after lane outputs are complete.
+- Ensure the domain artifact exposes stable surfaces for later workflow phases:
+  executive summary, domain findings, product-relevant vs non-translatable
+  ideas, risks, disposition, and verification notes.
 
 ## Workflow
 ### Step 1: Domain analysis

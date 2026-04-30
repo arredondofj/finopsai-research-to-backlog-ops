@@ -81,18 +81,23 @@ Lanes:
 
 2. **Lane 2: GitHub repo intake**
    - Assess external architecture, patterns, tooling, tests, and compatibility.
-   - Then check whether Lane 5 workflow analysis should run before any mapping.
+   - Then check whether Lane 6 workflow analysis should run before any mapping.
    - Output: repo assessment; optional workflow-analysis follow-on; optional mapping.
 
-3. **Lane 3: Business requirement intake**
+3. **Lane 3: Web source intake**
+   - Capture internet-published source metadata, preserve citation-ready access
+     context, and analyze the page or document before any mapping.
+   - Output: web capture + source analysis; optional mapping.
+
+4. **Lane 4: Business requirement intake**
    - Turn raw Product Owner intent into scoped triage or design workflow routing.
    - Output: requirement triage.
 
-4. **Lane 4: Accounting domain intake**
+5. **Lane 5: Accounting domain intake**
    - Review bookkeeping, tax, reconciliation, reporting, and compliance material.
    - Output: domain analysis/applicability; optional mapping.
 
-5. **Lane 5: Workflow content intake**
+6. **Lane 6: Workflow content intake**
    - Separate process improvements from product features and harness tooling.
    - Output: workflow analysis/applicability; optional mapping.
 
@@ -123,9 +128,9 @@ Bridge after research completion:
 2. Produce lane-specific source analysis.
 3. Run cross-lane applicability detection when the active lane defines one.
    - For Lane 1 transcripts, use the transcript secondary-lane rules.
-   - For Lane 2 GitHub repos, check whether Lane 5 workflow analysis is
-     relevant based on workflow, orchestration, or operating-model evidence in
-     the repo assessment.
+  - For Lane 2 GitHub repos, check whether Lane 6 workflow analysis is
+    relevant based on workflow, orchestration, or operating-model evidence in
+    the repo assessment.
 4. Update `notes/output_catalog.md` with the Phase 1 artifact and any
    cross-lane detection results before generating the Phase 1 completion display.
 5. Show the Phase 1 completion display in the chat, including Cross-Lane
@@ -250,8 +255,9 @@ Record:
 
 Required fields:
 - **Source:** URL, local file path, local repo path, or raw requirement text.
-- **Source type:** YouTube transcript, GitHub repository, business requirement,
-  accounting/bookkeeping content, or product workflow content.
+- **Source type:** YouTube transcript, GitHub repository, web/internet source,
+  business requirement, accounting/bookkeeping content, or product workflow
+  content.
 - **Purpose:** source analysis, FinOpsAI mapping, roadmap fit, or card-candidate
   readiness.
 - **Target area:** relevant FinOpsAI product, codebase, workflow, docs,
@@ -290,6 +296,7 @@ Chat Title Max Length: 120
 Lane defaults:
 - YouTube transcript: `Transcript | <source_title> | <run_date_pacific>`
 - GitHub repo assessment: `Repo Assessment | <repo_name> | <run_date_pacific>`
+- Web source research: `Web Research | <source_title> | <run_date_pacific>`
 - Business requirement: `Requirement | <short_requirement_topic> | <run_date_pacific>`
 - Accounting or domain review: `Domain Review | <topic> | <run_date_pacific>`
 - Product workflow analysis: `Workflow Analysis | <topic> | <run_date_pacific>`
@@ -302,6 +309,7 @@ Route as follows:
 | --- | --- | --- |
 | YouTube URL, VTT file, or raw transcript | YouTube transcript lane | Cleaned transcript + analysis report |
 | External GitHub repo or local clone | GitHub repository lane | GitHub repo assessment |
+| Web article, documentation page, benchmark post, or other internet source | Web source research lane | Web capture + source analysis report |
 | Raw Product Owner or stakeholder request | Business requirement lane | Requirement triage report |
 | Accounting, bookkeeping, finance, tax, reconciliation, reporting, compliance, or advisory content | Accounting/bookkeeping domain lane | Domain analysis report |
 | Product development, human-in-the-loop, agentic workflow, backlog refinement, QA, review, or delivery material | Product development workflow lane | Workflow analysis report |
@@ -322,6 +330,7 @@ later-phase files in the same folder even if their file date is later.
 | --- | --- |
 | Transcript cleanup | `output/<n>_YYYY_MM_DD/<n>_cleaned_YYYY_MM_DD.txt` |
 | Transcript analysis | `output/<n>_YYYY_MM_DD/<n>_analysis_YYYY_MM_DD.md` |
+| Web source capture | `output/<n>_YYYY_MM_DD/<n>_web_capture_YYYY_MM_DD.md` |
 | General source analysis | `output/<n>_YYYY_MM_DD/<n>_source_analysis_YYYY_MM_DD.md` |
 | GitHub repo assessment | `output/<n>_YYYY_MM_DD/<n>_github_repo_assessment_YYYY_MM_DD.md` |
 | Domain analysis | `output/<n>_YYYY_MM_DD/<n>_domain_analysis_YYYY_MM_DD.md` |
@@ -407,7 +416,7 @@ Instructions:
 7. Save the cleaned transcript to output/<n>_YYYY_MM_DD/<n>_cleaned_YYYY_MM_DD.txt.
 8. Generate the transcript analysis report to output/<n>_YYYY_MM_DD/<n>_analysis_YYYY_MM_DD.md.
 9. Run secondary lane signal detection: evaluate the analysis report and cleaned
-   transcript for content signals indicating any of the other four lanes are
+   transcript for content signals indicating any of the other five lanes are
    relevant. For each lane evaluated, record a confidence level of Strong signal
    or Weak signal, or confirm no signal detected. Do not run any secondary lane
    during this step.
@@ -447,31 +456,86 @@ Assessment question:
 
 Instructions:
 1. Record repo source, branch or commit if known, and access needs.
-2. Inspect only the files needed to answer the assessment question.
-3. Identify repo purpose, architecture, reusable patterns, dependencies, tests,
+2. If the source is a remote GitHub URL and no local clone is provided,
+   establish and record the acquisition method first:
+   - use GitHub web/raw views first for lightweight assessment,
+   - widen to a local clone only when the assessment question cannot be
+     answered credibly from web-visible repo surfaces or when I provide/approve
+     a local clone path.
+3. Capture canonical repo URL, default branch when visible, access method, and
+   any visible commit / tag anchor used for evidence.
+4. Inspect only the files needed to answer the assessment question.
+5. Identify repo purpose, architecture, reusable patterns, dependencies, tests,
    docs, and license/security concerns when evidence is available.
-4. Distinguish reusable ideas from code reuse; do not copy code or recommend
+6. Distinguish reusable ideas from code reuse; do not copy code or recommend
    reuse without explicit review.
-5. Include an Applicability Recommendation section in the artifact that states:
+7. Include an Applicability Recommendation section in the artifact that states:
    - applicability level: High applicability, Moderate applicability,
      Low applicability, or Reference only
    - next-step recommendation: Proceed to FinOpsAI repo mapping, Do not proceed
      yet, or No further action
    - cited rationale grounded in concrete repo evidence and caveats
-6. Save a GitHub repo assessment artifact to
+8. Save a GitHub repo assessment artifact to
    output/<n>_YYYY_MM_DD/<n>_github_repo_assessment_YYYY_MM_DD.md.
-7. After the repo assessment, check whether Lane 5 Product Workflow Analysis
+9. If the assessment is based on web-visible repo surfaces only, say so
+   explicitly and record what was not inspected because no local clone or test
+   environment was used.
+10. After the repo assessment, check whether Lane 6 Product Workflow Analysis
    should run before any Phase 2 mapping. Record `Strong signal`,
-   `Weak signal`, or no Lane 5 signal detected, with rationale grounded in the
+   `Weak signal`, or no Lane 6 signal detected, with rationale grounded in the
    repo evidence.
-8. Surface the recommendation, rationale, and Lane 5 check explicitly in the
+11. Surface the recommendation, rationale, and workflow-lane check explicitly in the
    user-facing response after the assessment.
+12. Do not start FinOpsAI repo mapping unless I explicitly approve.
+```
+
+---
+
+### Lane 3: Web Source Research
+
+Rule: validate the URL, preserve citation-ready source metadata, and produce a
+durable source-capture artifact before writing the source analysis.
+
+Prompt example:
+```text
+Use CodeX as the interface and follow RESEARCH_WORKFLOW_USAGE.md.
+
+Phase 0: Register this source and confirm lane selection before proceeding.
+Lane: Web Source Research
+
+Source URL:
+<article, documentation page, benchmark post, announcement, or other web URL>
+
+Research question:
+<what should be assessed, extracted, or tested against FinOpsAI relevance>
+
+Instructions:
+1. Validate the URL and confirm it is the intended source.
+2. Prefer running
+   `skills/web-source-research/scripts/capture_web_source.sh <url> output/<n>_YYYY_MM_DD/<n>_web_capture_YYYY_MM_DD.md`
+   for deterministic capture when possible.
+3. Record original URL, canonical URL if different, page title, publisher/site
+   name when available, access date, and acquisition method.
+4. Save a durable source-capture artifact to
+   output/<n>_YYYY_MM_DD/<n>_web_capture_YYYY_MM_DD.md.
+5. Produce a source-analysis artifact that separates:
+   - source summary,
+   - evidence-backed claims,
+   - weak or unverified claims,
+   - candidate ideas,
+   - caveats and exclusions,
+   - and recommended next step / disposition.
+6. Save that analysis to
+   output/<n>_YYYY_MM_DD/<n>_source_analysis_YYYY_MM_DD.md.
+7. If scripted capture fails or is unsuitable, record the fallback acquisition
+   method explicitly.
+8. If the source is time-sensitive, record the freshness note explicitly.
 9. Do not start FinOpsAI repo mapping unless I explicitly approve.
 ```
 
 ---
 
-### Lane 3: Product Requirement Triage
+### Lane 4: Product Requirement Triage
 
 Rule: normalize raw Product Owner intent into one work item, or route to design
 if product definition is incomplete.
@@ -500,7 +564,7 @@ Instructions:
 
 ---
 
-### Lane 4: Accounting Domain Review
+### Lane 5: Accounting Domain Review
 
 Rule: capture jurisdiction, user profile, domain reliability, compliance
 caveats, and product relevance.
@@ -534,7 +598,7 @@ Instructions:
 
 ---
 
-### Lane 5: Product Workflow Analysis
+### Lane 6: Product Workflow Analysis
 
 Rule: separate process changes from product features and identify whether the
 idea affects human workflow, agent-assisted workflow, or both.
@@ -572,7 +636,12 @@ Instructions:
 ---
 
 Shared standard: every lane records source evidence, caveats, risks, candidate
-ideas, and confidence before repo mapping or card drafting.
+ideas, confidence, recommendation/disposition, and explicit scope exclusions
+before repo mapping or card drafting. Use the shared
+`skills/research-markdown-authoring/SKILL.md` contract for any durable markdown
+artifact written under `output/` so later phases can extract summary,
+decision-takeaway, recommendation-candidate, and verification surfaces without
+guessing.
 
 ---
 
@@ -590,22 +659,27 @@ Evaluate each lane in turn:
   repository URL or name. Flag Lane 2 if either a content signal or a
   structural reference is present.
 
-- **Lane 3 — Business requirement:** Does the transcript contain a raw product
+- **Lane 3 — Web source research:** Does the transcript cite a specific web
+  article, documentation page, benchmark post, or other internet source whose
+  claims should be reviewed directly rather than only through the transcript?
+  Flag Lane 3 when the transcript materially depends on that web source.
+
+- **Lane 4 — Business requirement:** Does the transcript contain a raw product
   requirement, feature idea, stakeholder request, or workflow pain point stated
-  as a concrete ask? Flag Lane 3 when the speaker articulates something that
+  as a concrete ask? Flag Lane 4 when the speaker articulates something that
   could be triaged as a product requirement.
 
-- **Lane 4 — Accounting and bookkeeping domain:** Does the transcript discuss
+- **Lane 5 — Accounting and bookkeeping domain:** Does the transcript discuss
   accounting, bookkeeping, finance operations, tax, reconciliation, reporting,
   compliance, or advisory content in a way that may be product-relevant to
-  FinOpsAI? Flag Lane 4 only when domain content could influence FinOpsAI
+  FinOpsAI? Flag Lane 5 only when domain content could influence FinOpsAI
   product behavior, compliance posture, or feature design.
 
-- **Lane 5 — Product development workflow:** Does the transcript discuss
+- **Lane 6 — Product development workflow:** Does the transcript discuss
   product development process, human-in-the-loop workflow, agentic delivery
   practices, backlog refinement, specification, QA, review processes, or
   ClickUp workflow ideas in a way that could affect the current or future
-  FinOpsAI operating model? Flag Lane 5 when the content goes beyond general
+  FinOpsAI operating model? Flag Lane 6 when the content goes beyond general
   process discussion and touches practices applicable to this team.
 
 For each flagged lane, record:
@@ -661,7 +735,7 @@ Links to the durable files that were created or updated.
 
 **4. Cross-Lane Signals** (when the active lane defines a cross-lane check)
 List each flagged lane with its one-sentence rationale and confidence level.
-For the GitHub repo lane, this currently means whether Lane 5 Product Workflow
+For the GitHub repo lane, this currently means whether Lane 6 Product Workflow
 Analysis should run before Phase 2 begins. For each flagged lane, ask the
 human whether to run that lane before Phase 2 begins. Wait for the human's
 response before continuing. If no cross-lane signals were detected, state that
@@ -700,13 +774,11 @@ Phase 1 Completion
 - Generated Artifacts: <durable artifact path(s)>
 - Cross-Lane Signals: <flagged lanes with rationale and confidence, or
   "No cross-lane signals detected — check performed">
-  <For each flagged lane: "Proceed with Lane N [name]? Yes / No">
-- Proceed / Stop Recommendation: <proceed to Phase 2 OR stop at catalog-only,
-  with reason>
-- Recommended Next Action: <Phase 2 mapping, cross-lane run, another
-  workflow, or stop>
-- Verification Notes: <source validation, catalog status, cross-lane check,
-  and other brief checks>
+- Proceed / Stop Recommendation: <proceed to next Phase 2 workflow OR stop at
+  catalog-only, with reason>
+- Recommended Next Action: <Phase 2 mapping, another workflow, or stop>
+- Verification Notes: <source validation, catalog status, and other brief
+  checks>
 ```
 
 Recommendation clarity rule: when the recommendation is `no further action
@@ -748,6 +820,12 @@ primary lane and any secondary lane artifacts — not just the initial Phase 1
 analysis. A secondary lane run may strengthen or create the case for Phase 2
 even when the primary lane analysis alone would not have justified it.
 
+Artifact-readiness rule:
+- If a Phase 1 artifact does not make its evidence, caveats, candidate ideas,
+  exclusions, and recommendation surface explicit enough for this decision, fix
+  the artifact structure before proceeding. Do not compensate for a weak
+  artifact contract by guessing in chat.
+
 **Yes → Proceed to Phase 2 when:**
 - Lane output contains candidate ideas affecting FinOpsAI product behavior, repo
   architecture, engineering workflow, prompts, testing, or documentation.
@@ -787,6 +865,9 @@ Purpose and scope:
   rule: read all available run-folder artifacts, attribute findings by lane,
   distinguish primary vs. secondary contributions, and state relationships
   explicitly. Do not allow any single source to silently override another.
+- Phase 2 assumes the input artifacts expose stable summary, evidence,
+  candidate, exclusion, and next-step surfaces. If they do not, normalize the
+  markdown artifact first rather than carrying ambiguity into classification.
 - It does not approve work for implementation, request task-card generation, or
   bypass evidence gaps with speculation.
 
@@ -872,7 +953,7 @@ Progressive repo search rule:
 - Do not treat Phase 2 as whole-repo review by default.
 - Start with `/Users/Sites/Repo-FinOpsAI/AGENTS.md` and any closer nested
   `AGENTS.md` files in the workflow-relevant area.
-- For Lane 5 Product Workflow Analysis, start repo evidence review with
+- For Lane 6 Product Workflow Analysis, start repo evidence review with
   `/Users/Sites/Repo-FinOpsAI/docs/engineering/` and other obviously relevant
   workflow/process documentation.
 - Expand next to enforcement surfaces only when needed: CI workflows,
@@ -894,7 +975,7 @@ Repo-evidence checklist:
 | Check | Required condition |
 | --- | --- |
 | Repo guidance | `/Users/Sites/Repo-FinOpsAI/AGENTS.md` read first; nested `AGENTS.md` applied where relevant. |
-| Progressive scope | Lane 5 starts with `docs/engineering/` and widens only when more enforcement evidence is needed. |
+| Progressive scope | Lane 6 starts with `docs/engineering/` and widens only when more enforcement evidence is needed. |
 | All run-folder artifacts read | Primary lane artifact and all secondary lane artifacts present in the run folder have been read before classification begins. |
 | Scope | Only relevant docs, specs, source files, tests, and tooling inspected. |
 | Record outcome | Assessment outcome is written to `output/` using the defined naming format. |
@@ -930,6 +1011,11 @@ For each applicable category, record source idea, source evidence (attributed
 to the artifact it came from), FinOpsAI evidence, applicability level, required
 change type, risk, and recommended next artifact.
 ```
+
+Mapping-structure rule:
+- Keep each candidate recommendation as its own unit through classification.
+- Do not merge separate candidate ideas simply because they came from the same
+  source artifact.
 
 Run category-boundary prompt:
 ```text
@@ -1039,6 +1125,10 @@ analysis with no FinOpsAI recommendation.
 
 Implemented gate: research output creates card candidates, not automatic task
 cards.
+
+Upstream artifact dependency:
+- This phase depends on upstream artifacts exposing bounded recommendation
+  candidates with explicit scope, risks, exclusions, and next-step guidance.
 
 ---
 
@@ -1491,6 +1581,12 @@ Phase 4 exit check:
 - `notes/output_catalog.md` reflects the final durable artifact set for the
   completed card cycle.
 
+Draft-quality dependency rule:
+- High-quality ClickUp-ready drafts depend on upstream research artifacts that
+  already made the recommendation boundary, exclusions, evidence basis, and
+  next-step logic explicit. If Phase 4 needs to invent those surfaces, return
+  to the earlier artifact and normalize it first.
+
 ---
 
 ## Workflow Loop Decision
@@ -1540,6 +1636,7 @@ Another approved recommendation to process?
 | --- | --- | --- | --- | --- |
 | Cleaned transcript | Transcript-only artifact that preserves source content for later analysis. | Phase 1 | Workspace text artifact | `output/<n>_YYYY_MM_DD/<n>_cleaned_YYYY_MM_DD.txt` |
 | Transcript analysis | Structured transcript analysis after cleanup. | Phase 1 | Workspace markdown artifact | `output/<n>_YYYY_MM_DD/<n>_analysis_YYYY_MM_DD.md` |
+| Web source capture | Preserve canonical URL, title, publisher, access date, acquisition method, and citation-ready source context for an internet page. | Phase 1 | Workspace markdown artifact | `output/<n>_YYYY_MM_DD/<n>_web_capture_YYYY_MM_DD.md` |
 | Source analysis | Summarize source claims, caveats, risks, and candidate ideas. | Phase 1 | Workspace markdown artifact | `output/<n>_YYYY_MM_DD/<n>_source_analysis_YYYY_MM_DD.md` |
 | GitHub repo assessment | Assess external repository patterns, tooling, compatibility, and risks, then record an applicability recommendation and next-step recommendation with cited rationale. | Phase 1 | Workspace markdown artifact | `output/<n>_YYYY_MM_DD/<n>_github_repo_assessment_YYYY_MM_DD.md` |
 | Domain analysis | Review accounting, bookkeeping, finance operations, tax, reconciliation, reporting, compliance, or advisory content. | Phase 1 | Workspace markdown artifact | `output/<n>_YYYY_MM_DD/<n>_domain_analysis_YYYY_MM_DD.md` |
@@ -1564,6 +1661,7 @@ Another approved recommendation to process?
 | --- | --- | --- | --- |
 | YouTube transcript | Cleaned transcript + analysis report | Secondary lane artifacts (if approved) + repo mapping report | Only after mapping and approval |
 | GitHub repo | GitHub repo assessment with applicability recommendation | Repo mapping report | Only for high-confidence compatible ideas and only after the recommendation supports moving forward |
+| Web article / documentation / internet source | Web capture + source analysis report | Repo mapping report | Only after mapping and approval |
 | Business requirement | Requirement triage report | Roadmap fit or design referral | Yes, if task-card gates pass |
 | Accounting/bookkeeping content | Domain analysis report | Domain applicability or repo mapping report | Only after domain and roadmap approval |
 | Product workflow content | Workflow analysis report | Workflow applicability or repo mapping report | Usually `docs` or `chore`, only after approval |
@@ -1594,6 +1692,7 @@ lane. Phases 2 through 4 are lane-dependent.
 | --- | --- | --- | --- |
 | YouTube transcript | Choice: run only when transcript ideas need FinOpsAI applicability assessment. | Choice: run only if mapping produces recommendations or card candidates. | Choice: run only after mapping, roadmap fit, and human approval. |
 | GitHub repository | Choice: run when external repo patterns need FinOpsAI compatibility assessment. | Choice: run if compatible ideas may affect roadmap, workflow, tooling, or architecture. | Choice: run only for high-confidence compatible ideas after approval. |
+| Web source research | Choice: run when the internet source produces concrete FinOpsAI-relevant ideas requiring repo-grounded assessment. | Choice: run when the analyzed source could affect roadmap, workflow, tooling, product, or backlog decisions. | Choice: run only after mapping, roadmap fit, and human approval. |
 | Business requirement | Choice: run only if request needs repo/product applicability evidence. | Must if actionable: required when triage produces a roadmap, design, defer, reject, or card-candidate decision. | Choice: run only if request is one primary task and task-card gates can pass. |
 | Accounting/bookkeeping domain | Choice: run only when domain content is product-relevant to FinOpsAI. | Must if actionable: required when domain findings may influence roadmap, compliance, product behavior, or backlog. | Choice: run only after domain, roadmap, and any professional-review concerns are resolved. |
 | Product workflow content | Choice: run only if workflow idea affects FinOpsAI docs, tooling, prompts, QA, or process. | Must if actionable: required when workflow findings may change docs, prompts, QA gates, ClickUp flow, or operating model. | Choice: usually a `docs` or `chore` candidate, only after approval. |

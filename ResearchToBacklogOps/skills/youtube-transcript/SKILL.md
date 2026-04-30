@@ -50,6 +50,8 @@ Optional:
 - `output/<name>_YYYY_MM_DD/<name>_repo_mapping_YYYY_MM_DD.md`
 
 ## Rules
+- Use `skills/research-markdown-authoring/SKILL.md` when writing markdown
+  artifacts for this lane or later shared workflow phases.
 - If the user provides a YouTube URL instead of a local transcript file, run transcript acquisition before cleanup.
 - If the run is started through a CodeX UI or automation layer with a
   thread-title hook, provide chat-title metadata at run start so the UI layer
@@ -80,6 +82,9 @@ Optional:
 - If the recommendation is `no further action yet`, name the specific transcript
   topic and explain why that topic does not warrant repo mapping, GitHub repo
   assessment, or ClickUp card-candidate drafting yet.
+- Ensure the analysis report exposes stable surfaces for later workflow phases:
+  summary, evidence/caveats, candidate ideas, recommendation/disposition, and
+  verification notes.
 
 ## Workflow
 ### Step 0: Optional transcript acquisition
@@ -101,6 +106,12 @@ Use this only when the user provides a YouTube URL instead of a local transcript
 ### Step 2: Analysis
 - Read the cleaned transcript.
 - Apply the structured software-engineering / AI transcript analysis instructions from `references/analysis_prompt.md`.
+- Structure the markdown so later phases can reliably extract:
+  - `Executive Summary`,
+  - decision takeaways / practical-use and caveat sections,
+  - candidate ideas or explicit non-candidates,
+  - recommendation or disposition,
+  - and verification-oriented notes when relevant.
 - Save the result to `output/<name>_YYYY_MM_DD/<name>_analysis_YYYY_MM_DD.md`.
 
 ### Step 3: Output catalog

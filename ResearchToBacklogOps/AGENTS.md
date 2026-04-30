@@ -22,13 +22,20 @@ Use this workspace for transcript ingestion, cleanup, technical analysis, repo-a
 
 ## Research Lane Skills
 
+- Use `skills/research-markdown-authoring/SKILL.md` whenever a durable
+  research markdown artifact is written or revised under `output/`.
 - Use `skills/youtube-transcript/SKILL.md` for the YouTube transcript lane.
 - Use `skills/github-repo-assessment/SKILL.md` for the GitHub repository lane.
+- Use `skills/web-source-research/SKILL.md` for general web articles,
+  documentation pages, benchmark posts, announcements, and other internet
+  sources that are not primarily YouTube transcripts or GitHub repositories.
 - Use `skills/business-requirement-triage/SKILL.md` for the business requirement lane.
 - Use `skills/accounting-domain-review/SKILL.md` for the accounting/bookkeeping domain lane.
 - Use `skills/product-workflow-analysis/SKILL.md` for the product workflow lane.
-- Treat these as lane skills. Shared roadmap-fit, approval, and ClickUp-card
-  behavior still comes from `RESEARCH_WORKFLOW_USAGE.md` and
+- Treat the six lane skills as source-routing skills and
+  `research-markdown-authoring` as the shared artifact-writing skill. Shared
+  roadmap-fit, approval, and ClickUp-card behavior still comes from
+  `RESEARCH_WORKFLOW_USAGE.md` and
   `finopsai_research-to-backlog_workflow.md`.
 
 ## Phase A: Transcript-Only Workflow
