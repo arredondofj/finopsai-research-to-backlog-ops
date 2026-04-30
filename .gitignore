@@ -16,3 +16,5 @@ env/
 .codex/
 *.swp
 *.swo
+ResearchToBacklogOps/output/
+ResearchToBacklogOps/input/
