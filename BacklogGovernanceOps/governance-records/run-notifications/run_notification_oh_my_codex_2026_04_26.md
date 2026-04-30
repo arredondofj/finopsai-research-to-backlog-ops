@@ -1,0 +1,21 @@
+# Run Notification Receipt
+
+- **Run ID:** `oh_my_codex_2026_04_24`
+- **Receipt type:** Historical catchup handoff backfill
+- **Research run close timestamp:** `2026-04-24` (exact time not captured in source run summary)
+- **Run summary approval evidence:** `../ResearchToBacklogOps/output/oh_my_codex_2026_04_24/oh_my_codex_run_summary_2026_04_24.md`
+- **Catchup deposit timestamp:** `2026-04-26 03:06:21 PDT`
+- **Number of draft artifacts deposited:** `3`
+- **List of deposited artifact file names:**
+  - `oh_my_codex_clickup_card_draft_2026_04_24_human_led_llm_operating_mode.md`
+  - `oh_my_codex_clickup_card_draft_2026_04_24_overnight_agentic_dev_operating_mode.md`
+  - `oh_my_codex_clickup_card_draft_2026_04_24_precommit_test_mapping_coverage.md`
+- **List of duplicate-routed artifact file names, if any:** None
+- **Source path(s):**
+  - `/Users/Admin/Documents/CodeX/ResearchToBacklogOps/output/oh_my_codex_2026_04_24/oh_my_codex_clickup_card_draft_2026_04_24_human_led_llm_operating_mode.md`
+  - `/Users/Admin/Documents/CodeX/ResearchToBacklogOps/output/oh_my_codex_2026_04_24/oh_my_codex_clickup_card_draft_2026_04_24_overnight_agentic_dev_operating_mode.md`
+  - `/Users/Admin/Documents/CodeX/ResearchToBacklogOps/output/oh_my_codex_2026_04_24/oh_my_codex_clickup_card_draft_2026_04_24_precommit_test_mapping_coverage.md`
+- **Deposit destination:** `governance-states/01_intake/`
+- **PO notification timestamp:** `2026-04-26 03:06:21 PDT`
+- **Auto-acknowledgment status:** confirmed
+- **Overall handoff status:** completed

@@ -1,0 +1,2736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FinOpsAI Research-to-Backlog Workflow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+    --bg:        #0f0f0e;
+    --bg2:       #161614;
+    --bg3:       #1e1d1b;
+    --bg4:       #252420;
+    --border:    rgba(255,255,255,0.07);
+    --border2:   rgba(255,255,255,0.12);
+    --text:      #e8e4da;
+    --text2:     #9e9a90;
+    --text3:     #5c5952;
+
+    --purple:        #7f77dd;
+    --purple-light:  #CECBF6;
+    --purple-dim:    rgba(127,119,221,0.12);
+    --purple-glow:   rgba(127,119,221,0.25);
+    --purple-border: rgba(127,119,221,0.20);
+
+    --green:         #1D9E75;
+    --green-light:   #9FE1CB;
+    --green-dim:     rgba(29,158,117,0.12);
+    --green-glow:    rgba(29,158,117,0.25);
+    --green-border:  var(--green-border);
+
+    --amber:         #BA7517;
+    --amber-light:   #E9BF7F;
+    --amber-dim:     rgba(186,117,23,0.12);
+    --amber-glow:    rgba(186,117,23,0.28);
+    --amber-border:  rgba(186,117,23,0.28);
+    --amber-mid:     #d29e46;
+    --amber-pale:    #d7c06b;
+
+    --orange:        #D85A30;
+    --orange-light:  #F5C4B3;
+    --orange-dim:    rgba(216,90,48,0.12);
+    --orange-glow:   rgba(216,90,48,0.25);
+    --orange-border: rgba(216,90,48,0.28);
+
+    --blue:          #4A9FD8;
+    --blue-light:    #B9DCF3;
+    --blue-dim:      rgba(74,159,216,0.12);
+    --blue-glow:     rgba(74,159,216,0.25);
+    --blue-border:   rgba(74,159,216,0.28);
+
+    --clickup:        #FD71AF;
+    --clickup-light:  #FFADD0;
+    --clickup-dim:    rgba(253,113,175,0.12);
+    --clickup-glow:   rgba(253,113,175,0.28);
+
+    --accent-blue-mid: #336699;
+
+    --danger-text:   #f09595;
+    --danger-dim:    rgba(226,75,74,0.15);
+    --danger-border: rgba(226,75,74,0.30);
+
+    --note-text:     var(--purple-light);
+    --note-dim:      var(--purple-dim);
+    --note-border:   var(--purple-border);
+
+    --warn-text:     var(--amber-light);
+    --warn-dim:      var(--amber-dim);
+    --warn-border:   var(--amber-glow);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  .page {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 4rem 2rem 6rem;
+  }
+
+  .header {
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  .header-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .1em;
+    color: var(--text3);
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+  }
+  .header h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 300;
+    line-height: 1.12;
+    color: var(--text);
+    margin-bottom: .75rem;
+  }
+  .header h1 em {
+    font-style: italic;
+    color: var(--accent-blue-mid);
+  }
+  .header-sub {
+    font-size: 14px;
+    color: var(--text2);
+    max-width: 620px;
+  }
+  .header-tools {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 1.25rem;
+  }
+  .info-toggle,
+  .btn-ghost {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .05em;
+    color: var(--text2);
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 999px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: color .2s, border-color .2s, background .2s;
+  }
+  .btn-ghost { border-radius: 6px; padding: 5px 12px; background: none; color: var(--text3); }
+  .info-toggle:hover,
+  .btn-ghost:hover {
+    color: var(--text);
+    border-color: var(--note-border);
+    background: var(--bg4);
+  }
+  .info-panel {
+    display: none;
+    margin-top: 1rem;
+    padding: 16px 18px;
+    border-radius: 8px;
+    border: 1px solid var(--note-border);
+    background: var(--note-dim);
+  }
+  .info-panel.open { display: block; }
+  .info-title,
+  .ref-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 1.25rem;
+  }
+  .info-title {
+    color: var(--note-text);
+    margin-bottom: 10px;
+  }
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .info-block-title {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 300;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .info-block p {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.65;
+  }
+  .header-pills {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 1.25rem;
+  }
+  .pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    background: var(--bg3);
+  }
+
+  .section-divider {
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  /* ── Section break — dedicated structural separator ── */
+  /* Use <div class="section-break"></div> between every major section. */
+  /* This element owns the visual break. Nothing else should produce    */
+  /* it as a side effect via border-top or padding-top on a container.  */
+  .section-break {
+    height: 1px;
+    background: var(--border);
+    margin: 2.5rem 0;
+    border: none;
+    flex-shrink: 0;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 1.25rem;
+  }
+  .section-header .ref-title { margin-bottom: 0; }
+
+  .decision-strip {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 14px;
+    align-items: stretch;
+    margin: 2rem 0 2.5rem;
+  }
+  .decision-card {
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    background: var(--bg2);
+    padding: 16px;
+  }
+  .decision-card.with-accordion {
+    padding: 0;
+    overflow: hidden;
+  }
+  .decision-card.good {
+    background: linear-gradient(180deg, rgba(29,158,117,0.12), var(--green-dim));
+    border-color: var(--green-border);
+  }
+  .decision-card.bad {
+    background: linear-gradient(180deg, var(--danger-dim), var(--danger-dim));
+    border-color: rgba(226,75,74,0.28);
+  }
+  .decision-kicker {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 8px;
+  }
+  .decision-title {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 300;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .decision-card.good .decision-title { color: var(--green-light); }
+  .decision-card.bad .decision-title { color: var(--danger-text); }
+  .decision-copy {
+    color: var(--text2);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .decision-card .accordion {
+    margin-top: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+  .decision-card .accordion-toggle {
+    padding: 16px;
+  }
+  .decision-card .ref-panel {
+    margin-top: 0;
+    padding: 0 16px 16px;
+  }
+  .decision-card .accordion.open .ref-panel {
+    border-top-color: rgba(255,255,255,0.08);
+  }
+  .decision-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+    font-size: 18px;
+  }
+
+  .lane-map {
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    background: linear-gradient(180deg, var(--bg3), var(--bg2));
+    padding: 18px;
+    margin-bottom: 2rem;
+  }
+  .harness-core {
+    border: 1px solid var(--note-border);
+    background: var(--note-dim);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 14px;
+  }
+  .harness-title {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 300;
+    color: var(--purple-light);
+    margin-bottom: 6px;
+  }
+  .harness-copy {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.65;
+  }
+  .lane-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .lane-card {
+    min-height: 138px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg4);
+    padding: 12px;
+  }
+  .lane-card:nth-child(1) { border-color: var(--purple-border); }
+  .lane-card:nth-child(2) { border-color: var(--green-border); }
+  .lane-card:nth-child(3) { border-color: var(--amber-border); }
+  .lane-card:nth-child(4) { border-color: var(--orange-border); }
+  .lane-card:nth-child(5) { border-color: var(--blue-border); }
+  .lane-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 8px;
+  }
+  .lane-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.35;
+    margin-bottom: 8px;
+  }
+  .lane-desc {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.55;
+  }
+  .lane-output {
+    margin-top: 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+  }
+
+  .flow-bar {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 1.5rem;
+    overflow-x: auto;
+    padding: 1.25rem 0;
+  }
+  .flow-item {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex: 1;
+    min-width: 105px;
+    cursor: pointer;
+  }
+  .flow-chip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+    padding: 8px 4px;
+    border-radius: 8px;
+    transition: background .2s;
+  }
+  .flow-item:hover .flow-chip { background: var(--bg3); }
+  .flow-chip-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: .05em;
+  }
+  .flow-chip-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text2);
+    text-align: center;
+    white-space: nowrap;
+  }
+  .flow-arrow {
+    color: var(--text3);
+    font-size: 14px;
+    padding: 0 4px;
+    flex-shrink: 0;
+  }
+
+  .phase {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+    transition: border-color .2s;
+  }
+  .phase:hover,
+  .phase.open { border-color: var(--border2); }
+  .phase-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 20px;
+    cursor: pointer;
+    user-select: none;
+    background: var(--bg2);
+    transition: background .15s;
+  }
+  .phase-header:hover { background: var(--bg3); }
+  .phase-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 20px;
+    flex-shrink: 0;
+    background: var(--bg4);
+    color: var(--text2);
+    border: 1px solid var(--border2);
+  }
+  .phase.open .phase-badge {
+    background: var(--bg3);
+    color: var(--text);
+    border-color: var(--border2);
+  }
+  .phase-title {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 300;
+    color: var(--text);
+    flex: 1;
+  }
+  .phase-count {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+  }
+  .phase-chevron {
+    color: var(--text3);
+    font-size: 11px;
+    transition: transform .25s;
+  }
+  .phase.open .phase-chevron { transform: rotate(90deg); }
+  .phase-body {
+    display: none;
+    padding: 20px;
+    border-top: 1px solid var(--border);
+    animation: fadeIn .2s ease;
+  }
+  .phase.open .phase-body { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+
+  .step {
+    display: flex;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .step:last-of-type { border-bottom: none; }
+  .step-num {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    background: var(--bg4);
+    color: var(--text2);
+    border: 1px solid var(--border2);
+  }
+  .step-content { flex: 1; min-width: 0; }
+  .step-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .step-desc {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.65;
+  }
+  .tool-tag {
+    display: inline-block;
+    margin-top: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .04em;
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    color: var(--text3);
+    background: var(--bg4);
+  }
+
+  .callout {
+    margin-top: 14px;
+    padding: 11px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.6;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .callout-icon { flex-shrink: 0; font-size: 13px; margin-top: 1px; }
+  .callout-body { flex: 1; }
+  .callout strong { font-weight: 500; }
+  .callout.gate { background: var(--warn-dim); border: 1px solid var(--warn-border); color: var(--warn-text); }
+  .callout.note { background: var(--note-dim); border: 1px solid var(--note-border); color: var(--note-text); }
+  .callout.guide { background: var(--green-dim); border: 1px solid var(--green-border); color: var(--green-light); }
+  .callout.danger { background: var(--danger-dim); border: 1px solid var(--danger-border); color: var(--danger-text); }
+  .phase-body > .callout + .callout { margin-top: 14px !important; }
+
+  .gate-checks {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .gate-checks span {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text);
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    padding: 2px 8px;
+    background: var(--bg3);
+  }
+
+  .connector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 28px;
+    color: var(--text3);
+    font-size: 16px;
+    margin: 0;
+  }
+
+  .matrix {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .phase1-lanes {
+    grid-template-columns: 1fr;
+  }
+  .matrix-card {
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    background: var(--bg2);
+    padding: 14px;
+  }
+  .matrix-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 7px;
+  }
+  .matrix-card p,
+  .matrix-card li {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+  .matrix-card ul { margin-left: 17px; }
+
+  .accordion {
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    background: linear-gradient(180deg, var(--bg3), var(--bg2));
+    overflow: hidden;
+    margin-top: 12px;
+  }
+  .accordion.guide-accordion {
+    border-color: var(--green-border);
+    background: linear-gradient(180deg, var(--green-dim), var(--green-dim));
+  }
+  .accordion.guide-accordion .accordion-toggle:hover {
+    background: var(--green-dim);
+  }
+  .guide-panel {
+    padding: 14px;
+    border-top: 1px solid var(--border);
+  }
+  .guide-list {
+    display: grid;
+    gap: 12px;
+  }
+  .ref-panel .guide-list {
+    margin-top: 12px;
+  }
+  .guide-step {
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    background: var(--bg2);
+    padding: 14px;
+  }
+  .guide-step-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 7px;
+  }
+  .guide-step p,
+  .guide-step li {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+  .guide-step ul {
+    margin-left: 17px;
+    margin-top: 8px;
+  }
+  .guide-step .lane-prompt,
+  .guide-step .callout {
+    margin-top: 10px;
+  }
+  .accordion.guide-accordion .accordion-title {
+    color: var(--green-light);
+  }
+  .accordion.guide-accordion .accordion-chevron {
+    color: var(--green-light);
+  }
+  .accordion.guide-accordion .ref-panel {
+    border-top-color: rgba(29,158,117,0.2);
+  }
+  .lane-prompt {
+    position: relative;
+    margin-top: 10px;
+    padding: 38px 12px 10px;
+    border: 1px solid rgba(29,158,117,0.22);
+    border-radius: 8px;
+    background: rgba(15,15,14,0.58);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    line-height: 1.6;
+    color: var(--text2);
+    white-space: pre-wrap;
+  }
+  .copy-prompt-button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .04em;
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--green-border);
+    background: rgba(15,15,14,0.88);
+    color: var(--green-light);
+    cursor: pointer;
+    transition: color .2s, border-color .2s, background .2s;
+  }
+  .copy-prompt-button:hover {
+    color: var(--text);
+    border-color: rgba(29,158,117,0.44);
+    background: var(--bg3);
+  }
+  .inline-reference {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .04em;
+    color: var(--purple-light);
+    background: var(--note-dim);
+    border: 1px solid var(--note-border);
+    border-radius: 6px;
+    padding: 5px 9px;
+    text-decoration: none;
+  }
+  .inline-reference:hover {
+    color: var(--text);
+    border-color: rgba(127,119,221,0.38);
+    background: rgba(127,119,221,0.12);
+  }
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    border-radius: 20px;
+    padding: 2px 8px;
+    white-space: nowrap;
+  }
+  .status-pill.must {
+    color: var(--green-light);
+    background: rgba(29,158,117,0.12);
+    border: 1px solid rgba(29,158,117,0.3);
+  }
+  .status-pill.choice {
+    color: var(--amber-light);
+    background: rgba(239,159,39,0.12);
+    border: 1px solid rgba(239,159,39,0.3);
+  }
+  .status-pill.na {
+    color: var(--danger-text);
+    background: var(--danger-dim);
+    border: 1px solid rgba(226,75,74,0.3);
+  }
+  .accordion-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 18px;
+    background: transparent;
+    border: 0;
+    color: var(--text);
+    cursor: pointer;
+    text-align: left;
+  }
+  .accordion-toggle:hover { background: rgba(255,255,255,0.02); }
+  .accordion-label { display: grid; gap: 4px; }
+  .accordion-title {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 300;
+    color: var(--text);
+  }
+  .accordion-sub {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.5;
+  }
+  .accordion-chevron {
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    color: var(--text3);
+    transition: transform .2s ease, color .2s ease;
+    flex-shrink: 0;
+  }
+  .accordion.open .accordion-chevron {
+    transform: rotate(90deg);
+    color: var(--text);
+  }
+  .ref-panel {
+    display: none;
+    margin-top: 1rem;
+    padding: 0 18px 18px;
+    border-top: 1px solid var(--border);
+  }
+  .ref-panel.open { display: block; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  th {
+    text-align: left;
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--border2);
+  }
+  td {
+    padding: 9px 12px;
+    color: var(--text2);
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  td:first-child { color: var(--text); font-weight: 400; }
+  code {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    background: var(--bg4);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--text2);
+    border: 1px solid var(--border);
+  }
+  a {
+    color: var(--purple-light);
+    text-decoration: none;
+    border-bottom: 1px solid var(--purple-glow);
+    transition: color .2s, border-color .2s;
+  }
+  a:hover { color: var(--text); border-color: var(--border2); }
+  .footer {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  @media print {
+    body { background: white; color: black; }
+    .phase-body { display: block !important; }
+    .phase-chevron, .flow-bar, .header-tools, .btn-ghost { display: none; }
+  }
+
+  @media (max-width: 820px) {
+    .lane-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .matrix { grid-template-columns: 1fr; }
+    .decision-strip { grid-template-columns: 1fr; }
+    .decision-arrow { display: none; }
+  }
+
+  @media (max-width: 640px) {
+    .page { padding: 2.75rem 1.1rem 4rem; }
+    .info-grid { grid-template-columns: 1fr; }
+    .lane-grid { grid-template-columns: 1fr; }
+    .phase-header { align-items: flex-start; }
+    .phase-count { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<main class="page">
+  <header class="header">
+    <div class="header-meta">FinOpsAI / Research Operations / Research-to-Backlog Workflow</div>
+    <h1>Research-to-Backlog<br><em>Product Owner Workflow</em></h1>
+    <div class="header-sub">Use this workflow to route product-relevant research sources into the right lane, produce consistent artifacts, map ideas to FinOpsAI when appropriate, and gate ClickUp-ready card drafts. <br><strong>Note:</strong> This is the visual companion to <code>RESEARCH_WORKFLOW_USAGE.md</code>. </div>
+    <div class="header-tools">
+      <button class="info-toggle" type="button" onclick="toggleInfoPanel()">How This Workflow Is Used</button>
+    </div>
+    <div class="info-panel" id="workflow-info-panel">
+      <div class="info-title">Workflow Scope</div>
+      <div class="info-grid">
+        <div class="info-block">
+          <div class="info-block-title">Implemented Guide</div>
+          <p><code>RESEARCH_WORKFLOW_USAGE.md</code> is now the controlling workspace guide for source taxonomy, routing, artifact names, repo-mapping categories, roadmap-fit statuses, and the ClickUp card-candidate gate.</p>
+        </div>
+        <div class="info-block">
+          <div class="info-block-title">Separate Lanes</div>
+          <p>Each source type keeps its own intake rules and risk checks so transcripts, GitHub repos, domain content, requirements, and workflow material are not forced through the same analysis path.</p>
+        </div>
+      </div>
+    </div>
+    <div class="header-pills">
+      <span class="pill">Implemented guide</span>
+      <span class="pill">RESEARCH_WORKFLOW_USAGE.md</span>
+      <span class="pill">Primary interface: CodeX</span>
+      <span class="pill">Human-approved cards</span>
+      <span class="pill">FinOpsAI deterministic controls</span>
+      <span class="pill">2026-04-23</span>
+    </div>
+  </header>
+
+  <div class="section-break"></div>
+
+  <div class="ref-title">Workflow Usage</div>
+  <div class="header-sub" style="max-width:none; margin-bottom:1rem;">Use this workflow when source material needs to become a researched, assessed, mapped, or backlog-candidate artifact for FinOpsAI. Start in CodeX unless a step explicitly belongs in another tool.
+  <br><strong>Note</strong>: The shared standards now live in <code>RESEARCH_WORKFLOW_USAGE.md</code>; this visual shows how to use them operationally.</div>
+
+  <div class="accordion" id="workflow-usage-accordion" style="margin-bottom:2rem;">
+    <button class="accordion-toggle" type="button" onclick="toggleAccordion('workflow-usage-accordion', 'workflow-usage-panel')">
+      <span class="accordion-label">
+        <span class="accordion-title">See Workflow Usage Details</span>
+        <br>Expand to view workflow usage details about Usage Guide, When to Use, and Harness map
+        <span class="accordion-sub">Expand to view workflow usage details about Usage Guide, When to Use, and Harness map</span>
+      </span>
+      <span class="accordion-chevron">&#9654;</span>
+    </button>
+    <div class="ref-panel" id="workflow-usage-panel">
+      <ul style="margin:8px 0 0 18px; padding:0;">
+        <li><strong>Workflow Usage Guide:</strong> CodeX is the primary interface for registering sources, selecting lanes, producing research artifacts, mapping ideas to FinOpsAI, assigning roadmap-fit status, and drafting ClickUp-ready card candidates. Use another tool only when that tool owns the action, such as ClickUp for publishing cards, a browser or Git tooling for approved external repo/source access, or FinOpsAI workflow docs for Product Design and Product Development handoff.</li>
+        <li style="margin-top:8px;"><strong>When to use:</strong> Use this harness for YouTube transcripts, GitHub repositories, business requirements, accounting/bookkeeping domain content, and product development workflow material. If the source is only a transcript cleanup request, use the transcript pipeline directly through <code>PIPELINE_USAGE.md</code>.</li>
+      </ul>
+      <div class="accordion guide-accordion" id="research-harness-accordion" style="margin-top:12px;">
+        <button class="accordion-toggle" type="button" onclick="toggleAccordion('research-harness-accordion', 'research-harness-panel')">
+          <span class="accordion-label">
+            <span class="accordion-title">Show Harness Map</span>
+            <span class="accordion-sub">Expand to view the lane blocks for the shared research harness.</span>
+          </span>
+          <span class="accordion-chevron">&#9654;</span>
+        </button>
+        <div class="ref-panel" id="research-harness-panel">
+            <div class="lane-grid" style="margin-top:1rem;">
+              <div class="lane-card">
+                <div>
+                  <div class="lane-label">Lane 1</div>
+                  <div class="lane-title">YouTube transcript intake</div>
+                  <div class="lane-desc">Acquire, clean, analyze, then optionally map to FinOpsAI.</div>
+                </div>
+                <div class="lane-output">cleaned + analysis; optional mapping</div>
+              </div>
+              <div class="lane-card">
+                <div>
+                  <div class="lane-label">Lane 2</div>
+                  <div class="lane-title">GitHub repo intake</div>
+                  <div class="lane-desc">Assess external architecture, patterns, tooling, tests, and compatibility.</div>
+                </div>
+                <div class="lane-output">repo assessment; optional mapping</div>
+              </div>
+              <div class="lane-card">
+                <div>
+                  <div class="lane-label">Lane 3</div>
+                  <div class="lane-title">Business requirement intake</div>
+                  <div class="lane-desc">Turn raw Product Owner intent into scoped triage or design workflow routing.</div>
+                </div>
+                <div class="lane-output">requirement triage</div>
+              </div>
+              <div class="lane-card">
+                <div>
+                  <div class="lane-label">Lane 4</div>
+                  <div class="lane-title">Accounting domain intake</div>
+                  <div class="lane-desc">Review bookkeeping, tax, reconciliation, reporting, and compliance material.</div>
+                </div>
+                <div class="lane-output">domain analysis/applicability; optional mapping</div>
+              </div>
+              <div class="lane-card">
+                <div>
+                  <div class="lane-label">Lane 5</div>
+                  <div class="lane-title">Workflow content intake</div>
+                  <div class="lane-desc">Separate process improvements from product features and harness tooling.</div>
+                </div>
+                <div class="lane-output">workflow analysis/applicability; optional mapping</div>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-break"></div>
+
+  <div class="ref-title">Phase Navigation</div>
+  <div class="flow-bar">
+    <div class="flow-item" onclick="jumpTo('ph1')">
+      <div class="flow-chip"><span class="flow-chip-num">Phase 1</span><span class="flow-chip-label">Intake</span></div>
+    </div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-item" onclick="jumpTo('ph3')">
+      <div class="flow-chip"><span class="flow-chip-num">Phase 2</span><span class="flow-chip-label">Map</span></div>
+    </div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-item" onclick="jumpTo('ph4')">
+      <div class="flow-chip"><span class="flow-chip-num">Phase 3</span><span class="flow-chip-label">Gate</span></div>
+    </div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-item" onclick="jumpTo('ph5')">
+      <div class="flow-chip"><span class="flow-chip-num">Phase 4</span><span class="flow-chip-label">Card Draft</span></div>
+    </div>
+  </div>
+
+  <div class="section-break"></div>
+
+  <div class="section-header">
+    <div class="ref-title">Workflow Phases</div>
+    <button class="btn-ghost" id="expand-btn" type="button" onclick="toggleAll()">Expand all</button>
+  </div>
+
+  <div class="phase" id="ph1">
+    <div class="phase-header" onclick="toggle('ph1')">
+      <span class="phase-badge">Phase 1</span>
+      <span class="phase-title">Intake And Analyze</span>
+      <span class="phase-count">2 steps</span>
+      <span class="phase-chevron">&#9654;</span>
+    </div>
+    <div class="phase-body">
+      <div class="callout note">
+        <div class="callout-icon">&#9670;</div>
+        <div class="callout-body"><strong>Purpose &amp; scope:</strong> Phase 1 establishes the research run and produces the source-facing analysis needed to decide whether further FinOpsAI evaluation is warranted. It begins with intake and routing to capture source context, select the correct lane, set the expected artifact, and confirm workflow boundaries before any durable analysis begins. It then runs the selected lane-specific analysis to produce the appropriate research artifact for the source.
+
+<br><br>Phase 1 does not perform FinOpsAI applicability mapping, assign roadmap-fit status, approve work for implementation, or generate ClickUp-ready card drafts. Those actions belong to later phases and should only occur after Phase 1 is complete and its gates have passed.</div>
+      </div>
+      
+      <div class="step" style="border-bottom:none; padding-bottom:0;">
+        <div class="step-num" style="margin-top:2rem;">1</div>
+        <div class="step-content">
+          <div class="accordion guide-accordion" id="phase1-intake-accordion" style="margin-top:1rem;">
+            <button class="accordion-toggle" type="button" onclick="toggleAccordion('phase1-intake-accordion', 'phase1-intake-panel')">
+              <span class="accordion-label">
+                <span class="accordion-title">Intake</span>
+                <span class="accordion-sub">Expand to view intake and routing steps: capture metadata, select lane, set expected artifact, and confirm boundaries.</span>
+              </span>
+              <span class="accordion-chevron">&#9654;</span>
+            </button>
+            <div class="ref-panel" id="phase1-intake-panel">
+                
+                <div class="callout note">
+        <div class="callout-icon">&#9670;</div>
+        <div class="callout-body"><strong>Step 1 Purpose &amp; scope:</strong> Phase 1 starts with intake and routing. It establishes the operating boundary for the run through source capture, lane selection, expected artifact naming, and workflow boundary confirmation before lane-specific analysis begins. It does not assess FinOpsAI applicability, assign roadmap-fit status, or generate ClickUp-ready drafts.</div>
+      </div>
+        <div class="callout note">
+        <div class="callout-icon">&#9670;</div>
+        <div class="callout-body"><strong>Step 1 Implemented rule:</strong> Start from the source taxonomy in <code>RESEARCH_WORKFLOW_USAGE.md</code>. The first decision is source type and lane, not the final output.</div>
+      </div>
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <div class="step-title">Capture source metadata</div>
+              <div class="step-desc">Record source path or URL, source type, date, intended question, target FinOpsAI area, and whether network access or repo cloning is needed.</div>
+              <span class="tool-tag">source registry</span>
+              <div class="accordion guide-accordion" id="phase0-step1-accordion">
+                <button class="accordion-toggle" type="button" onclick="toggleAccordion('phase0-step1-accordion', 'phase0-step1-panel')">
+                  <span class="accordion-label">
+                    <span class="accordion-title">How To Run Step 1</span>
+                    <span class="accordion-sub">Capture enough source context for CodeX to route and name the run without guessing.</span>
+                  </span>
+                  <span class="accordion-chevron">&#9654;</span>
+                </button>
+                <div class="ref-panel" id="phase0-step1-panel">
+                  <table>
+                    <thead>
+                      <tr><th>Field</th><th>What to capture</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>Source</td><td>URL, local file path, local repo path, or raw requirement text.</td></tr>
+                      <tr><td>Source type</td><td>YouTube transcript, GitHub repository, business requirement, accounting/bookkeeping content, or product workflow content.</td></tr>
+                      <tr><td>Purpose</td><td>The question the research should answer, such as source analysis, FinOpsAI mapping, roadmap fit, or card-candidate readiness.</td></tr>
+                      <tr><td>Target area</td><td>Relevant FinOpsAI product, codebase, workflow, docs, accounting domain, or ClickUp area if known.</td></tr>
+                      <tr><td>Access needs</td><td>Whether CodeX needs network access, an external repo clone, a local file, or a target repo read.</td></tr>
+                    </tbody>
+                  </table>
+                  <div class="callout note">
+                    <div class="callout-icon">&#9670;</div>
+                    <div class="callout-body"><strong>Instruction:</strong> If any required source detail is missing, record the gap and ask for it before producing durable artifacts. Do not invent missing source context.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <div class="step-title">Select lane</div>
+              <div class="step-desc">Route to transcript, GitHub repo, business requirement, accounting domain, or product workflow lane. Do not force non-transcript sources through transcript cleanup.</div>
+              <span class="tool-tag">routing decision</span>
+              <div class="accordion guide-accordion" id="phase0-step2-accordion">
+                <button class="accordion-toggle" type="button" onclick="toggleAccordion('phase0-step2-accordion', 'phase0-step2-panel')">
+                  <span class="accordion-label">
+                    <span class="accordion-title">How To Run Step 2</span>
+                    <span class="accordion-sub">Use the implemented source taxonomy and routing table from RESEARCH_WORKFLOW_USAGE.md.</span>
+                  </span>
+                  <span class="accordion-chevron">&#9654;</span>
+                </button>
+                <div class="ref-panel" id="phase0-step2-panel">
+                  <table>
+                    <thead>
+                      <tr><th>If the source is</th><th>Route to</th><th>First artifact</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>YouTube URL, VTT file, or raw transcript</td><td>YouTube transcript lane</td><td>Cleaned transcript + analysis report</td></tr>
+                      <tr><td>External GitHub repo or local clone</td><td>GitHub repository lane</td><td>GitHub repo assessment</td></tr>
+                      <tr><td>Raw Product Owner or stakeholder request</td><td>Business requirement lane</td><td>Requirement triage report</td></tr>
+                      <tr><td>Accounting, bookkeeping, finance, tax, reconciliation, reporting, compliance, or advisory content</td><td>Accounting/bookkeeping domain lane</td><td>Domain analysis report</td></tr>
+                      <tr><td>Product development, human-in-the-loop, agentic workflow, backlog refinement, QA, review, or delivery material</td><td>Product development workflow lane</td><td>Workflow analysis report</td></tr>
+                    </tbody>
+                  </table>
+                  <div class="callout danger">
+                    <div class="callout-icon">&#9670;</div>
+                    <div class="callout-body"><strong>Routing guardrail:</strong> Do not use transcript cleanup for non-transcript sources. If one source contains multiple independent work items, split or triage before mapping to ClickUp candidates.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <div class="step-title">Set expected artifact</div>
+              <div class="step-desc">Use the implemented artifact naming conventions, such as <code>_analysis_</code>, <code>_domain_applicability_</code>, <code>_requirement_triage_</code>, <code>_roadmap_fit_</code>, or <code>_clickup_card_draft_</code>, with separate deferred/rejected artifacts used only by exception.</div>
+              <span class="tool-tag">artifact naming</span>
+              <div class="accordion guide-accordion" id="phase0-step3-accordion">
+                <button class="accordion-toggle" type="button" onclick="toggleAccordion('phase0-step3-accordion', 'phase0-step3-panel')">
+                  <span class="accordion-label">
+                    <span class="accordion-title">How To Run Step 3</span>
+                    <span class="accordion-sub">Pick the output before running the analysis so CodeX writes predictable artifacts.</span>
+                  </span>
+                  <span class="accordion-chevron">&#9654;</span>
+                </button>
+                <div class="ref-panel" id="phase0-step3-panel">
+                  <table>
+                    <thead>
+                      <tr><th>Artifact need</th><th>Use this naming pattern</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>Transcript cleanup</td><td><code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_cleaned_YYYY_MM_DD.txt</code></td></tr>
+                      <tr><td>Transcript analysis</td><td><code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_analysis_YYYY_MM_DD.md</code></td></tr>
+                      <tr><td>General source analysis</td><td><code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_source_analysis_YYYY_MM_DD.md</code></td></tr>
+                      <tr><td>GitHub repo assessment</td><td><code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_github_repo_assessment_YYYY_MM_DD.md</code></td></tr>
+                      <tr><td>Domain analysis</td><td><code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_domain_analysis_YYYY_MM_DD.md</code></td></tr>
+                      <tr><td>Domain applicability</td><td><code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_domain_applicability_YYYY_MM_DD.md</code></td></tr>
+                      <tr><td>Workflow analysis</td><td><code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_workflow_analysis_YYYY_MM_DD.md</code></td></tr>
+                      <tr><td>Workflow applicability</td><td><code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_workflow_applicability_YYYY_MM_DD.md</code></td></tr>
+                      <tr><td>Requirement triage</td><td><code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_requirement_triage_YYYY_MM_DD.md</code></td></tr>
+                      <tr><td>Repo mapping</td><td><code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_repo_mapping_YYYY_MM_DD.md</code></td></tr>
+                      <tr><td>Roadmap fit</td><td><code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_roadmap_fit_YYYY_MM_DD.md</code></td></tr>
+                      <tr><td>Deferred and rejected outcomes</td><td><code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_roadmap_fit_YYYY_MM_DD.md</code> by default; split into exception artifacts only when needed for volume or separate review</td></tr>
+                      <tr><td>ClickUp-ready draft</td><td>Use <code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_clickup_card_draft_YYYY_MM_DD_&lt;identifier&gt;.md</code> for every approved card draft in a run. The identifier is required.</td></tr>
+                    </tbody>
+                  </table>
+                  <div class="callout note">
+                    <div class="callout-icon">&#9670;</div>
+                    <div class="callout-body"><strong>Catalog rule:</strong> Update <code>notes/output_catalog.md</code> after generated research runs that produce durable artifacts. Keep entries concise and referential. Use the date of the first durable artifact as the run-folder date and keep later-phase artifacts in that same folder.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-content">
+              <div class="step-title">Confirm boundary rules</div>
+              <div class="step-desc">Research and assessment are not implementation. Do not modify FinOpsAI during mapping unless explicitly asked.</div>
+              <span class="tool-tag">approval gate</span>
+              <div class="accordion guide-accordion" id="phase0-step4-accordion">
+                <button class="accordion-toggle" type="button" onclick="toggleAccordion('phase0-step4-accordion', 'phase0-step4-panel')">
+                  <span class="accordion-label">
+                    <span class="accordion-title">How To Run Step 4</span>
+                    <span class="accordion-sub">Apply the workspace boundary rules before source analysis or repo mapping begins.</span>
+                  </span>
+                  <span class="accordion-chevron">&#9654;</span>
+                </button>
+                <div class="ref-panel" id="phase0-step4-panel">
+                  <table>
+                    <thead>
+                      <tr><th>Boundary</th><th>Instruction</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>Assessment only</td><td>Research and mapping do not modify FinOpsAI unless the user explicitly asks for implementation.</td></tr>
+                      <tr><td>Target repo guidance</td><td>When FinOpsAI mapping is needed, read <code>/Users/Sites/Repo-FinOpsAI/AGENTS.md</code> first.</td></tr>
+                      <tr><td>Accounting controls</td><td>Preserve deterministic validation, review, approval, posting, credential, dependency, privacy, and testing constraints.</td></tr>
+                      <tr><td>External access</td><td>Use CodeX by default. Use network, browser, Git tooling, or ClickUp only when that tool owns the action and access is approved.</td></tr>
+                      <tr><td>Evidence gaps</td><td>If source or repo evidence is insufficient, state the gap instead of guessing.</td></tr>
+                      <tr><td>Card drafting</td><td>Research output creates card candidates only. Generate ClickUp-ready drafts only after the card-candidate gate passes.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+            <div class="callout gate" style="margin-top:1rem;">
+                <div class="callout-icon">&#9670;</div>
+                <div class="callout-body"><strong>Step 1 pass gate:</strong> The source is registered, the lane is selected, the expected artifact is known, and boundary rules are clear. If any of those are missing, pause and clarify before moving to Step 2.</div>
+              </div> 
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="step" style="margin-top:1.5rem; padding-top:14px; border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+        <div class="step-num" style="margin-top:2rem;">2</div>
+        <div class="step-content">
+          <div class="accordion guide-accordion" id="phase1-analysis-accordion" style="margin-top:1rem;">
+            <button class="accordion-toggle" type="button" onclick="toggleAccordion('phase1-analysis-accordion', 'phase1-analysis-panel')">
+              <span class="accordion-label">
+                <span class="accordion-title">Analysis</span>
+                <span class="accordion-sub">Expand to view analysis guidance, operating rules, and all lane-specific analysis paths.</span>
+              </span>
+              <span class="accordion-chevron">&#9654;</span>
+            </button>
+            <div class="ref-panel" id="phase1-analysis-panel">
+              <div class="callout note">
+                <div class="callout-icon">&#9670;</div>
+                <div class="callout-body"><strong>Purpose &amp; scope:</strong> Phase 1 Step 2 produces the source-facing analysis artifact for the selected lane. It includes transcript cleanup plus analysis when applicable, repo/source assessment, requirement triage, domain review, or workflow analysis. It does not decide FinOpsAI mapping by default, assign roadmap-fit status, or generate backlog/task-card artifacts unless a later phase explicitly runs.</div>
+              </div>
+              <div class="callout guide" style="margin-bottom:2rem;">
+                <div class="callout-icon">&#9670;</div>
+                <div class="callout-body"><strong>Implemented rule:</strong> Produce lane-specific source analysis before deciding whether FinOpsAI mapping is needed.</div>
+              </div>
+              <div class="matrix phase1-lanes">
+        <div class="matrix-card">
+          <div class="matrix-title">Lane 1: YouTube Transcript</div>
+          <p>Clean first, then analyze. Preserve source files and timestamps unless explicitly changed. Afterward, check if the content or topic will require running one of the other lanes.</p>
+          <div class="accordion guide-accordion" id="lane-transcript-accordion">
+            <button class="accordion-toggle" type="button" onclick="toggleAccordion('lane-transcript-accordion', 'lane-transcript-panel')">
+              <span class="accordion-label">
+                <span class="accordion-title">How To Run This Lane</span>
+                <span class="accordion-sub">Use the transcript pipeline, then decide whether mapping is needed.</span>
+              </span>
+              <span class="accordion-chevron">&#9654;</span>
+            </button>
+            <div class="ref-panel" id="lane-transcript-panel">
+              <div class="lane-prompt">Follow RESEARCH_WORKFLOW_USAGE.md and PIPELINE_USAGE.md.
+
+Phase 1 Step 2: Complete intake and routing before proceeding.
+Lane: YouTube Transcript
+                  
+Source:
+&lt;YouTube URL, .vtt file, or raw transcript path&gt;
+
+Instructions:
+1. Validate the YouTube URL before acquisition.
+2. If acquisition is needed, use the transcript pipeline and preserve source files in input/.
+3. Clean the transcript without summarizing or analyzing during cleanup.
+4. Preserve timestamps unless I explicitly ask to remove them.
+5. Create the run folder as output/&lt;name&gt;_YYYY_MM_DD/.
+6. Save the cleaned transcript using output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_cleaned_YYYY_MM_DD.txt.
+7. Generate the transcript analysis report using output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_analysis_YYYY_MM_DD.md.
+8. Update notes/output_catalog.md with concise metadata.
+9. Check whether the source or cleaned transcript includes a concrete repository reference. If one is detected, record it as cited context, do not inspect the referenced repo during Phase A, and notify the user that a repo reference was detected.
+10. After completing the cleaned transcript, analysis report, and catalog update, recommend whether the next step should be FinOpsAI repo mapping, GitHub repo assessment, ClickUp card-candidate drafting, or no further action yet.
+11. Ask before running FinOpsAI repo mapping, GitHub repo assessment, or ClickUp card-candidate drafting.</div>
+            </div>
+          </div>
+        </div>
+        <div class="matrix-card">
+          <div class="matrix-title">Lane 2: GitHub repo assessment</div>
+          <p>Assess architecture, patterns, dependencies, tests, docs, and license/security concerns before mapping.</p>
+          <div class="accordion guide-accordion" id="lane-github-accordion">
+            <button class="accordion-toggle" type="button" onclick="toggleAccordion('lane-github-accordion', 'lane-github-panel')">
+              <span class="accordion-label">
+                <span class="accordion-title">How To Run This Lane</span>
+                <span class="accordion-sub">Assess an external repo as source material before any FinOpsAI mapping.</span>
+              </span>
+              <span class="accordion-chevron">&#9654;</span>
+            </button>
+            <div class="ref-panel" id="lane-github-panel">
+              <div class="lane-prompt">Follow RESEARCH_WORKFLOW_USAGE.md and PIPELINE_USAGE.md.
+
+Phase 1 Step 2: Complete intake and routing before proceeding.
+Lane: GitHub repo assessment
+
+Source repo:
+&lt;GitHub URL or local clone path&gt;
+
+Assessment question:
+&lt;patterns, architecture, tooling, workflow, tests, AI integration, or other focus&gt;
+
+Instructions:
+1. Record repo source, branch or commit if known, and access needs.
+2. Inspect only the files needed to answer the assessment question.
+3. Identify repo purpose, architecture, reusable patterns, dependencies, tests, docs, and license/security concerns when evidence is available.
+4. Distinguish reusable ideas from code reuse; do not copy code or recommend reuse without explicit review.
+5. Save a GitHub repo assessment artifact using output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_github_repo_assessment_YYYY_MM_DD.md.
+6. Map to FinOpsAI only if requested or clearly useful.</div>
+            </div>
+          </div>
+        </div>
+        <div class="matrix-card">
+          <div class="matrix-title">Lane 3: Product requirement triage</div>
+          <p>Normalize raw Product Owner intent into one work item, or route to design if product definition is incomplete.</p>
+          <div class="accordion guide-accordion" id="lane-requirement-accordion">
+            <button class="accordion-toggle" type="button" onclick="toggleAccordion('lane-requirement-accordion', 'lane-requirement-panel')">
+              <span class="accordion-label">
+                <span class="accordion-title">How To Run This Lane</span>
+                <span class="accordion-sub">Triage a raw request before deciding whether it can become a card candidate.</span>
+              </span>
+              <span class="accordion-chevron">&#9654;</span>
+            </button>
+            <div class="ref-panel" id="lane-requirement-panel">
+              <div class="lane-prompt">Follow RESEARCH_WORKFLOW_USAGE.md and PIPELINE_USAGE.md.
+
+Phase 1 Step 2: Complete intake and routing before proceeding.
+Lane: Product requirement triage
+
+Raw requirement:
+&lt;Product Owner request, stakeholder request, feature idea, or workflow pain point&gt;
+
+Instructions:
+1. Identify the core requirement, expected outcome, user/business context, and affected FinOpsAI area.
+2. Determine whether this is one primary work item or must be split.
+3. Identify known in-scope and out-of-scope boundaries.
+4. Decide whether Product Design Workflow is required before Product Development.
+5. Produce a requirement triage artifact using output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_requirement_triage_YYYY_MM_DD.md.
+6. Do not draft a ClickUp-ready card unless the card-candidate gate and FinOpsAI task-card gates can pass.</div>
+            </div>
+          </div>
+        </div>
+        <div class="matrix-card">
+          <div class="matrix-title">Lane 4: Accounting domain review</div>
+          <p>Capture jurisdiction, user profile, domain reliability, compliance caveats, and product relevance.</p>
+          <div class="accordion guide-accordion" id="lane-domain-accordion">
+            <button class="accordion-toggle" type="button" onclick="toggleAccordion('lane-domain-accordion', 'lane-domain-panel')">
+              <span class="accordion-label">
+                <span class="accordion-title">How To Run This Lane</span>
+                <span class="accordion-sub">Review accounting and bookkeeping content without turning education into implementation.</span>
+              </span>
+              <span class="accordion-chevron">&#9654;</span>
+            </button>
+            <div class="ref-panel" id="lane-domain-panel">
+              <div class="lane-prompt">Follow RESEARCH_WORKFLOW_USAGE.md and PIPELINE_USAGE.md.
+
+Phase 1 Step 2: Complete intake and routing before proceeding.
+Lane: Accounting domain review
+
+Domain source:
+&lt;article, transcript, guidance, SOP, notes, or documentation&gt;
+
+Domain focus:
+&lt;accounting, bookkeeping, tax, reconciliation, reporting, compliance, advisory, or finance operations&gt;
+
+Instructions:
+1. Identify source type, domain area, jurisdiction if relevant, intended user profile, and reliability caveats.
+2. Separate domain education from product feature ideas.
+3. Identify compliance, auditability, review, and roadmap risks.
+4. Map only high-confidence product-relevant ideas to FinOpsAI.
+5. Do not convert tax, compliance, or accounting advice into implementation tasks without human approval and appropriate professional review.
+6. Save a domain analysis, domain applicability, or repo mapping artifact using output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_domain_analysis_YYYY_MM_DD.md, output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_domain_applicability_YYYY_MM_DD.md, or output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_repo_mapping_YYYY_MM_DD.md.</div>
+            </div>
+          </div>
+        </div>
+        <div class="matrix-card">
+          <div class="matrix-title">Lane 5: Product workflow analysis</div>
+          <p>Separate process changes from product features and identify whether the idea affects human or agentic workflows.</p>
+          <div class="accordion guide-accordion" id="lane-workflow-accordion">
+            <button class="accordion-toggle" type="button" onclick="toggleAccordion('lane-workflow-accordion', 'lane-workflow-panel')">
+              <span class="accordion-label">
+                <span class="accordion-title">How To Run This Lane</span>
+                <span class="accordion-sub">Assess process and delivery material before changing Product Owner workflow.</span>
+              </span>
+              <span class="accordion-chevron">&#9654;</span>
+            </button>
+            <div class="ref-panel" id="lane-workflow-panel">
+              <div class="lane-prompt">Follow RESEARCH_WORKFLOW_USAGE.md and PIPELINE_USAGE.md.
+
+Phase 1 Step 2: Complete intake and routing before proceeding.
+Lane: Product workflow analysis
+
+Workflow source:
+&lt;process article, transcript, prompt, delivery practice, QA practice, backlog refinement material, or agentic workflow source&gt;
+
+Instructions:
+1. Identify whether the idea affects the current human workflow, future agent-assisted workflow, or both.
+2. Separate process improvements from product features.
+3. Classify possible outputs as docs, process, harness tooling, prompt updates, QA gates, or deferred notes.
+4. Compare against FinOpsAI Product Design and Product Development workflow docs when relevant.
+5. Do not change ClickUp workflow, prompts, QA gates, or operating model without process owner approval.
+6. Save a workflow analysis, workflow applicability, or repo mapping artifact using output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_workflow_analysis_YYYY_MM_DD.md, output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_workflow_applicability_YYYY_MM_DD.md, or output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_repo_mapping_YYYY_MM_DD.md.</div>
+            </div>
+          </div>
+        </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+        
+        
+              <div class="callout gate" style="margin-top:1rem;">
+                <div class="callout-icon">&#9670;</div>
+                <div class="callout-body">
+                  <strong>Phase 1 exit gate:</strong> Before proceeding, confirm the lane run is complete and recorded.
+                  <div class="gate-checks">
+                    <span>Lane artifact saved with the expected naming pattern</span>
+                    <span>Source summary, caveats, and confidence captured in the lane artifact and Phase 1 completion display</span>
+                    <span>Cross-lane signal detection completed and any approved secondary lane runs finished</span>
+                    <span>Generated file paths and verification notes added to <code>notes/output_catalog.md</code></span>
+                    <span>FinOpsAI mapping decision recorded: proceed to Phase 2 or stop at catalog-only</span>
+                  </div>
+                  <p style="margin:12px 0 0;">Before entering Phase 2, present the Phase 1 completion output in the chat and make the proceed-or-stop recommendation explicit.</p>
+                  <div class="lane-prompt" style="margin-top:12px;">Phase 1 completion chat template:
+
+Phase 1 Completion
+- Summary: &lt;concise source-analysis summary&gt;
+- Phase 2 Decision Takeaways: &lt;why to proceed or stop&gt;
+- Generated Artifacts: &lt;durable artifact path(s)&gt;
+- Cross-Lane Signals: &lt;flagged lanes with rationale and confidence, or "No cross-lane signals detected — check performed"&gt;
+- Proceed / Stop Recommendation: &lt;proceed to next Phase 2 workflow OR stop at catalog-only, with reason&gt;
+- Recommended Next Action: &lt;Phase 2 mapping, another workflow, or stop&gt;
+- Verification Notes: &lt;source validation, catalog status, and other brief checks&gt;</div>
+                  <p style="margin:12px 0 0;">If the recommendation is <code>stop at catalog-only closure</code> and the human accepts it, the next chat-visible step must be the explicit run-closure prompt for end-of-run summary approval. Do not end the run from the Phase 1 completion display alone.</p>
+                  <a class="inline-reference" href="#lane-phase-map-accordion" onclick="openLanePhaseMap(event)">Open Lane To Phase Map</a>
+                </div>
+              </div>
+  </div>
+</div>
+
+  <div class="connector">&darr;</div>
+
+  <div class="callout gate" style="margin:0;">
+    <div class="callout-body">
+      <strong>Decision: FinOpsAI mapping needed?</strong>
+      <div class="decision-strip" style="margin:12px 0 0; grid-template-columns: 3fr 1fr;">
+        <div class="decision-card good with-accordion">
+          <div class="accordion guide-accordion" id="phase2-decision-accordion">
+            <button class="accordion-toggle" type="button" onclick="toggleAccordion('phase2-decision-accordion', 'phase2-decision-panel')">
+              <span class="accordion-label">
+                <span class="accordion-title">Yes &rarr; Proceed To Phase 2 Mapping</span>
+                <span class="accordion-sub">Open decision guidance for when the Phase 2 path is justified.</span>
+              </span>
+              <span class="accordion-chevron">&#9654;</span>
+            </button>
+            <div class="ref-panel" id="phase2-decision-panel">
+              <div class="guide-list">
+                <div class="guide-step">
+                  <div class="guide-step-title">Run Phase 2 when</div>
+                  <p>The lane output contains candidate ideas that may affect FinOpsAI product behavior, repo architecture, engineering workflow, prompts, testing, documentation, or ClickUp backlog decisions.</p>
+                </div>
+                <div class="guide-step">
+                  <div class="guide-step-title">Skip Phase 2 when</div>
+                  <p>The request was transcript-only cleanup, source-only analysis, general education capture, a non-FinOpsAI comparison, or a weak/speculative source with no actionable mapping value.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="decision-card bad">
+          <div class="decision-title">No &rarr; Stop</div>
+          <div class="accordion guide-accordion" id="phase2-stop-notes-accordion" style="margin-top:8px;">
+            <button class="accordion-toggle" type="button" onclick="toggleAccordion('phase2-stop-notes-accordion', 'phase2-stop-notes-panel')">
+              <span class="accordion-label">
+                <span class="accordion-title">See Exit Note</span>
+              </span>
+              <span class="accordion-chevron">&#9654;</span>
+            </button>
+            <div class="ref-panel" id="phase2-stop-notes-panel">
+              <p style="margin:0;">No Phase 2. If the human accepts the stop recommendation, do not treat that acceptance as completed closure. First ask for approval to write the end-of-run summary, then write <code>output/&lt;n&gt;_YYYY_MM_DD/&lt;n&gt;_run_summary_YYYY_MM_DD.md</code>, update <code>notes/output_catalog.md</code>, and only then perform the End-of-Run Retrospective Check and update <code>notes/lessons_learned.md</code> when a reusable workflow lesson was exposed.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector" style="margin-top:1rem;">&darr;</div>
+
+  <div class="phase" id="ph3">
+    <div class="phase-header" onclick="toggle('ph3')">
+      <span class="phase-badge">Phase 2</span>
+      <span class="phase-title">Map To FinOpsAI Applicability</span>
+      <span class="phase-count">9 categories</span>
+      <span class="phase-chevron">&#9654;</span>
+    </div>
+    <div class="phase-body">
+      <div class="callout note">
+        <div class="callout-icon">&#9670;</div>
+        <div class="callout-body"><strong>Purpose &amp; scope:</strong> Phase 2 evaluates whether lane output should influence FinOpsAI product, workflow, tooling, testing, documentation, or architecture decisions. It includes targeted repo evidence review, applicability classification, and roadmap-fit assignment. It does not approve work for implementation, request task-card generation, or bypass evidence gaps with speculation.</div>
+      </div>
+      <div class="callout gate" style="margin-top:0;">
+        <div class="callout-icon">&#9670;</div>
+        <div class="callout-body">
+          <strong>Conditional phase:</strong> Enter this phase only after the mapping decision is <strong>Yes</strong>. Some source runs stop after lane-specific analysis, requirement triage, domain review, workflow review, or catalog update.
+          <div class="gate-checks">
+            <span>Decision support lives in the Yes path above</span>
+            <span>This block is the Phase 2 entry reminder</span>
+            <span>Ask before mapping if unclear</span>
+          </div>
+          <a class="inline-reference" href="#lane-phase-map-accordion" onclick="openLanePhaseMap(event)">Open Lane To Phase Map</a>
+        </div>
+      </div>
+      <div class="callout note">
+        <div class="callout-icon">&#9670;</div>
+        <div class="callout-body"><strong>Repo rule:</strong> Read FinOpsAI <code>AGENTS.md</code> first. Treat mapping as read-only unless implementation is explicitly requested.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Inspect only relevant repo evidence</div>
+          <div class="step-desc">Use FinOpsAI docs, specs, architecture boundaries, tests, and source modules only as needed to evaluate the source idea.</div>
+          <span class="tool-tag">Repo-FinOpsAI</span>
+          <div class="accordion guide-accordion" id="phase2-step1-accordion">
+            <button class="accordion-toggle" type="button" onclick="toggleAccordion('phase2-step1-accordion', 'phase2-step1-panel')">
+              <span class="accordion-label">
+                <span class="accordion-title">How To Run Step 1</span>
+                <span class="accordion-sub">Read target repo guidance first, then inspect only evidence needed for the mapping question.</span>
+              </span>
+              <span class="accordion-chevron">&#9654;</span>
+            </button>
+            <div class="ref-panel" id="phase2-step1-panel">
+              <div class="guide-list" style="margin-top:12px;">
+                <div class="guide-step">
+                  <div class="guide-step-title">Run Phase-Step Verification First</div>
+                  <p>Before running prompts, verify the workflow is at this exact phase and step.</p>
+                  <table>
+                    <thead>
+                      <tr><th>Order</th><th>Verification</th><th>Fail action</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>1</td><td>Confirm current phase and step match this panel</td><td>If mismatched, stop and return to the correct phase/step.</td></tr>
+                      <tr><td>2</td><td>Confirm required prior gates or decisions are completed</td><td>If any prerequisite is missing, stop and complete it before continuing.</td></tr>
+                      <tr><td>3</td><td>Confirm progress-tracker state before this step</td><td>If tracker state is missing or stale, stop and update the tracker before continuing.</td></tr>
+                      <tr><td>4</td><td>Confirm target artifact path and identifier when applicable</td><td>If target is unclear or conflicts, stop and clarify before running prompts.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="lane-prompt" style="margin-bottom:2rem;">Run combined phase-step verification prompt:
+
+Before Phase 2 Step 1 repo-evidence work, verify all four checks and return a structured gate result:
+1. Current phase and step match Phase 2 Step 1.
+2. Required prior gates or decisions are complete.
+3. Progress-tracker state is present and current for this step.
+4. Target artifact path and identifier are confirmed when applicable.
+
+Return exactly one line per check in this format:
+- Check 1: PASS|FAIL - &lt;concise reason&gt;
+- Check 2: PASS|FAIL - &lt;concise reason&gt;
+- Check 3: PASS|FAIL - &lt;concise reason&gt;
+- Check 4: PASS|FAIL - &lt;concise reason or "N/A - no target artifact required yet"&gt;
+
+Then return:
+- Overall: PASS|FAIL
+- Next action: &lt;proceed to repo-evidence actions OR stop with the blocking item(s)&gt;
+
+If any check fails, stop and report only the blocking item(s). Do not start repo-evidence actions.</div>
+                <div class="lane-prompt" style="margin-bottom:2rem;">Chat output template:
+
+Phase 2 Step 1 Gate Result
+- Check 1: PASS|FAIL - &lt;concise reason&gt;
+- Check 2: PASS|FAIL - &lt;concise reason&gt;
+- Check 3: PASS|FAIL - &lt;concise reason&gt;
+- Check 4: PASS|FAIL - &lt;concise reason or "N/A - no target artifact required yet"&gt;
+- Overall: PASS|FAIL
+- Next action: &lt;proceed to repo-evidence actions OR stop with the blocking item(s)&gt;</div>
+                <div class="guide-step">
+                  <div class="guide-step-title">Run Repo-Evidence Actions First</div>
+                  <p>Execute these actions in order before classification or roadmap-fit status assignment.</p>
+                  <table>
+                    <thead>
+                      <tr><th>Order</th><th>Action</th><th>Fail action</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>1</td><td>Run repo-guidance read prompt</td><td>If repo guidance cannot be established, stop and record the evidence gap.</td></tr>
+                      <tr><td>2</td><td>Run scoped repo-evidence prompt</td><td>If relevant evidence is missing, stop and report what evidence is needed.</td></tr>
+                      <tr><td>3</td><td>Run mapping-boundary confirmation prompt</td><td>If read-only boundary or constraints are violated, stop and correct before continuing.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="lane-prompt">Run repo-guidance read prompt:
+
+Read /Users/Sites/Repo-FinOpsAI/AGENTS.md first and apply nested AGENTS.md files if relevant to the mapped idea. Confirm the applicable repo constraints before any mapping claim is made.</div>
+              <div class="lane-prompt">Run scoped repo-evidence prompt:
+
+Inspect only the relevant FinOpsAI docs, specs, source files, tests, and tooling needed for the mapping question. If evidence is insufficient, stop and state the gap instead of guessing.</div>
+              <div class="lane-prompt">Run mapping-boundary confirmation prompt:
+
+Confirm the mapping remains read-only unless implementation is explicitly requested. Preserve deterministic accounting, validation, approval, posting, credential, dependency, privacy, and testing constraints.</div>
+              <div class="guide-step-title" style="margin-top:2rem">Repo-Evidence Checklist Table</div>
+              <p style="margin:0 0 8px;">Use this table to validate Phase 2 Step 1 repo-evidence checks before moving to classification.</p>
+              <table>
+                <thead>
+                  <tr><th>Action</th><th>Instruction</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Read repo guidance</td><td>Start with <code>/Users/Sites/Repo-FinOpsAI/AGENTS.md</code>. Apply nested <code>AGENTS.md</code> files if relevant.</td></tr>
+                  <tr><td>Preserve assessment boundary</td><td>Treat mapping as read-only unless the user explicitly asks for implementation.</td></tr>
+                  <tr><td>Scope inspection</td><td>Read only relevant docs, specs, source files, tests, and tooling needed to assess the idea.</td></tr>
+                  <tr><td>Use domain constraints</td><td>Preserve deterministic accounting, review, approval, posting, credential, dependency, privacy, and testing constraints.</td></tr>
+                  <tr><td>Record outcome</td><td>The assessment outcome is written to the output/ directory using the defined naming format.</td></tr>
+                  <tr><td>Record gaps</td><td>If repo evidence is insufficient, state the gap rather than guessing.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Classify applicability</div>
+          <div class="step-desc">Use the implemented categories: product feature, harness/tooling, AI integration, prompting or agent workflow, engineering process, architecture/infrastructure, testing/QA, documentation/spec/product-vault, and non-applicable.</div>
+          <span class="tool-tag">mapping categories</span>
+          <div class="accordion guide-accordion" id="phase2-step2-accordion">
+            <button class="accordion-toggle" type="button" onclick="toggleAccordion('phase2-step2-accordion', 'phase2-step2-panel')">
+              <span class="accordion-label">
+                <span class="accordion-title">How To Run Step 2</span>
+                <span class="accordion-sub">Classify each source idea so product, process, AI, architecture, and test work do not collapse together.</span>
+              </span>
+              <span class="accordion-chevron">&#9654;</span>
+            </button>
+            <div class="ref-panel" id="phase2-step2-panel">
+              <div class="guide-list" style="margin-top:12px;">
+                <div class="guide-step">
+                  <div class="guide-step-title">Run Phase-Step Verification First</div>
+                  <p>Before running prompts, verify the workflow is at this exact phase and step.</p>
+                  <table>
+                    <thead>
+                      <tr><th>Order</th><th>Verification</th><th>Fail action</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>1</td><td>Confirm current phase and step match this panel</td><td>If mismatched, stop and return to the correct phase/step.</td></tr>
+                      <tr><td>2</td><td>Confirm required prior gates or decisions are completed</td><td>If any prerequisite is missing, stop and complete it before continuing.</td></tr>
+                      <tr><td>3</td><td>Confirm progress-tracker state before this step</td><td>If tracker state is missing or stale, stop and update the tracker before continuing.</td></tr>
+                      <tr><td>4</td><td>Confirm target artifact path and identifier when applicable</td><td>If target is unclear or conflicts, stop and clarify before running prompts.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="guide-step">
+                  <div class="guide-step-title">Run Classification Actions First</div>
+                  <p>Execute these actions in order before roadmap-fit status assignment.</p>
+                  <table>
+                    <thead>
+                      <tr><th>Order</th><th>Action</th><th>Fail action</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>1</td><td>Run category-selection prompt</td><td>If category assignment is unclear, stop and request clarifying evidence.</td></tr>
+                      <tr><td>2</td><td>Run evidence-linking prompt</td><td>If source or FinOpsAI evidence is missing, stop and record evidence gaps.</td></tr>
+                      <tr><td>3</td><td>Run classification-boundary prompt</td><td>If categories collapse together, reclassify before continuing.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="lane-prompt">Run category-selection prompt:
+
+Classify each mapped idea using the repo-mapping categories from RESEARCH_WORKFLOW_USAGE.md: product feature, harness/workflow tooling, AI integration, prompting/agent workflow, engineering process, architecture/infrastructure, testing/QA/evaluation, docs/spec/product-vault, or non-applicable.</div>
+              <div class="lane-prompt">Run evidence-linking prompt:
+
+For every applicable category, record source idea, source evidence, FinOpsAI evidence, applicability level, required change type, risk, and recommended next artifact. If evidence is insufficient, stop and state the gap instead of guessing.</div>
+              <div class="lane-prompt">Run classification-boundary prompt:
+
+Confirm categories remain separate: do not collapse product, process/workflow, tooling, AI, architecture, testing, docs/spec, and non-applicable streams. Treat AI/model ideas as advisory unless deterministic safeguards are defined.</div>
+              <div class="lane-prompt" style="margin-bottom:2rem;">Chat output template:
+
+Phase 2 Classification Summary
+- Immediate fits: &lt;concise list or "none"&gt;
+- Process-change fits: &lt;concise list or "none"&gt;
+- Architecture/design-dependent fits: &lt;concise list or "none"&gt;
+- Rejected or poor-fit ideas: &lt;concise list or "none"&gt;</div>
+              <div class="guide-step-title" style="margin-top:2rem">Classification Checklist Table</div>
+              <p style="margin:0 0 8px;">Use this table to validate Phase 2 Step 2 category classification before assigning roadmap-fit status.</p>
+              <table>
+                <thead>
+                  <tr><th>Category</th><th>Use when the idea affects</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Product feature</td><td>User-visible FinOpsAI behavior, workflow, reporting, ingestion, review, or posting capability.</td></tr>
+                  <tr><td>Harness or workflow tooling</td><td>Research harness, local tools, scripts, runbooks, catalogs, or operational workflow mechanics.</td></tr>
+                  <tr><td>AI integration</td><td>Model-assisted product behavior, LLM signals, local model tooling, or AI review support.</td></tr>
+                  <tr><td>Prompting or agent workflow</td><td>Reusable prompts, agent operating instructions, CodeX usage patterns, or review-agent behavior.</td></tr>
+                  <tr><td>Engineering process</td><td>Coding practice, review policy, dependency discipline, documentation discipline, or development workflow.</td></tr>
+                  <tr><td>Architecture or infrastructure</td><td>Layering, persistence, external services, source ingestion architecture, packaging, or major dependency changes.</td></tr>
+                  <tr><td>Testing, QA, or evaluation</td><td>Regression tests, validation gates, QA plans, evaluation harnesses, or source-code checks.</td></tr>
+                  <tr><td>Docs/spec/product-vault</td><td>Product specs, engineering docs, product-vault notes, decision logs, or durable guidance.</td></tr>
+                  <tr><td>Non-applicable</td><td>Poor fit, premature, unsafe, speculative, unsupported, or outside FinOpsAI scope.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Assign roadmap-fit status</div>
+          <div class="step-desc">Use the implemented statuses: Immediate candidate, Needs roadmap approval, Needs product design, Needs architecture design, Needs process approval, Research backlog, Deferred, or Rejected.</div>
+          <span class="tool-tag">roadmap fit</span>
+          <div class="accordion guide-accordion" id="phase2-step3-accordion">
+            <button class="accordion-toggle" type="button" onclick="toggleAccordion('phase2-step3-accordion', 'phase2-step3-panel')">
+              <span class="accordion-label">
+                <span class="accordion-title">How To Run Step 3</span>
+                <span class="accordion-sub">Choose the next workflow state before any ClickUp card-candidate drafting.</span>
+              </span>
+              <span class="accordion-chevron">&#9654;</span>
+            </button>
+            <div class="ref-panel" id="phase2-step3-panel">
+              <div class="guide-list" style="margin-top:12px;">
+                <div class="guide-step">
+                  <div class="guide-step-title">Run Phase-Step Verification First</div>
+                  <p>Before running prompts, verify the workflow is at this exact phase and step.</p>
+                  <table>
+                    <thead>
+                      <tr><th>Order</th><th>Verification</th><th>Fail action</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>1</td><td>Confirm current phase and step match this panel</td><td>If mismatched, stop and return to the correct phase/step.</td></tr>
+                      <tr><td>2</td><td>Confirm required prior gates or decisions are completed</td><td>If any prerequisite is missing, stop and complete it before continuing.</td></tr>
+                      <tr><td>3</td><td>Confirm progress-tracker state before this step</td><td>If tracker state is missing or stale, stop and update the tracker before continuing.</td></tr>
+                      <tr><td>4</td><td>Confirm target artifact path and identifier when applicable</td><td>If target is unclear or conflicts, stop and clarify before running prompts.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="guide-step">
+                  <div class="guide-step-title">Run Roadmap-Status Actions First</div>
+                  <p>Execute these actions in order before moving to Phase 3 human gate.</p>
+                  <table>
+                    <thead>
+                      <tr><th>Order</th><th>Action</th><th>Fail action</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>1</td><td>Run status-assignment prompt</td><td>If status cannot be assigned from evidence, stop and record uncertainty/evidence gaps.</td></tr>
+                      <tr><td>2</td><td>Run status-justification prompt</td><td>If rationale, risk, or next artifact is unclear, stop and refine before continuing.</td></tr>
+                      <tr><td>3</td><td>Run status-boundary prompt</td><td>If status implies unauthorized drafting or implementation, stop and route through the proper gate.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="lane-prompt">Run status-assignment prompt:
+
+Assign one roadmap-fit status to each recommendation using RESEARCH_WORKFLOW_USAGE.md statuses: Immediate candidate, Needs roadmap approval, Needs product design, Needs architecture design, Needs process approval, Research backlog, Deferred, or Rejected.</div>
+              <div class="lane-prompt">Run status-justification prompt:
+
+For each assigned status, explain why it fits, what evidence supports it, what risk remains, and what the next artifact should be. Save/update output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_roadmap_fit_YYYY_MM_DD.md when roadmap-fit is needed.</div>
+              <div class="lane-prompt">Run status-boundary prompt:
+
+For AI/model recommendations, require a design or approval path when ideas could affect accounting authority, validation, approval, posting eligibility, or review gates. Do not permit ClickUp-ready drafting unless status and human approval path explicitly allow it.</div>
+              <div class="guide-step-title" style="margin-top:2rem">Roadmap-Status Checklist Table</div>
+              <p style="margin:0 0 8px;">Use this table to validate Phase 2 Step 3 status assignment before moving to Phase 3.</p>
+              <table>
+                <thead>
+                  <tr><th>Status</th><th>Use when</th><th>Next step</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Immediate candidate</td><td>Clear fit, strong evidence, low ambiguity, and compatible with current architecture and roadmap.</td><td>Ask for human approval for card drafting.</td></tr>
+                  <tr><td>Needs roadmap approval</td><td>Product-relevant but not already established as current priority.</td><td>Product Owner decision.</td></tr>
+                  <tr><td>Needs product design</td><td>Product intent, UX behavior, acceptance outcomes, or scope boundaries are incomplete.</td><td>Product Design Workflow.</td></tr>
+                  <tr><td>Needs architecture design</td><td>Requires structural change, persistence change, external service, major dependency, or new integration pattern.</td><td>Architecture/design assessment.</td></tr>
+                  <tr><td>Needs process approval</td><td>Affects human workflow, ClickUp workflow, prompts, QA gates, or operating model.</td><td>Process owner approval.</td></tr>
+                  <tr><td>Research backlog</td><td>Interesting but not ready for implementation or product commitment.</td><td>Future review item.</td></tr>
+                  <tr><td>Deferred</td><td>Plausible but blocked by timing, missing evidence, roadmap mismatch, or dependency.</td><td>Record in roadmap-fit by default; separate deferred note only by exception.</td></tr>
+                  <tr><td>Rejected</td><td>Poor fit, unsafe, speculative, contradictory, or outside FinOpsAI scope.</td><td>Record in roadmap-fit by default; separate rejected note or catalog-only mention only by exception.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="callout danger">
+        <div class="callout-icon">&#9670;</div>
+        <div class="callout-body"><strong>Do not collapse categories:</strong> Keep product features, workflow/process changes, harness/tooling updates, AI integration ideas, architecture changes, testing/QA work, docs/spec updates, and non-applicable items as separate streams.</div>
+      </div>
+      <div class="callout gate" style="margin-top:0;">
+        <div class="callout-icon">&#9670;</div>
+        <div class="callout-body">
+          <strong>Phase 2 pass gate:</strong> Before proceeding, confirm mapping outcomes are complete and decision-ready.
+          <div class="gate-checks">
+            <span>Repo evidence reviewed and mapping remained read-only</span>
+            <span>Applicable ideas classified with source and FinOpsAI evidence</span>
+            <span>Roadmap-fit status assigned and saved to the expected artifact</span>
+            <span>Next path recorded: proceed to Phase 3 for human gate, or stop with catalog-only closure if no actionable recommendation remains</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector">&darr;</div>
+
+  <div class="phase" id="ph4">
+    <div class="phase-header" onclick="toggle('ph4')">
+      <span class="phase-badge">Phase 3</span>
+      <span class="phase-title">Human Roadmap And Workflow Gate</span>
+      <span class="phase-count">approval</span>
+      <span class="phase-chevron">&#9654;</span>
+    </div>
+    <div class="phase-body">
+      <div class="callout note">
+        <div class="callout-icon">&#9670;</div>
+        <div class="callout-body"><strong>Purpose &amp; scope:</strong> Phase 3 converts mapped recommendations into a governed human decision. It includes route selection, design-readiness review, next-artifact selection, and explicit approval recording when one recommendation is authorized for ClickUp-ready drafting. It does not generate the draft itself, merge multiple recommendations into one approval, or replace human routing with automatic backlog creation.</div>
+      </div>
+      <div class="callout gate" style="margin-top:0;">
+        <div class="callout-icon">&#9670;</div>
+        <div class="callout-body">
+          <strong>Conditional phase:</strong> Run this phase only when lane output may influence roadmap, product, domain, workflow, process, or backlog decisions. It is not required for source-only analysis with no FinOpsAI recommendation.
+          <div class="gate-checks">
+            <span>Run after roadmap-fit status</span>
+            <span>Human decision required</span>
+            <span>Card drafting still optional</span>
+          </div>
+          <a class="inline-reference" href="#lane-phase-map-accordion" onclick="openLanePhaseMap(event)">Open Lane To Phase Map</a>
+        </div>
+      </div>
+      <div class="callout gate">
+        <div class="callout-icon">&#9670;</div>
+        <div class="callout-body">
+          <strong>Implemented gate:</strong> Research output creates card candidates, not automatic task cards.
+          <div class="gate-checks">
+            <span>Evidence strong</span>
+            <span>Roadmap-fit assigned</span>
+            <span>One work item</span>
+            <span>Scope bounded</span>
+            <span>Human approved</span>
+          </div>
+          <a class="inline-reference" href="#lane-phase-map-accordion" onclick="openLanePhaseMap(event)">Open Lane To Phase Map</a>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Approve, route, defer, or reject</div>
+          <div class="step-desc">The human chooses whether a mapped idea moves to Product Design, Product Development, process approval, research backlog, roadmap-fit-only deferred or rejected status, or catalog-only record.</div>
+          <span class="tool-tag">Product Owner</span>
+          <div class="accordion guide-accordion" id="phase3-step1-accordion">
+            <button class="accordion-toggle" type="button" onclick="toggleAccordion('phase3-step1-accordion', 'phase3-step1-panel')">
+              <span class="accordion-label">
+                <span class="accordion-title">How To Run Step 1</span>
+                <span class="accordion-sub">Choose the correct route before any card-candidate work begins.</span>
+              </span>
+              <span class="accordion-chevron">&#9654;</span>
+            </button>
+            <div class="ref-panel" id="phase3-step1-panel">
+              <div class="guide-list" style="margin-top:12px;">
+                <div class="guide-step">
+                  <div class="guide-step-title">Run Phase-Step Verification First</div>
+                  <p>Before running prompts, verify the workflow is at this exact phase and step.</p>
+                  <table>
+                    <thead>
+                      <tr><th>Order</th><th>Verification</th><th>Fail action</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>1</td><td>Confirm current phase and step match this panel</td><td>If mismatched, stop and return to the correct phase/step.</td></tr>
+                      <tr><td>2</td><td>Confirm required prior gates or decisions are completed</td><td>If any prerequisite is missing, stop and complete it before continuing.</td></tr>
+                      <tr><td>3</td><td>Confirm progress-tracker state before this step</td><td>If tracker state is missing or stale, stop and update the tracker before continuing.</td></tr>
+                      <tr><td>4</td><td>Confirm target artifact path and identifier when applicable</td><td>If target is unclear or conflicts, stop and clarify before running prompts.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="guide-step">
+                  <div class="guide-step-title">Run Human-Decision Actions First</div>
+                  <p>Execute these actions in order before moving to design readiness or next-artifact selection.</p>
+                  <table>
+                    <thead>
+                      <tr><th>Order</th><th>Action</th><th>Fail action</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>1</td><td>Run route-selection prompt</td><td>If route cannot be determined from evidence, stop and record uncertainty or missing context.</td></tr>
+                      <tr><td>2</td><td>Run route-justification prompt</td><td>If rationale or risk is unclear, stop and refine before continuing.</td></tr>
+                      <tr><td>3</td><td>Run route-boundary prompt</td><td>If route implies unauthorized drafting, stop and return to the proper gate/approval step.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="lane-prompt">Run route-selection prompt:
+
+Using lane output, repo mapping, and roadmap-fit status, select one route: Product Design, Product Development, process approval, research backlog, deferred in roadmap-fit, rejected in roadmap-fit/catalog-only, or catalog-only when no FinOpsAI recommendation is warranted.</div>
+              <div class="lane-prompt">Run route-justification prompt:
+
+Explain why the selected route is correct, including source/repo evidence, residual risk, and next artifact. Record deferred and rejected outcomes in output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_roadmap_fit_YYYY_MM_DD.md by default; use exception artifacts only when justified.</div>
+              <div class="lane-prompt">Run route-boundary prompt:
+
+Confirm this step does not draft a ClickUp-ready card. If the route is immediate candidate, require explicit human approval before any Phase 4 card drafting.</div>
+              <div class="lane-prompt" style="margin-bottom:2rem;">Chat output template:
+
+Route Result
+- Selected route: &lt;Product Design | Product Development | Process approval | Research backlog | Deferred | Rejected | Catalog-only&gt;
+- Recommendation set covered: &lt;exact recommendation(s) or "none"&gt;
+- Why this route is correct: &lt;one concise rationale&gt;
+- Card drafting status: &lt;blocked pending approval OR not applicable OR may continue toward Phase 4&gt;</div>
+              <div class="guide-step-title" style="margin-top:2rem">Route-Decision Checklist Table</div>
+              <p style="margin:0 0 8px;">Use this table to validate Phase 3 Step 1 route selection before continuing.</p>
+              <table>
+                <thead>
+                  <tr><th>Decision</th><th>Use when</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Product Design</td><td>Product intent, UX behavior, acceptance outcomes, scope, or user value needs definition.</td></tr>
+                  <tr><td>Product Development</td><td>The recommendation is implementation-ready enough to become a governed work item after card gates.</td></tr>
+                  <tr><td>Process approval</td><td>The idea affects ClickUp workflow, CodeX workflow, prompts, QA gates, or operating model.</td></tr>
+                  <tr><td>Research backlog</td><td>The idea is useful but not ready for product, process, or implementation commitment.</td></tr>
+                  <tr><td>Deferred in roadmap-fit</td><td>The idea is plausible but blocked by timing, evidence, roadmap, dependency, or professional-review concerns.</td></tr>
+                  <tr><td>Rejected in roadmap-fit or catalog-only</td><td>The idea is poor fit, unsafe, speculative, outside scope, or source-only.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Decide design readiness</div>
+          <div class="step-desc">If product intent, UX behavior, acceptance outcomes, or scope is incomplete, route through the Product Design Workflow before card finalization.</div>
+          <span class="tool-tag">Design Workflow</span>
+          <div class="accordion guide-accordion" id="phase3-step2-accordion">
+            <button class="accordion-toggle" type="button" onclick="toggleAccordion('phase3-step2-accordion', 'phase3-step2-panel')">
+              <span class="accordion-label">
+                <span class="accordion-title">How To Run Step 2</span>
+                <span class="accordion-sub">Decide whether product design must happen before development preparation.</span>
+              </span>
+              <span class="accordion-chevron">&#9654;</span>
+            </button>
+            <div class="ref-panel" id="phase3-step2-panel">
+              <div class="guide-list" style="margin-top:12px;">
+                <div class="guide-step">
+                  <div class="guide-step-title">Run Phase-Step Verification First</div>
+                  <p>Before running prompts, verify the workflow is at this exact phase and step.</p>
+                  <table>
+                    <thead>
+                      <tr><th>Order</th><th>Verification</th><th>Fail action</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>1</td><td>Confirm current phase and step match this panel</td><td>If mismatched, stop and return to the correct phase/step.</td></tr>
+                      <tr><td>2</td><td>Confirm required prior gates or decisions are completed</td><td>If any prerequisite is missing, stop and complete it before continuing.</td></tr>
+                      <tr><td>3</td><td>Confirm progress-tracker state before this step</td><td>If tracker state is missing or stale, stop and update the tracker before continuing.</td></tr>
+                      <tr><td>4</td><td>Confirm target artifact path and identifier when applicable</td><td>If target is unclear or conflicts, stop and clarify before running prompts.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="guide-step">
+                  <div class="guide-step-title">Run Design-Readiness Actions First</div>
+                  <p>Execute these actions in order before next-artifact selection.</p>
+                  <table>
+                    <thead>
+                      <tr><th>Order</th><th>Action</th><th>Fail action</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>1</td><td>Run design-readiness check prompt</td><td>If readiness is unclear, stop and record missing product-definition requirements.</td></tr>
+                      <tr><td>2</td><td>Run design-route decision prompt</td><td>If Product Design route is required, stop downstream drafting and record design route.</td></tr>
+                      <tr><td>3</td><td>Run design-boundary prompt</td><td>If route/boundary is inconsistent, stop and correct before continuing.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="lane-prompt">Run design-readiness check prompt:
+
+Evaluate design readiness for this recommendation using the FinOpsAI Product Design Workflow. Check product intent, UX behavior, acceptance outcomes, scope boundaries, dependencies, and governing artifact path.</div>
+              <div class="lane-prompt">Run design-route decision prompt:
+
+If any material product definition is missing, route to Product Design Workflow before task-card drafting and record the route in output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_roadmap_fit_YYYY_MM_DD.md or current mapping artifact.</div>
+              <div class="lane-prompt">Run design-boundary prompt:
+
+Confirm design-readiness outcome is consistent with the approved route and does not bypass Phase 3/Phase 4 gating.</div>
+              <div class="lane-prompt" style="margin-bottom:2rem;">Chat output template:
+
+Design Readiness Result
+- Product Design required: Yes|No
+- Rationale: &lt;one concise sentence&gt;
+- Next artifact implication: &lt;design referral, roadmap-fit update, or continue&gt;</div>
+              <div class="guide-step-title" style="margin-top:2rem">Design-Readiness Checklist Table</div>
+              <p style="margin:0 0 8px;">Use this table to validate Phase 3 Step 2 design-readiness before choosing next artifact.</p>
+              <table>
+                <thead>
+                  <tr><th>Check</th><th>Design needed when</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Product intent</td><td>The user outcome, business value, or product behavior is unclear.</td></tr>
+                  <tr><td>UX behavior</td><td>The interaction, review state, screen behavior, or user decision flow is undefined.</td></tr>
+                  <tr><td>Acceptance outcomes</td><td>Success cannot be tested without inventing requirements.</td></tr>
+                  <tr><td>Scope boundary</td><td>In-scope and out-of-scope limits are missing or competing ideas are bundled.</td></tr>
+                  <tr><td>Governing artifact</td><td>No suitable spec path or design candidate exists for the work item.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Choose next artifact</div>
+          <div class="step-desc">Select roadmap-fit assessment, design referral, ClickUp-ready draft, or catalog-only record. Use separate deferred or rejected notes only as exception artifacts.</div>
+          <span class="tool-tag">artifact gate</span>
+          <div class="accordion guide-accordion" id="phase3-step3-accordion">
+            <button class="accordion-toggle" type="button" onclick="toggleAccordion('phase3-step3-accordion', 'phase3-step3-panel')">
+              <span class="accordion-label">
+                <span class="accordion-title">How To Run Step 3</span>
+                <span class="accordion-sub">Pick the artifact that matches the approved route.</span>
+              </span>
+              <span class="accordion-chevron">&#9654;</span>
+            </button>
+            <div class="ref-panel" id="phase3-step3-panel">
+              <div class="guide-list" style="margin-top:12px;">
+                <div class="guide-step">
+                  <div class="guide-step-title">Run Phase-Step Verification First</div>
+                  <p>Before running prompts, verify the workflow is at this exact phase and step.</p>
+                  <table>
+                    <thead>
+                      <tr><th>Order</th><th>Verification</th><th>Fail action</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>1</td><td>Confirm current phase and step match this panel</td><td>If mismatched, stop and return to the correct phase/step.</td></tr>
+                      <tr><td>2</td><td>Confirm required prior gates or decisions are completed</td><td>If any prerequisite is missing, stop and complete it before continuing.</td></tr>
+                      <tr><td>3</td><td>Confirm progress-tracker state before this step</td><td>If tracker state is missing or stale, stop and update the tracker before continuing.</td></tr>
+                      <tr><td>4</td><td>Confirm target artifact path and identifier when applicable</td><td>If target is unclear or conflicts, stop and clarify before running prompts.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="guide-step">
+                  <div class="guide-step-title">Run Next-Artifact Actions First</div>
+                  <p>Execute these actions in order before handing off to Phase 4.</p>
+                  <table>
+                    <thead>
+                      <tr><th>Order</th><th>Action</th><th>Fail action</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>1</td><td>Run route-to-artifact selection prompt</td><td>If route/artifact mapping is unclear, stop and resolve before continuing.</td></tr>
+                      <tr><td>2</td><td>Run next-artifact record prompt</td><td>If next artifact cannot be recorded cleanly, stop and correct artifact routing.</td></tr>
+                      <tr><td>3</td><td>Run approval-contract prompt (immediate candidate only)</td><td>If recommendation or identifier is ambiguous, stop and clarify before Phase 4.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="lane-prompt">Run route-to-artifact selection prompt:
+
+Based on the approved route, choose the next artifact destination. If route is immediate candidate with approval, target Phase 4 using output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_clickup_card_draft_YYYY_MM_DD_&lt;identifier&gt;.md. Otherwise choose design referral, process note, roadmap-fit update, or catalog-only update as appropriate.</div>
+              <div class="lane-prompt">Run next-artifact record prompt:
+
+Record the selected next artifact and rationale. Use separate deferred or rejected notes only as exception artifacts when roadmap-fit cannot carry the needed detail.</div>
+              <div class="lane-prompt">Run approval-contract prompt (immediate candidate only):
+
+Approve the ClickUp-ready card draft target for "&lt;exact recommendation name&gt;" using identifier "&lt;identifier&gt;". This approval applies to one recommendation and one task card only. Record that Phase 4 should run for output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_clickup_card_draft_YYYY_MM_DD_&lt;identifier&gt;.md. Do not draft any other immediate candidate from this approval.</div>
+              <div class="callout note">
+                <div class="callout-icon">&#9670;</div>
+                <div class="callout-body"><strong>Approval contract for Immediate candidate with approval:</strong> one approved recommendation maps to one ClickUp-ready task-card draft. The approval must name the exact recommendation to draft and the exact <code>&lt;identifier&gt;</code> to use in the filename. If either is ambiguous, stop before Phase 4 and clarify. Do not combine multiple recommendations into one card or infer "next" from ordering alone.</div>
+              </div>
+              <div class="callout note">
+                <div class="callout-icon">&#9670;</div>
+                <div class="callout-body"><strong>Loop rule:</strong> One recommendation equals one card artifact. If additional approved recommendations remain, restart at <strong>Phase 3 Step 1</strong> and run Phases 3 and 4 again for the next recommendation with a new identifier.</div>
+              </div>
+              <div class="guide-step-title" style="margin-top:2rem">Next-Artifact Checklist Table</div>
+              <p style="margin:0 0 8px;">Use this table to validate Phase 3 Step 3 artifact routing before Phase 4 handoff.</p>
+              <table>
+                <thead>
+                  <tr><th>If the decision is</th><th>Next artifact</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Immediate candidate with approval</td><td>Phase 4 card-candidate gate using target draft path <code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_clickup_card_draft_YYYY_MM_DD_&lt;identifier&gt;.md</code></td></tr>
+                  <tr><td>Needs product design</td><td>Design referral or Design Specification Candidate path.</td></tr>
+                  <tr><td>Needs architecture design</td><td><code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_roadmap_fit_YYYY_MM_DD.md</code> with architecture/design next step.</td></tr>
+                  <tr><td>Needs process approval</td><td>Workflow applicability artifact or process decision note.</td></tr>
+                  <tr><td>Research backlog</td><td>Research note or catalog entry with future review marker.</td></tr>
+                  <tr><td>Deferred</td><td><code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_roadmap_fit_YYYY_MM_DD.md</code> by default; separate deferred note only by exception</td></tr>
+                  <tr><td>Rejected</td><td><code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_roadmap_fit_YYYY_MM_DD.md</code> by default; separate rejected note or catalog-only mention only by exception.</td></tr>
+                  <tr><td>Source-only</td><td>Catalog-only mention when no FinOpsAI recommendation exists.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="callout gate" style="margin-top:0;">
+        <div class="callout-icon">&#9670;</div>
+        <div class="callout-body"><strong>Phase 3 pass gate:</strong> One next artifact path is selected, the decision route is explicitly recorded, and any required approval details are complete before Phase 4 begins for that selected artifact.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector">&darr;</div>
+
+  <div class="callout gate" style="margin:0;">
+    <div class="callout-body">
+      <strong>Decision: ClickUp card needed and approved?</strong>
+      <div class="decision-strip" style="margin:12px 0 0; grid-template-columns: 3fr 1fr;">
+        <div class="decision-card good">
+          <div class="decision-title">Yes &rarr; Proceed To Phase 4</div>
+          <p>Applicable to single explicitly approved artifact for ClickUp-ready drafting.</p>
+        </div>
+        <div class="decision-card bad">
+          <div class="decision-title">No &rarr; Stop</div>
+          <div class="accordion guide-accordion" id="phase3-stop-notes-accordion" style="margin-top:8px;">
+            <button class="accordion-toggle" type="button" onclick="toggleAccordion('phase3-stop-notes-accordion', 'phase3-stop-notes-panel')">
+              <span class="accordion-label">
+                <span class="accordion-title">See Exit Note</span>
+              </span>
+              <span class="accordion-chevron">&#9654;</span>
+            </button>
+            <div class="ref-panel" id="phase3-stop-notes-panel">
+              <p style="margin:0;">No Phase 4. Before ending the run, first ask for approval to write the end-of-run summary, then write <code>output/&lt;n&gt;_YYYY_MM_DD/&lt;n&gt;_run_summary_YYYY_MM_DD.md</code>, update <code>notes/output_catalog.md</code>, and only then perform the End-of-Run Retrospective Check and update <code>notes/lessons_learned.md</code> when a reusable workflow lesson was exposed.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector" style="margin-top:1rem;">&darr;</div>
+
+  <div class="phase" id="ph5">
+    <div class="phase-header" onclick="toggle('ph5')">
+      <span class="phase-badge">Phase 4</span>
+      <span class="phase-title">Run ClickUp Card-Candidate Gate</span>
+      <span class="phase-count">downstream</span>
+      <span class="phase-chevron">&#9654;</span>
+    </div>
+    <div class="phase-body">
+      <div class="callout note">
+        <div class="callout-icon">&#9670;</div>
+        <div class="callout-body"><strong>Purpose &amp; scope:</strong> Phase 4 executes the post-approval card-candidate workflow for one approved recommendation. It includes readiness verification, approval verification, FinOpsAI task-card gates, collision checks, and generation of one ClickUp-ready draft artifact when all gates pass. It does not request initial approval, broaden scope beyond the approved recommendation, or publish/create the ClickUp card automatically.</div>
+      </div>
+      <div class="callout gate" style="margin-top:0;">
+        <div class="callout-icon">&#9670;</div>
+        <div class="callout-body">
+          <strong>Optional phase:</strong> Run this phase only after human approval to draft ClickUp-ready card content. This phase produces draft content only; publishing or creating the ClickUp card remains a human/tool-owned action.
+          <div class="gate-checks">
+            <span>Human approved</span>
+            <span>One primary task</span>
+            <span>Task-card gates required</span>
+          </div>
+          <a class="inline-reference" href="#lane-phase-map-accordion" onclick="openLanePhaseMap(event)">Open Lane To Phase Map</a>
+        </div>
+      </div>
+      <div class="callout note">
+        <div class="callout-icon">&#9670;</div>
+        <div class="callout-body"><strong>Implemented rule:</strong> Use the ClickUp card-candidate gate in <code>RESEARCH_WORKFLOW_USAGE.md</code>, then apply FinOpsAI's task-card and title guides. The card is the control record; the spec lives in the repo; the execution prompt stays on the card.<br><a class="inline-reference" href="#lane-phase-map-accordion" onclick="openLanePhaseMap(event)">Open Lane To Phase Map</a></div>
+      </div>
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Check candidate readiness</div>
+          <div class="step-desc">Run the readiness check using source artifact, evidence, caveats, FinOpsAI applicability, card-candidate status, one primary task, design-readiness decision, scope boundaries, acceptance criteria, task type, and governing spec path or design route. Confirm that Phase 3 approval already exists for the exact recommendation and identifier, and verify the target draft path does not already exist before writing the card file.</div>
+          <span class="tool-tag">task-card guide</span>
+          <div class="accordion guide-accordion" id="phase4-step1-accordion">
+            <button class="accordion-toggle" type="button" onclick="toggleAccordion('phase4-step1-accordion', 'phase4-step1-panel')">
+              <span class="accordion-label">
+                <span class="accordion-title">How To Run Step 1</span>
+                <span class="accordion-sub">Check the research-to-card readiness conditions before running task-card gates.</span>
+              </span>
+              <span class="accordion-chevron">&#9654;</span>
+            </button>
+            <div class="ref-panel" id="phase4-step1-panel">
+              <div class="guide-list" style="margin-top:12px;">
+                <div class="guide-step">
+                  <div class="guide-step-title">Run Phase-Step Verification First</div>
+                  <p>Before running prompts, verify the workflow is at this exact phase and step.</p>
+                  <table>
+                    <thead>
+                      <tr><th>Order</th><th>Verification</th><th>Fail action</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>1</td><td>Confirm current phase and step match this panel</td><td>If mismatched, stop and return to the correct phase/step.</td></tr>
+                      <tr><td>2</td><td>Confirm required prior gates or decisions are completed</td><td>If any prerequisite is missing, stop and complete it before continuing.</td></tr>
+                      <tr><td>3</td><td>Confirm progress-tracker state before this step</td><td>If tracker state is missing or stale, stop and update the tracker before continuing.</td></tr>
+                      <tr><td>4</td><td>Confirm target artifact path and identifier when applicable</td><td>If target is unclear or conflicts, stop and clarify before running prompts.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="guide-step">
+                  <div class="guide-step-title">Run Check Prompts First</div>
+                  <p>Execute these in order before Step 2 task-card gates.</p>
+                  <table>
+                    <thead>
+                      <tr><th>Order</th><th>Action</th><th>Fail action</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>1</td><td>Run approval prompt</td><td>If approval is missing, ambiguous, or mismatched, stop and return to Phase 3 Step 3.</td></tr>
+                      <tr><td>2</td><td>Run readiness-check prompt</td><td>If readiness issues are raised, stop, refer to the readiness table, and fix issues before continuing.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="lane-prompt">Run approval prompt:
+
+Confirm that approval already exists for "&lt;exact recommendation name&gt;" with identifier "&lt;identifier&gt;". If the approval is missing, ambiguous, or does not match the current target draft, stop and return to Phase 3 Step 3 instead of drafting.</div>
+              <div class="lane-prompt" style="margin-bottom:2rem;">Run readiness-check prompt:
+
+Check whether this recommendation is ready to become a ClickUp-ready card draft. Use the card-candidate gate in RESEARCH_WORKFLOW_USAGE.md. Confirm that Phase 3 approval already exists for one exact recommendation and one exact identifier. If any readiness item is missing, or if that approval record is missing or ambiguous, stop and report what must be fixed before drafting output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_clickup_card_draft_YYYY_MM_DD_&lt;identifier&gt;.md. Before writing the file, verify that the target path does not already exist; if it does, stop and inform the user and recommend reviewing the existing draft or choosing a different identifier.</div>
+              <div class="lane-prompt" style="margin-bottom:2rem;">Chat output template:
+
+Phase 4 Readiness Result
+- Recommendation verified: &lt;exact approved recommendation&gt;
+- Identifier verified: &lt;exact identifier&gt;
+- One-primary-task scope confirmed: Yes|No
+- Collision check passed: Yes|No
+- Next action: &lt;continue to task-card gates OR stop with blocker&gt;</div>
+              <div class="callout note" style="margin-top:0;">
+                <div class="callout-icon">&#9670;</div>
+                <div class="callout-body"><strong>Operator rule:</strong> Print <code>Phase 4 Readiness Result</code> in the chat before drafting begins. Do not rely on the draft artifact to communicate readiness verification after the file is written.</div>
+              </div>
+              <div class="guide-step-title">Readiness Checklist Table</div>
+              <p style="margin:0 0 8px;">Use this table to validate Prompt 2 (Run readiness-check prompt) issue identified.</p>
+              <table>
+                <thead>
+                  <tr><th>Readiness item</th><th>Required condition</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Source artifact</td><td>Durable source analysis, mapping, triage, or applicability artifact exists.</td></tr>
+                  <tr><td>Evidence / caveats / risks</td><td>Source evidence, caveats, and risks are recorded; FinOpsAI applicability is grounded in repo/product evidence.</td></tr>
+                  <tr><td>Card-candidate status</td><td>Roadmap-fit status is <code>Immediate candidate</code> or otherwise eligible for card consideration.</td></tr>
+                  <tr><td>Task shape</td><td>The work is one primary task with clear scope and out-of-scope boundaries.</td></tr>
+                  <tr><td>Design readiness</td><td>Product Design is not needed, or the work is routed there before card finalization.</td></tr>
+                  <tr><td>Acceptance criteria</td><td>Acceptance criteria are writable without inventing missing requirements.</td></tr>
+                  <tr><td>Task type and governing path</td><td>Task type is known and one governing spec path or design route is selected.</td></tr>
+                  <tr><td>Draft authorization</td><td>Human approval is already recorded before Phase 4 begins, and the approval names one exact recommendation and one exact draft filename identifier.</td></tr>
+                  <tr><td>Draft path collision check</td><td>The intended draft path does not already exist; if it does, stop and inform the user instead of overwriting it.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Run FinOpsAI task-card gates</div>
+          <div class="step-desc">Run Request Appropriateness first and Information Sufficiency second. If either fails, do not generate the final card.</div>
+          <span class="tool-tag">ClickUp draft</span>
+          <div class="accordion guide-accordion" id="phase4-step2-accordion">
+            <button class="accordion-toggle" type="button" onclick="toggleAccordion('phase4-step2-accordion', 'phase4-step2-panel')">
+              <span class="accordion-label">
+                <span class="accordion-title">How To Run Step 2</span>
+                <span class="accordion-sub">Apply FinOpsAI's required task-card generation gates in order.</span>
+              </span>
+              <span class="accordion-chevron">&#9654;</span>
+            </button>
+            <div class="ref-panel" id="phase4-step2-panel">
+              <div class="guide-list" style="margin-top:12px;">
+                <div class="guide-step">
+                  <div class="guide-step-title">Run Phase-Step Verification First</div>
+                  <p>Before running prompts, verify the workflow is at this exact phase and step.</p>
+                  <table>
+                    <thead>
+                      <tr><th>Order</th><th>Verification</th><th>Fail action</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>1</td><td>Confirm current phase and step match this panel</td><td>If mismatched, stop and return to the correct phase/step.</td></tr>
+                      <tr><td>2</td><td>Confirm required prior gates or decisions are completed</td><td>If any prerequisite is missing, stop and complete it before continuing.</td></tr>
+                      <tr><td>3</td><td>Confirm progress-tracker state before this step</td><td>If tracker state is missing or stale, stop and update the tracker before continuing.</td></tr>
+                      <tr><td>4</td><td>Confirm target artifact path and identifier when applicable</td><td>If target is unclear or conflicts, stop and clarify before running prompts.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="guide-step">
+                  <div class="guide-step-title">Run Task-Card Gate Checks First</div>
+                  <p>Execute gate checks in this order before any card drafting action.</p>
+                  <table>
+                    <thead>
+                      <tr><th>Order</th><th>Action</th><th>Fail action</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>1</td><td>Run Request Appropriateness</td><td>If it fails, stop. Do not draft.</td></tr>
+                      <tr><td>2</td><td>Run Information Sufficiency</td><td>If it fails, stop. Do not draft.</td></tr>
+                      <tr><td>3</td><td>Confirm both passed</td><td>If either failed, return missing details instead of drafting.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="lane-prompt">Run Request Appropriateness prompt:
+
+Evaluate whether this request is appropriate for ClickUp-ready task-card drafting under /Users/Sites/Repo-FinOpsAI/docs/engineering/task_card_generation_guide.md. If the request is not a valid task-card candidate, stop and explain the correct next action. Do not generate output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_clickup_card_draft_YYYY_MM_DD_&lt;identifier&gt;.md.</div>
+              <div class="lane-prompt">Run Information Sufficiency prompt:
+
+Evaluate whether requirement, outcome, one-primary-task boundary, scope, and behavioral intent are sufficiently defined without inventing requirements. If information is insufficient, stop and list exactly what is missing before drafting.</div>
+              <div class="lane-prompt">Confirm both-pass gate prompt:
+
+Confirm that Request Appropriateness and Information Sufficiency both passed. Enforce delivery boundaries: one primary work item, specification in repo, execution prompt on the card. Only then continue toward drafting output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_clickup_card_draft_YYYY_MM_DD_&lt;identifier&gt;.md.</div>
+              <div class="lane-prompt" style="margin-bottom:2rem;">Chat output template:
+
+Request Check Result
+- PASS|FAIL - &lt;concise reason&gt;
+
+Information Check Result
+- PASS|FAIL - &lt;concise reason&gt;</div>
+              <div class="callout note" style="margin-top:0;">
+                <div class="callout-icon">&#9670;</div>
+                <div class="callout-body"><strong>Operator rule:</strong> Print both gate results in the chat before generating the ClickUp-ready draft. Do not rely on the generated draft artifact to carry the gate outcomes after drafting.</div>
+              </div>
+              <div class="guide-step-title" style="margin-top: 2rem;">Task-Card Gate Checklist Table</div>
+              <p style="margin:0 0 8px;">Use this table to validate Step 2 gate checks and confirm both-pass conditions before drafting.</p>
+              <table>
+                <thead>
+                  <tr><th>Gate</th><th>Pass condition</th><th>Fail action</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Request Appropriateness</td><td>The user is asking for a ClickUp-style task card, task-card example, structured development work item, card refinement, or requirement-to-card conversion.</td><td>Do not generate a card. Explain why and recommend the correct next action.</td></tr>
+                  <tr><td>Information Sufficiency</td><td>Core requirement, intended outcome, one-primary-task boundary, scope, and behavioral intent are sufficient without inventing requirements.</td><td>Do not generate a card. List what information is still needed.</td></tr>
+                  <tr><td>Both must pass</td><td>Request Appropriateness and Information Sufficiency are both passed.</td><td>If either fails, stop and return the failure reason(s) and required fixes.</td></tr>
+                  <tr><td>Delivery boundary</td><td>The card keeps one primary work item; specification stays in repo; execution prompt stays on the card.</td><td>Do not draft until boundaries are corrected.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Draft one primary card only</div>
+          <div class="step-desc">Use the required sections, title pattern, acceptance criteria, constraints, dependencies, and subtasks. Do not merge multiple recommendations into one card.</div>
+          <span class="tool-tag">quality control</span>
+          <div class="accordion guide-accordion" id="phase4-step3-accordion">
+            <button class="accordion-toggle" type="button" onclick="toggleAccordion('phase4-step3-accordion', 'phase4-step3-panel')">
+              <span class="accordion-label">
+                <span class="accordion-title">How To Run Step 3</span>
+                <span class="accordion-sub">Draft the card only after the card-candidate and task-card gates pass.</span>
+              </span>
+              <span class="accordion-chevron">&#9654;</span>
+            </button>
+            <div class="ref-panel" id="phase4-step3-panel">
+              <div class="guide-list" style="margin-top:12px;">
+                <div class="guide-step">
+                  <div class="guide-step-title">Run Phase-Step Verification First</div>
+                  <p>Before running prompts, verify the workflow is at this exact phase and step.</p>
+                  <table>
+                    <thead>
+                      <tr><th>Order</th><th>Verification</th><th>Fail action</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>1</td><td>Confirm current phase and step match this panel</td><td>If mismatched, stop and return to the correct phase/step.</td></tr>
+                      <tr><td>2</td><td>Confirm required prior gates or decisions are completed</td><td>If any prerequisite is missing, stop and complete it before continuing.</td></tr>
+                      <tr><td>3</td><td>Confirm progress-tracker state before this step</td><td>If tracker state is missing or stale, stop and update the tracker before continuing.</td></tr>
+                      <tr><td>4</td><td>Confirm target artifact path and identifier when applicable</td><td>If target is unclear or conflicts, stop and clarify before running prompts.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="guide-step">
+                  <div class="guide-step-title">Run Drafting Actions In Order</div>
+                  <p>Execute these actions in order after Step 1 and Step 2 pass.</p>
+                  <table>
+                    <thead>
+                      <tr><th>Order</th><th>Action</th><th>Fail action</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>1</td><td>Run card-draft generation prompt</td><td>If generation cannot satisfy required sections or one-primary-task rule, stop and return required fixes.</td></tr>
+                      <tr><td>2</td><td>Run draft quality-check prompt</td><td>If required section coverage is incomplete, revise before finalizing the artifact.</td></tr>
+                      <tr><td>3</td><td>Run final draft-record prompt</td><td>If collision/no-overwrite or publish boundary is violated, stop and correct before completion.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="lane-prompt">Run card-draft generation prompt:
+
+Both Step 1 and Step 2 passed. Generate one ClickUp-ready task-card draft using FinOpsAI's task-card generation guide and title guide. Keep it to one primary work item and do not invent requirements. Use the approved identifier and target path output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_clickup_card_draft_YYYY_MM_DD_&lt;identifier&gt;.md. Do not publish/create the ClickUp card.</div>
+              <div class="lane-prompt">Run draft quality-check prompt:
+
+Review the generated draft against required sections: title, requirement/problem statement, expected outcome, scope, acceptance criteria, constraints, dependencies/references, and subtasks. Confirm one governing spec path or design route is present. Confirm <code>Generate Specification</code> and <code>Generate Execution Prompt</code> subtasks are included when applicable.</div>
+              <div class="lane-prompt">Run final draft-record prompt:
+
+Before finalizing, verify collision/no-overwrite behavior and ensure the artifact remains workspace markdown only. If target path already exists, stop and inform the user; recommend reviewing existing draft or approving a different identifier. Record that human publishes/creates the ClickUp card.</div>
+              <div class="guide-step-title" style="margin-top:2rem;">Card Content Checklist Table</div>
+              <p style="margin:0 0 8px;">Use this table to validate Step 3 draft output before Phase 4 exit check.</p>
+              <table>
+                <thead>
+                  <tr><th>Card section</th><th>Requirement</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Title</td><td>Use <code>&lt;type&gt;: &lt;short task summary&gt;</code> with <code>feat</code>, <code>fix</code>, <code>refactor</code>, <code>docs</code>, <code>test</code>, or <code>chore</code>.</td></tr>
+                  <tr><td>Requirement / Problem Statement</td><td>State the work item without inventing unclear requirements.</td></tr>
+                  <tr><td>Expected Outcome</td><td>Describe the desired result and user/business value.</td></tr>
+                  <tr><td>Scope</td><td>Define in-scope and out-of-scope boundaries.</td></tr>
+                  <tr><td>Acceptance Criteria</td><td>Use observable criteria strong enough to constrain later specification work.</td></tr>
+                  <tr><td>Constraints</td><td>Include deterministic accounting, validation, privacy, dependency, review, and workflow constraints where relevant.</td></tr>
+                  <tr><td>Dependencies / References</td><td>Reference source artifacts, repo evidence, specs, docs, and governing paths.</td></tr>
+                  <tr><td>Subtasks</td><td>Include <code>Generate Specification</code> and <code>Generate Execution Prompt</code> when applicable, both tied to one governing artifact.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="callout gate" style="margin-top:0;">
+        <div class="callout-icon">&#9670;</div>
+        <div class="callout-body">
+          <strong>Phase 4 exit check:</strong> ClickUp-ready draft artifact is complete and safely recorded.
+          <div class="gate-checks">
+            <span>Artifact path used: <code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_clickup_card_draft_YYYY_MM_DD_&lt;identifier&gt;.md</code></span>
+            <span>Collision check passed before write; no overwrite was performed</span>
+            <span>Draft content stays in workspace markdown; human publishes/creates the ClickUp card</span>
+            <span><code>Generate Specification</code> and <code>Generate Execution Prompt</code> subtasks included when applicable</span>
+            <span>Roadmap-fit artifact re-opened after the Phase 4 cycle to confirm tracker rows and narrative still agree</span>
+            <span><code>notes/output_catalog.md</code> reflects the final durable artifact set for the completed card cycle</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="connector">&darr;</div>
+  <div class="callout gate" style="margin-top:0;">
+    <div class="callout-body">
+      <strong>Another approved recommendation to process?</strong>
+      <div class="decision-strip" style="margin:12px 0 0; grid-template-columns: 3fr 1fr;">
+        <div class="decision-card good with-accordion">
+          <div class="accordion guide-accordion" id="phase4-repeat-decision-accordion">
+            <button class="accordion-toggle" type="button" onclick="toggleAccordion('phase4-repeat-decision-accordion', 'phase4-repeat-decision-panel')">
+              <span class="accordion-label">
+                <span class="accordion-title">Yes &rarr; Return To Phase 3 Step 1</span>
+                <span class="accordion-sub">Open re-entry guidance for the next approved recommendation cycle.</span>
+              </span>
+              <span class="accordion-chevron">&#9654;</span>
+            </button>
+            <div class="ref-panel" id="phase4-repeat-decision-panel">
+              <div class="guide-list">
+                <div class="guide-step">
+                  <div class="guide-step-title">Re-enter only after updates are complete</div>
+                  <p>Before returning to Phase 3 Step 1, update the workflow progress tracker state for the completed card cycle. Re-open the roadmap-fit artifact and verify tracker rows, route/design status, and surrounding narrative are synchronized.</p>
+                  <p>If roadmap-fit narrative text became stale after drafting, correct it before re-entry. Record any changed artifacts and verification notes before re-entry, including <code>notes/output_catalog.md</code> updates when applicable.</p>
+                  <p>If tracker or record updates are missing, stop and complete them before re-entry.</p>
+                </div>
+                <div class="guide-step">
+                  <div class="guide-step-title">Start the next cycle cleanly</div>
+                  <p>Return to Phase 3 Step 1 with one approved recommendation, use a new identifier, and rerun Phases 3 and 4 for that single recommendation.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="decision-card bad">
+          <div class="decision-title">No &rarr; End Run</div>
+          <div class="accordion guide-accordion" id="phase4-endrun-notes-accordion" style="margin-top:8px;">
+            <button class="accordion-toggle" type="button" onclick="toggleAccordion('phase4-endrun-notes-accordion', 'phase4-endrun-notes-panel')">
+              <span class="accordion-label">
+                <span class="accordion-title">See Exit Note</span>
+              </span>
+              <span class="accordion-chevron">&#9654;</span>
+            </button>
+            <div class="ref-panel" id="phase4-endrun-notes-panel">
+              <p style="margin:0;">No further action required, but before ending the run, first ask for approval to write the end-of-run summary, then write <code>output/&lt;n&gt;_YYYY_MM_DD/&lt;n&gt;_run_summary_YYYY_MM_DD.md</code>, update <code>notes/output_catalog.md</code>, and only then perform the End-of-Run Retrospective Check and update <code>notes/lessons_learned.md</code> when a reusable workflow lesson was exposed.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-break"></div>
+
+  <div class="ref-title">Artifact Model</div>
+  <div class="accordion" id="artifact-model-accordion">
+    <button class="accordion-toggle" type="button" onclick="toggleAccordion('artifact-model-accordion', 'artifact-model-panel')">
+      <span class="accordion-label">
+        <span class="accordion-title">See Artifacts for Details</span>
+        <span class="accordion-sub">Expand to view artifact definitions, routing references, workflow statuses, lane progression, and guardrails for the full research-to-backlog flow.</span>
+      </span>
+      <span class="accordion-chevron">&#9654;</span>
+    </button>
+    <div class="ref-panel" id="artifact-model-panel">
+      <div class="accordion" id="artifact-accordion">
+        <button class="accordion-toggle" type="button" onclick="toggleAccordion('artifact-accordion', 'artifact-panel')">
+          <span class="accordion-label">
+            <span class="accordion-title">Artifact Map</span>
+            <span class="accordion-sub">Compact reference for what each workflow artifact is, where it lives, and which artifact governs the work at each stage.</span>
+          </span>
+          <span class="accordion-chevron">&#9654;</span>
+        </button>
+        <div class="ref-panel" id="artifact-panel">
+          <table>
+            <thead>
+              <tr><th>Artifact</th><th>Purpose</th><th>Primary phase</th><th>System of record</th><th>Location</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Cleaned transcript</td><td>Transcript-only artifact that preserves source content for later analysis.</td><td>Phase 1</td><td>Workspace text artifact</td><td><code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_cleaned_YYYY_MM_DD.txt</code></td></tr>
+              <tr><td>Transcript analysis</td><td>Structured transcript analysis after cleanup.</td><td>Phase 1</td><td>Workspace markdown artifact</td><td><code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_analysis_YYYY_MM_DD.md</code></td></tr>
+              <tr><td>Source analysis</td><td>Summarize source claims, caveats, risks, and candidate ideas.</td><td>Phase 1</td><td>Workspace markdown artifact</td><td><code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_source_analysis_YYYY_MM_DD.md</code></td></tr>
+              <tr><td>GitHub repo assessment</td><td>Assess external repository patterns, tooling, compatibility, and risks.</td><td>Phase 1</td><td>Workspace markdown artifact</td><td><code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_github_repo_assessment_YYYY_MM_DD.md</code></td></tr>
+              <tr><td>Domain analysis</td><td>Review accounting, bookkeeping, finance operations, tax, reconciliation, reporting, compliance, or advisory content.</td><td>Phase 1</td><td>Workspace markdown artifact</td><td><code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_domain_analysis_YYYY_MM_DD.md</code></td></tr>
+              <tr><td>Domain applicability</td><td>Assess domain content against FinOpsAI user profile, scope, roadmap, and compliance boundaries.</td><td>Phase 1</td><td>Workspace markdown artifact</td><td><code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_domain_applicability_YYYY_MM_DD.md</code></td></tr>
+              <tr><td>Workflow analysis</td><td>Separate process changes, agentic workflow ideas, prompts, QA gates, and harness tooling from product features.</td><td>Phase 1</td><td>Workspace markdown artifact</td><td><code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_workflow_analysis_YYYY_MM_DD.md</code></td></tr>
+              <tr><td>Workflow applicability</td><td>Assess whether workflow content should influence FinOpsAI human workflow, agent-assisted workflow, docs, prompts, or process gates.</td><td>Phase 1</td><td>Workspace markdown artifact</td><td><code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_workflow_applicability_YYYY_MM_DD.md</code></td></tr>
+              <tr><td>Requirement triage</td><td>Normalize raw Product Owner intent and decide whether design, mapping, or card drafting is appropriate.</td><td>Phase 1</td><td>Workspace markdown artifact</td><td><code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_requirement_triage_YYYY_MM_DD.md</code></td></tr>
+              <tr><td>Repo mapping</td><td>Map source ideas to FinOpsAI evidence and applicability categories.</td><td>Phase 2</td><td>Workspace markdown artifact</td><td><code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_repo_mapping_YYYY_MM_DD.md</code></td></tr>
+              <tr><td>Roadmap fit</td><td>Assign implemented roadmap-fit status and next step. Start with the required workflow progress tracker.</td><td>Phase 2 / Phase 3</td><td>Workspace markdown artifact</td><td><code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_roadmap_fit_YYYY_MM_DD.md</code></td></tr>
+              <tr><td>ClickUp-ready draft</td><td>Human-approved card draft after candidate and task-card gates pass. The identifier is required for every draft.</td><td>Phase 4</td><td>Workspace markdown artifact</td><td><code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_clickup_card_draft_YYYY_MM_DD_&lt;identifier&gt;.md</code></td></tr>
+              <tr><td>Run summary</td><td>Canonical reopening summary for the completed run.</td><td>Run closure</td><td>Workspace markdown artifact</td><td><code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_run_summary_YYYY_MM_DD.md</code></td></tr>
+              <tr><td>Deferred outcomes</td><td>Record plausible ideas blocked by timing, missing evidence, roadmap mismatch, dependency, or required review in roadmap-fit by default.</td><td>Phase 3</td><td>Roadmap-fit artifact by default</td><td><code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_roadmap_fit_YYYY_MM_DD.md</code></td></tr>
+              <tr><td>Rejected outcomes</td><td>Record poor-fit, unsafe, speculative, contradictory, or out-of-scope ideas in roadmap-fit by default.</td><td>Phase 3</td><td>Roadmap-fit artifact by default</td><td><code>output/&lt;name&gt;_YYYY_MM_DD/&lt;name&gt;_roadmap_fit_YYYY_MM_DD.md</code> or catalog-only mention</td></tr>
+              <tr><td>Catalog entry</td><td>Concise run index without long report excerpts.</td><td>Catalog update</td><td>Workspace catalog</td><td><code>notes/output_catalog.md</code></td></tr>
+              <tr><td>Lessons learned register</td><td>Durable record of reusable workflow lessons from completed runs or terminal stop conditions.</td><td>Run closure / retrospective</td><td>Workspace notes</td><td><code>notes/lessons_learned.md</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="accordion" id="routing-accordion">
+    <button class="accordion-toggle" type="button" onclick="toggleAccordion('routing-accordion', 'routing-panel')">
+      <span class="accordion-label">
+        <span class="accordion-title">Implemented Routing Table</span>
+        <span class="accordion-sub">Source type determines first artifact, optional next artifact, mapping, and card-candidate eligibility.</span>
+      </span>
+      <span class="accordion-chevron">&#9654;</span>
+    </button>
+    <div class="ref-panel" id="routing-panel">
+      <table>
+        <thead>
+          <tr><th>Source type</th><th>First artifact</th><th>Optional next artifact</th><th>ClickUp candidate</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>YouTube transcript</td><td>Cleaned transcript + analysis report</td><td>Repo mapping report</td><td>Only after mapping and approval</td></tr>
+          <tr><td>GitHub repo</td><td>GitHub repo assessment</td><td>Repo mapping report</td><td>Only for high-confidence compatible ideas</td></tr>
+          <tr><td>Business requirement</td><td>Requirement triage report</td><td>Roadmap fit or design referral</td><td>Yes, if task-card gates pass</td></tr>
+          <tr><td>Accounting/bookkeeping content</td><td>Domain analysis report</td><td>Domain applicability or repo mapping report</td><td>Only after domain and roadmap approval</td></tr>
+          <tr><td>Product workflow content</td><td>Workflow analysis report</td><td>Workflow applicability or repo mapping report</td><td>Usually <code>docs</code> or <code>chore</code>, only after approval</td></tr>
+        </tbody>
+      </table>
+    </div>
+      </div>
+
+      <div class="accordion" id="status-accordion">
+    <button class="accordion-toggle" type="button" onclick="toggleAccordion('status-accordion', 'status-panel')">
+      <span class="accordion-label">
+        <span class="accordion-title">Roadmap-Fit Statuses</span>
+        <span class="accordion-sub">Every recommendation gets a status before card drafting is considered.</span>
+      </span>
+      <span class="accordion-chevron">&#9654;</span>
+    </button>
+    <div class="ref-panel" id="status-panel">
+      <table>
+        <thead>
+          <tr><th>Status</th><th>Meaning</th><th>Typical next step</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Immediate candidate</td><td>Clear fit, strong evidence, low ambiguity, compatible with current architecture and roadmap.</td><td>Human approval for card drafting</td></tr>
+          <tr><td>Needs roadmap approval</td><td>Product-relevant but not already established as current priority.</td><td>Product Owner decision</td></tr>
+          <tr><td>Needs product design</td><td>Product intent, UX behavior, acceptance outcomes, or scope boundaries are incomplete.</td><td>Product Design Workflow</td></tr>
+          <tr><td>Needs architecture design</td><td>Requires structural change, new integration pattern, persistence change, external service, or significant dependency.</td><td>Architecture/design assessment</td></tr>
+          <tr><td>Needs process approval</td><td>Affects human workflow, ClickUp workflow, prompts, QA gates, or operating model.</td><td>Process owner approval</td></tr>
+          <tr><td>Research backlog</td><td>Interesting but not ready for implementation or product commitment.</td><td>Future review item</td></tr>
+          <tr><td>Deferred</td><td>Plausible but blocked by timing, missing evidence, roadmap mismatch, or dependency.</td><td>Record in roadmap-fit by default; separate deferred note only by exception</td></tr>
+          <tr><td>Rejected</td><td>Poor fit, unsafe, speculative, contradictory, or outside FinOpsAI scope.</td><td>Record in roadmap-fit by default; separate rejected note or catalog-only mention only by exception</td></tr>
+        </tbody>
+      </table>
+    </div>
+      </div>
+
+      <div class="accordion" id="flow-accordion">
+    <button class="accordion-toggle" type="button" onclick="toggleAccordion('flow-accordion', 'flow-panel')">
+      <span class="accordion-label">
+        <span class="accordion-title">Standard Research Flow</span>
+        <span class="accordion-sub">The nine-step flow implemented in RESEARCH_WORKFLOW_USAGE.md.</span>
+      </span>
+      <span class="accordion-chevron">&#9654;</span>
+    </button>
+    <div class="ref-panel" id="flow-panel">
+      <table>
+        <thead>
+          <tr><th>Step</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>Register source and select lane.</td></tr>
+          <tr><td>2</td><td>Produce lane-specific source analysis.</td></tr>
+          <tr><td>3</td><td>Decide whether FinOpsAI mapping is needed.</td></tr>
+          <tr><td>4</td><td>If mapping, read target repo guidance first and classify applicability.</td></tr>
+          <tr><td>5</td><td>Assign roadmap-fit status.</td></tr>
+          <tr><td>6</td><td>Ask for human approval before card drafting.</td></tr>
+          <tr><td>7</td><td>If approved, run the ClickUp card-candidate gate.</td></tr>
+          <tr><td>8</td><td>Generate a ClickUp-ready draft only if task-card gates pass.</td></tr>
+          <tr><td>9</td><td>Update <code>notes/output_catalog.md</code> with durable generated artifacts.</td></tr>
+        </tbody>
+      </table>
+    </div>
+      </div>
+
+      <div class="accordion" id="lane-phase-map-accordion">
+    <button class="accordion-toggle" type="button" onclick="toggleAccordion('lane-phase-map-accordion', 'lane-phase-map-panel')">
+      <span class="accordion-label">
+        <span class="accordion-title">Lane To Phase Map</span>
+        <span class="accordion-sub">Verification map for whether each lane should continue into Phases 2 through 4.</span>
+      </span>
+      <span class="accordion-chevron">&#9654;</span>
+    </button>
+    <div class="ref-panel" id="lane-phase-map-panel">
+      <div class="callout gate" style="margin-top:0;">
+        <div class="callout-icon">&#9670;</div>
+        <div class="callout-body">
+          <strong>Required front door:</strong> Phase 1 Step 1 and Phase 1 Step 2 are mandatory for every lane. Every research run must complete intake and routing, then produce the lane-specific source analysis before any optional mapping, human gate, or card-candidate work begins.
+          <div class="gate-checks">
+            <span>Phase 1 Step 1: Must for all lanes</span>
+            <span>Phase 1 Step 2: Must for all lanes</span>
+            <span>Phases 2-4: Lane-dependent</span>
+          </div>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Lane</th><th>Phase 2: FinOpsAI mapping</th><th>Phase 3: Human gate</th><th>Phase 4: Card candidate</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>YouTube transcript</td>
+            <td><span class="status-pill choice">&#9679; Choice</span><br>Run only when transcript ideas need FinOpsAI applicability assessment.</td>
+            <td><span class="status-pill choice">&#9679; Choice</span><br>Run only if mapping produces recommendations or card candidates.</td>
+            <td><span class="status-pill choice">&#9679; Choice</span><br>Run only after mapping, roadmap fit, and human approval.</td>
+          </tr>
+          <tr>
+            <td>GitHub repository</td>
+            <td><span class="status-pill choice">&#9679; Choice</span><br>Run when external repo patterns need FinOpsAI compatibility assessment.</td>
+            <td><span class="status-pill choice">&#9679; Choice</span><br>Run if compatible ideas may affect roadmap, workflow, tooling, or architecture.</td>
+            <td><span class="status-pill choice">&#9679; Choice</span><br>Run only for high-confidence compatible ideas after approval.</td>
+          </tr>
+          <tr>
+            <td>Business requirement</td>
+            <td><span class="status-pill choice">&#9679; Choice</span><br>Run only if the request needs repo/product applicability evidence.</td>
+            <td><span class="status-pill must">&#10003; Must if actionable</span><br>Required when triage produces a roadmap, design, defer, reject, or card-candidate decision; source-only or clarification-only intake can pause before Phase 3.</td>
+            <td><span class="status-pill choice">&#9679; Choice</span><br>Run only if the request is one primary task and task-card gates can pass.</td>
+          </tr>
+          <tr>
+            <td>Accounting/bookkeeping domain</td>
+            <td><span class="status-pill choice">&#9679; Choice</span><br>Run only when domain content is product-relevant to FinOpsAI.</td>
+            <td><span class="status-pill must">&#10003; Must if actionable</span><br>Required when domain findings may influence roadmap, compliance, product behavior, or backlog.</td>
+            <td><span class="status-pill choice">&#9679; Choice</span><br>Run only after domain, roadmap, and any professional-review concerns are resolved.</td>
+          </tr>
+          <tr>
+            <td>Product workflow content</td>
+            <td><span class="status-pill choice">&#9679; Choice</span><br>Run only if the workflow idea affects FinOpsAI docs, tooling, prompts, QA, or process.</td>
+            <td><span class="status-pill must">&#10003; Must if actionable</span><br>Required when workflow findings may change docs, prompts, QA gates, ClickUp flow, or operating model.</td>
+            <td><span class="status-pill choice">&#9679; Choice</span><br>Usually a <code>docs</code> or <code>chore</code> candidate, only after approval.</td>
+          </tr>
+          <tr>
+            <td>Source-only analysis</td>
+            <td><span class="status-pill na">&#10005; Not applicable</span><br>Do not map if the user only requested source understanding.</td>
+            <td><span class="status-pill na">&#10005; Not applicable</span><br>No roadmap gate is needed if no FinOpsAI recommendation exists.</td>
+            <td><span class="status-pill na">&#10005; Not applicable</span><br>No card draft is created from source-only analysis.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout note">
+        <div class="callout-icon">&#9670;</div>
+        <div class="callout-body"><strong>Verification result:</strong> Phase 2 is conditional for every lane. Phase 3 is mandatory only when the lane output may influence roadmap, product, domain, or workflow decisions. Phase 4 is always optional and only runs after the ClickUp card-candidate gate can pass.</div>
+      </div>
+    </div>
+      </div>
+
+      <div class="accordion" id="risk-accordion">
+    <button class="accordion-toggle" type="button" onclick="toggleAccordion('risk-accordion', 'risk-panel')">
+      <span class="accordion-label">
+        <span class="accordion-title">Guardrails</span>
+        <span class="accordion-sub">The harness should protect downstream Product Owner quality.</span>
+      </span>
+      <span class="accordion-chevron">&#9654;</span>
+    </button>
+    <div class="ref-panel" id="risk-panel">
+      <table>
+        <thead>
+          <tr><th>Risk</th><th>Control</th><th>Implemented in</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Premature backlog creation</td><td>Research output creates card candidates, not automatic task cards.</td><td><code>RESEARCH_WORKFLOW_USAGE.md</code> ClickUp Card-Candidate Gate; Phase 3 and Phase 4 notices and prompts.</td></tr>
+          <tr><td>Overgeneralized source handling</td><td>Route sources using the implemented taxonomy in <code>RESEARCH_WORKFLOW_USAGE.md</code>.</td><td><code>RESEARCH_WORKFLOW_USAGE.md</code> Source Taxonomy and Routing Table; Phase 1 Step 1 and Phase 1 Step 2 accordions.</td></tr>
+          <tr><td>Accounting correctness drift</td><td>Preserve deterministic validation, review, and posting gates.</td><td><code>/Users/Sites/Repo-FinOpsAI/AGENTS.md</code>; <code>RESEARCH_WORKFLOW_USAGE.md</code> repo-mapping rules; Phase 1 Step 1, Phase 2, and Phase 4 prompts.</td></tr>
+          <tr><td>Speculative AI integration</td><td>Treat model outputs as advisory unless a separate approved design adds safeguards.</td><td><code>/Users/Sites/Repo-FinOpsAI/AGENTS.md</code>; <code>RESEARCH_WORKFLOW_USAGE.md</code> ClickUp exclusions; Phase 2 prompt examples.</td></tr>
+          <tr><td>ClickUp card bloat</td><td>One primary task per card, with Product Design routing when scope is unclear.</td><td><code>/Users/Sites/Repo-FinOpsAI/docs/engineering/task_card_generation_guide.md</code>; <code>RESEARCH_WORKFLOW_USAGE.md</code> card-candidate gate; Phase 3 and Phase 4 accordions.</td></tr>
+        </tbody>
+      </table>
+    </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <span>Last updated 2026-04-23</span>
+    <span>v1.0 &nbsp;·&nbsp; docs/finopsai_research-to-backlog_workflow.html</span>
+  </footer>
+
+</main>
+
+<script>
+  function toggle(id) {
+    document.getElementById(id).classList.toggle('open');
+  }
+
+  function toggleInfoPanel() {
+    document.getElementById('workflow-info-panel').classList.toggle('open');
+  }
+
+  function toggleAccordion(wrapperId, panelId) {
+    document.getElementById(wrapperId).classList.toggle('open');
+    document.getElementById(panelId).classList.toggle('open');
+  }
+
+  let allOpen = false;
+  function toggleAll() {
+    allOpen = !allOpen;
+    ['ph1','ph3','ph4','ph5'].forEach(id => {
+      document.getElementById(id).classList.toggle('open', allOpen);
+    });
+    document.getElementById('expand-btn').textContent = allOpen ? 'Collapse all' : 'Expand all';
+  }
+
+  function jumpTo(id) {
+    const el = document.getElementById(id);
+    el.classList.add('open');
+    setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+  }
+
+  function openLanePhaseMap(event) {
+    event.preventDefault();
+    const accordion = document.getElementById('lane-phase-map-accordion');
+    const panel = document.getElementById('lane-phase-map-panel');
+    accordion.classList.add('open');
+    panel.classList.add('open');
+    setTimeout(() => accordion.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+  }
+
+  function copyPromptText(button) {
+    const promptBox = button.closest('.lane-prompt');
+    const text = promptBox.dataset.copyText || '';
+    const setCopied = () => {
+      const original = button.textContent;
+      button.textContent = 'Copied';
+      setTimeout(() => { button.textContent = original; }, 1200);
+    };
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(setCopied);
+      return;
+    }
+
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.setAttribute('readonly', '');
+    textarea.style.position = 'fixed';
+    textarea.style.top = '-9999px';
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    setCopied();
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.lane-prompt').forEach((promptBox, index) => {
+      const promptText = promptBox.textContent.trim();
+      promptBox.dataset.copyText = promptText;
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'copy-prompt-button';
+      button.textContent = 'Copy';
+      button.setAttribute('aria-label', `Copy prompt example ${index + 1}`);
+      button.addEventListener('click', () => copyPromptText(button));
+      promptBox.prepend(button);
+    });
+  });
+</script>
+</body>
+</html>
