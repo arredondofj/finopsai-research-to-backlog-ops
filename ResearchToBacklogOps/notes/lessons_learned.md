@@ -354,3 +354,90 @@ Add a lesson when at least one of these is true:
   - `PIPELINE_USAGE.md`
 - Verification: Read back the Phase 2 entry-decision rules and transcript-lane validation section to confirm the new proceed criteria, stop criteria, and validation-specific explanation requirements were present.
 - Reuse Guidance: For research lanes that often start as general education, add an explicit validation-driven escalation rule so strong bounded implementation hypotheses can continue into repo mapping without lowering the evidence standard.
+
+### LL-2026-05-07-01 - Stop Recommendations Should End With An Actionable Closure Approval Prompt
+
+- Date: 2026-05-07
+- Run: `adversarial_dev`
+- Lane: `GitHub Repo Assessment` with approved `Product Workflow Analysis`
+- Phase / Step: `Phase 1 completion display stop path`
+- Category: `instruction design`
+- Severity: `medium`
+- Status: `open`
+- Issue: The stop recommendation wording could end with a passive phrase such as `Stop at catalog-only closure for this run`, which states the disposition but does not clearly tell the user how to accept the stop and trigger the required run-closure sequence.
+- Impact: Users can reasonably think the run is already finished, even though the workflow still requires an explicit closure approval before the end-of-run summary is written and the run is formally closed.
+- Likely Cause: The workflow already defines the stop-path mechanics and the later closure syntax, but the recommendation line itself does not consistently echo that next required action in user-facing language.
+- Decision / Resolution: Record a wording rule that stop recommendations should be definitive and action-oriented. Prefer wording that both declares the stop decision and points immediately to the closure approval step instead of stopping at a passive status description.
+- Instruction or Process Change: When the Phase 1 recommendation is to stop, prefer wording substantially like: `Stop at this step and hold at catalog-only closure for this run.` Then follow it with an explicit closure instruction that tells the user how to continue, using the existing approval syntax: `If you want to close the run here, reply: Approved — end-of-run summary`. This preserves the decision/next-step separation while making the stop path operationally clear.
+- Impacted Files:
+  - `notes/lessons_learned.md`
+  - `RESEARCH_WORKFLOW_USAGE.md` (future wording refinement recommended)
+- Verification: Confirmed that the workflow already contains the required closure-approval syntax `Approved — end-of-run summary`, and compared that existing requirement against the softer stop wording used in the recent Phase 1 response.
+- Reuse Guidance: Any workflow stop state that still requires one more human approval should say both things explicitly: that work stops here for now, and the exact approval phrase needed to finish closure. Do not leave stop-path responses as passive state labels when the run is not yet formally closed.
+
+### LL-2026-05-07-02 - Research Closure Needed An Explicit Automatic Intake Handoff Before Backlog Governance Step 1
+
+- Date: 2026-05-07
+- Run: `Don’t Use Boolean Flags in Python, Use Policies Instead [wYeDGkdMi3g]`
+- Lane: `YouTube Transcript`
+- Phase / Step: `run closure / bridge boundary`
+- Category: `workflow boundary`
+- Severity: `high`
+- Status: `closed`
+- Issue: Research workflow closure ended with approved ClickUp-ready draft artifacts and run summary, while Backlog Governance Step 1 expected those same draft artifacts to have already been deposited into the governance intake folder with receipt and duplicate handling completed.
+- Impact: The user-facing workflow looked complete from the research side, but the next workflow could not begin cleanly without a manual, undocumented transfer step. That created an observability gap, made automation ambiguous, and weakened auditability across the boundary.
+- Likely Cause: A previous refactor preserved the Backlog Publication bridge but dropped the earlier automatic intake-deposit bridge that should happen after run-summary approval and before Backlog Governance Step 1.
+- Decision / Resolution: Reinsert an explicit `Backlog Governance Intake Handoff` as its own automatic post-run-summary bridge step. Keep it outside `Another approved recommendation to process?` and outside Phase 4 Step 3 so recommendation-cycle control, draft generation, and governance intake remain distinct.
+- Instruction or Process Change: Updated the canonical workflow and the human-readable workflow companion so research closure now includes automatic deposit of approved draft artifacts into `governance-states/01_intake/`, duplicate quarantine into `governance-states/01_intake_duplicates/`, one run-level receipt, durable recording of the handoff result back into the run summary or roadmap-fit artifact, and a required workflow-tracker bridge row whenever approved drafts exist.
+- Impacted Files:
+  - `RESEARCH_WORKFLOW_USAGE.md`
+  - `docs/finopsai_research-to-backlog_workflow.md`
+  - `notes/lessons_learned.md`
+- Verification: Read back the standard-flow steps, the new bridge section, the updated research boundary wording, and the workflow progress tracker rows to confirm that automatic intake handoff now occurs after run-summary approval and before Backlog Governance Step 1.
+- Reuse Guidance: When one workflow ends with approved draft artifacts and the next workflow starts from an operational inbox, model the inbox deposit and receipt as a distinct automatic bridge step. Do not hide that handoff inside a recommendation loop or inside a draft-generation step.
+
+### LL-2026-05-07-03 - Final Approved Draft Cycles Still Need An Explicit End-Of-Run Summary Approval Prompt
+
+- Date: 2026-05-07
+- Run: `Why Senior Devs Keep Shipping Slow (And How to Stop) [bNKRiN86cho]`
+- Lane: `YouTube Transcript` with approved `Product Workflow Analysis`, `FinOpsAI repo mapping`, and one approved Phase 4 draft cycle
+- Phase / Step: `post-Phase-4 closure handoff`
+- Category: `approval gate`
+- Severity: `high`
+- Status: `closed`
+- Issue: After the final approved ClickUp-ready draft cycle completed, the response did not present the required explicit closure prompt telling the user that no additional eligible card candidates remained and asking for approval to write the end-of-run summary.
+- Impact: The workflow advanced directly into run-summary generation and governance handoff without giving the human the deterministic final approval step defined by the harness. A user could not see the exact required next action in chat, and formal closure approval was skipped.
+- Likely Cause: The workflow already encoded the closure prompt for both stop-path runs and post-Phase-4 runs, but the execution path over-focused on completing the approved draft cycle and bridge handoff instead of pausing at the mandatory end-of-run approval checkpoint.
+- Decision / Resolution: Treat the missing closure prompt as an execution flaw, not a document-authority gap. The controlling workflow already defines the exact required wording and sequencing for this situation.
+- Instruction or Process Change: After the last approved recommendation in a run is processed, always stop and emit the required closure prompt before writing the run summary or performing governance intake handoff. Use the documented wording substantially like: `No additional eligible ClickUp card candidates remain for this run.` followed by `Ready to write the end-of-run summary for: <run/source name>` and `Approved — end-of-run summary`.
+- Impacted Files:
+  - `notes/lessons_learned.md`
+  - `RESEARCH_WORKFLOW_USAGE.md`
+  - `docs/finopsai_research-to-backlog_workflow.md`
+- Verification: Re-read the controlling closure rules and patched both workflow docs so closure approval is now a distinct mandatory tracked gate in the controlling workflow and the companion narrative explicitly forbids writing the run summary or performing governance handoff before that approval.
+- Reuse Guidance: When a run reaches "no additional eligible card candidates remain," do not treat artifact completion as permission to close the run. The human still needs one deterministic final approval step, and the exact approval syntax must be shown in chat before closure work begins.
+
+### LL-2026-05-07-04 - FinOpsAI Repo Mapping Needed A Canonical Path Guardrail
+
+- Date: 2026-05-07
+- Run: `Why Senior Devs Keep Shipping Slow (And How to Stop) [bNKRiN86cho]`
+- Lane: `Product Workflow Analysis` with approved `FinOpsAI repo mapping`
+- Phase / Step: `Phase 2 repo-target selection`
+- Category: `repo mapping`
+- Severity: `high`
+- Status: `closed`
+- Issue: The run used `/Users/Dev/Prototypes/FinOpsAI` as the FinOpsAI target repo during mapping and drafting even though the intended active repo had been moved and renamed to `/Users/Dev/Apps/finopsai-desktop`.
+- Impact: Repo-mapping and ClickUp-ready draft artifacts recorded the wrong target-repo path, understated the available engineering guidance surfaces, and propagated incorrect repo references into durable workflow artifacts.
+- Likely Cause: Workflow and skill docs still pointed to an old canonical FinOpsAI path, and execution silently fell back to a different visible local checkout instead of stopping when the expected path was unavailable.
+- Decision / Resolution: Establish `/Users/Dev/Apps/finopsai-desktop` as the canonical local FinOpsAI path in the research workspace and require a human confirmation stop whenever that canonical path is missing and another checkout is the only visible candidate.
+- Instruction or Process Change: Updated the workspace `AGENTS.md`, the canonical workflow, the human-readable workflow companion, and the FinOpsAI-relevant lane skills to use `/Users/Dev/Apps/finopsai-desktop`, to point card-drafting guidance to `docs/engineering/workflows/`, and to forbid silent local-checkout substitution before Phase 2 mapping or Phase 4 drafting.
+- Impacted Files:
+  - `AGENTS.md`
+  - `RESEARCH_WORKFLOW_USAGE.md`
+  - `docs/finopsai_research-to-backlog_workflow.md`
+  - `skills/product-workflow-analysis/SKILL.md`
+  - `skills/accounting-domain-review/SKILL.md`
+  - `skills/github-repo-assessment/SKILL.md`
+  - run artifacts under `output/Why Senior Devs Keep Shipping Slow (And How to Stop) [bNKRiN86cho]_2026_05_07/`
+- Verification: Confirmed that `/Users/Dev/Apps/finopsai-desktop` exists, contains `.git`, `AGENTS.md`, `docs/engineering/standards/programming_guidance.md`, and the expected workflow guidance files under `docs/engineering/workflows/`. Read back the patched workflow and skill files to verify the new canonical path and stop condition were present.
+- Reuse Guidance: When a workflow depends on one target repo repeatedly, encode one canonical local path and add an explicit mismatch stop. Never let repo mapping or task-card drafting silently switch to another visible checkout just because it exists on disk.

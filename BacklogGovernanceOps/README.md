@@ -8,13 +8,13 @@ This workspace is a sibling to `ResearchToBacklogOps`. Research ends with markdo
 
 1. Run `python3 scripts/run_intake_triage.py` to check `governance-states/01_intake/` for new valid draft artifacts from completed research runs.
 2. Check `governance-states/01_intake_duplicates/` and `governance-records/duplicate-log/` for any duplicate exceptions raised at handoff.
-3. Record each intake decision in `governance-records/governance-log/GOVERNANCE_LOG.md`; move admitted artifacts to `governance-states/02_review/` and leave held artifacts in `governance-states/01_intake/`.
+3. Record each card decision in the matching file under `governance-records/card-activity/`; move admitted artifacts to `governance-states/02_review/` and leave held artifacts in `governance-states/01_intake/`.
 4. Review admitted candidates in `governance-states/02_review/` and move items that pass review into `governance-states/03_approved/`; record explicit rejection reasons rather than leaving outcomes implied.
 5. Complete the publication readiness check before publishing.
 6. Publish or create the PBI in ClickUp from `governance-states/03_approved/`.
-7. Record the publication result in `governance-records/governance-log/GOVERNANCE_LOG.md`.
+7. Record the publication result in the matching card-activity file and optionally add a workspace-level summary entry in `governance-records/governance-log/GOVERNANCE_LOG.md`.
 8. Perform ongoing backlog stewardship until the PBI reaches sprint-eligible status.
-9. Confirm sprint-readiness by updating the live ClickUp PBI referenced in `governance-records/governance-log/GOVERNANCE_LOG.md` to `Sprint-Eligible`.
+9. Confirm sprint-readiness by updating the live ClickUp PBI referenced from the matching card-activity file to `Sprint-Eligible`.
 
 ## Folder map
 
@@ -43,7 +43,7 @@ This workspace is a sibling to `ResearchToBacklogOps`. Research ends with markdo
 - Research ends with draft artifacts on the file system, not published PBIs.
 - Nothing may be published or MCP-loaded unless it originated from `governance-states/03_approved/`.
 - One approved draft artifact maps to one published PBI; never silently collapse multiple drafts into one PBI.
-- The governance log is the single canonical record connecting research draft artifacts to live ClickUp PBIs.
+- `governance-records/card-activity/` is the canonical per-card lifecycle record for workflow 2.
 - PBI publication creates the real PBI in ClickUp for the first time.
 - Product Development begins from already-published, sprint-eligible PBIs; it does not create them.
 

@@ -4,6 +4,50 @@ This file catalogs generated transcript-pipeline artifacts after each run. Entri
 
 ---
 
+## 2026-05-07 - adversarial-dev GitHub repo assessment
+
+### Source
+
+- Source repo: `https://github.com/coleam00/adversarial-dev`
+- Prompt file reviewed: `https://github.com/coleam00/adversarial-dev/blob/main/prompt.md`
+- Visible default branch: `main`
+- Visible commit anchor: not captured from the scoped web-visible surfaces inspected for this run
+- Access method: read-only GitHub web and raw file views
+- Lane skill: `github-repo-assessment`
+- Focus used: broad repo assessment across patterns, architecture, tooling, workflow, tests, AI integration, and operational/security concerns because the provided focus placeholder was not narrowed further
+
+### Generated Files
+
+| File | Type | Purpose |
+| --- | --- | --- |
+| `output/adversarial_dev_2026_05_07/adversarial_dev_github_repo_assessment_2026_05_07.md` | GitHub repo assessment | Read-only assessment of `coleam00/adversarial-dev` covering repo purpose, harness architecture, reusable workflow patterns, dependencies, tests/docs signals, prompt-vs-repo boundary, and license/security concerns from scoped GitHub evidence. |
+| `output/adversarial_dev_2026_05_07/adversarial_dev_workflow_analysis_2026_05_07.md` | Workflow analysis | Lane 5 process-focused analysis of `coleam00/adversarial-dev` separating reusable operating-model, prompt-governance, QA-gate, and harness-tooling patterns from direct product features or code reuse. |
+| `output/adversarial_dev_2026_05_07/adversarial_dev_run_summary_2026_05_07.md` | Run summary | Canonical reopening summary for the completed `adversarial_dev` run across the GitHub repo assessment, approved workflow analysis, and catalog-only closure path. |
+
+### Analysis Reference
+
+- Primary topic: adversarial multi-agent coding harness design plus the repo's prompt-driven workload specification style.
+- Main thesis: the repo's strongest reusable value is workflow architecture, especially role separation, contract-first sprint gating, shared prompts across SDK backends, and file-based state handoff.
+- Practical relevance: useful as source material for productizing AI coding workflows and evaluation loops without treating direct code reuse as the default path.
+- Main caveat: the assessment is based on web-visible repo and raw-file surfaces only; no clone, test execution, or harness run was performed.
+- License note: no explicit license signal was established from the scoped surfaces inspected for this run.
+- Security note: the strongest operational concerns are permissive harness runtime settings and `prompt.md` instructions to read a secret from an absolute local `.env` path.
+- Cross-lane signal: Product workflow analysis is a `Strong signal` because the repo's main value is process, orchestration, evaluation gating, and AI operating-model design rather than conventional app implementation detail.
+- Secondary lane result: the approved Lane 5 workflow analysis confirmed that this source is strongest as AI delivery-process and harness-governance research around role separation, contract-first execution, adversarial QA, and durable run artifacts.
+- Repo-mapping note: no FinOpsAI mapping was requested or run.
+- Run-summary note: `output/adversarial_dev_2026_05_07/adversarial_dev_run_summary_2026_05_07.md` is the canonical reopening point for this completed run.
+- Next-step recommendation: stop at catalog-only closure unless a later run explicitly requests FinOpsAI workflow applicability or repo mapping.
+
+### Verification Notes
+
+- GitHub repo assessment length: 184 lines.
+- Workflow analysis length: 198 lines.
+- Run summary length: 59 lines.
+- Assessment used read-only GitHub web and raw file views only.
+- No local clone, test execution, repo mapping, roadmap-fit, or ClickUp drafting was performed.
+
+---
+
 ## 2026-04-25 - Stop Passing Primitives Everywhere (Use Value Objects) (`CWYwz3iV1g0`)
 
 ### Source
@@ -828,3 +872,122 @@ This file catalogs generated transcript-pipeline artifacts after each run. Entri
 - GitHub repo assessment used a read-only shallow clone of `https://github.com/mattpocock/skills` at commit `8868f54212dfcf450b665d2e2a5bf521ada64c3e`.
 - FinOpsAI repo mapping was read-only and grounded in `/Users/Sites/Repo-FinOpsAI/AGENTS.md`, engineering docs, product semantics docs, and the repo-managed pre-commit / LM Studio review harness.
 - Roadmap-fit Phase 4 completed for both approved immediate candidates in separate one-to-one card cycles.
+
+---
+
+## 2026-05-07 - Don’t Use Boolean Flags in Python, Use Policies Instead (`wYeDGkdMi3g`)
+
+### Source
+
+- Input transcript: `input/Don’t Use Boolean Flags in Python, Use Policies Instead [wYeDGkdMi3g]_2026_05_07.en-orig.vtt`
+- Additional acquired subtitle artifact: `input/Don’t Use Boolean Flags in Python, Use Policies Instead [wYeDGkdMi3g]_2026_05_07.en.vtt`
+- Source title: Don’t Use Boolean Flags in Python, Use Policies Instead
+- Video ID: `wYeDGkdMi3g`
+- Source URL: `https://www.youtube.com/watch?v=wYeDGkdMi3g&list=PL87U3ZM6Qb-QwL4MVLNXpTo1xVn3G4Z6b&index=23`
+- Pipeline skill: `youtube-transcript-pipeline`
+
+### Generated Files
+
+| File | Type | Purpose |
+| --- | --- | --- |
+| `output/Don’t Use Boolean Flags in Python, Use Policies Instead [wYeDGkdMi3g]_2026_05_07/Don’t Use Boolean Flags in Python, Use Policies Instead [wYeDGkdMi3g]_cleaned_2026_05_07.txt` | Cleaned transcript | Analysis-ready transcript with timestamps preserved and only high-confidence cleanup corrections applied after mechanical VTT cleanup. |
+| `output/Don’t Use Boolean Flags in Python, Use Policies Instead [wYeDGkdMi3g]_2026_05_07/Don’t Use Boolean Flags in Python, Use Policies Instead [wYeDGkdMi3g]_analysis_2026_05_07.md` | Analysis report | Structured Phase 1 technical analysis of policy-based refactoring, Python composition patterns, testing implications, documentation guidance value, and bounded FinOpsAI relevance. |
+| `output/Don’t Use Boolean Flags in Python, Use Policies Instead [wYeDGkdMi3g]_2026_05_07/Don’t Use Boolean Flags in Python, Use Policies Instead [wYeDGkdMi3g]_repo_mapping_2026_05_07.md` | Repo mapping report | Read-only FinOpsAI applicability assessment grounding the transcript's boolean-flag and branch-growth guidance against the limited FinOpsAI docs surface available in this environment. |
+| `output/Don’t Use Boolean Flags in Python, Use Policies Instead [wYeDGkdMi3g]_2026_05_07/Don’t Use Boolean Flags in Python, Use Policies Instead [wYeDGkdMi3g]_roadmap_fit_2026_05_07.md` | Roadmap-fit classification | Workflow-tracked roadmap-fit record for the full 2026-05-07 cycle, including route approval, design-readiness, Phase 4 gate results, and the completed one-to-one ClickUp draft cycle for the bounded `docs` recommendation. |
+| `output/Don’t Use Boolean Flags in Python, Use Policies Instead [wYeDGkdMi3g]_2026_05_07/Don’t Use Boolean Flags in Python, Use Policies Instead [wYeDGkdMi3g]_clickup_card_draft_2026_05_07_programming_guide_boolean_flag_thresholds.md` | ClickUp-ready draft | Single approved ClickUp-style `docs` card draft for clarifying programming-guide thresholds around boolean flags, branch growth, and rule extraction. |
+| `output/Don’t Use Boolean Flags in Python, Use Policies Instead [wYeDGkdMi3g]_2026_05_07/Don’t Use Boolean Flags in Python, Use Policies Instead [wYeDGkdMi3g]_run_summary_2026_05_07.md` | Run summary | Canonical reopening summary for the completed run across transcript analysis, repo mapping, roadmap-fit classification, and the one approved ClickUp-ready draft cycle. |
+
+### Analysis Reference
+
+- Primary topic: replacing boolean-flag-heavy conditional logic with explicit policy units and composable pipelines in Python.
+- Main thesis: growing branch-heavy functions often indicate missing abstraction boundaries, and explicit policies can improve testability, reuse, and maintainability at the cost of additional structure.
+- Key technical areas: Python refactoring, policy composition, function pipelines, `dataclasses.replace`, `functools.reduce`, registry-based configuration, and maintainability heuristics.
+- Practical relevance: strong as programming-guide and code-review guidance for when branch growth should trigger refactoring; weaker as a direct product-feature or architecture initiative.
+- Main caveat: the transcript demonstrates a plausible refactor pattern on a small example but does not validate the approach against production-scale failure handling, observability, or configuration-drift concerns.
+- Cited context note: no concrete repository reference was detected in the source or cleaned transcript.
+- Cross-lane note: no secondary-lane signal was strong enough to justify GitHub repo assessment, business requirement triage, accounting review, or product workflow analysis during Phase 1.
+- Repo mapping note: the strongest fit is programming-guide and review-heuristic refinement around boolean flags, rule extraction, and branch-growth thresholds; the available FinOpsAI target evidence in this environment was limited to a docs-only checkout with no visible `AGENTS.md`, code, tests, or git metadata, so no code-level refactor recommendation was justified.
+- Roadmap-fit note: the exact recommendation `Clarify programming-guide guidance for boolean flags, rule extraction, and branch-growth review thresholds` became the sole `Immediate candidate` for this run after explicit route approval and remained constrained to documentation/process scope because the target FinOpsAI evidence was docs-only.
+- ClickUp-draft note: one approved ClickUp-ready `docs` draft was generated with identifier `programming_guide_boolean_flag_thresholds`; no additional approved recommendation remains in this run.
+- Governance handoff note: the approved draft was deposited to `/Users/Dev/Ops/finopsai-research-to-backlog-ops/BacklogGovernanceOps/governance-states/01_intake/` with receipt `/Users/Dev/Ops/finopsai-research-to-backlog-ops/BacklogGovernanceOps/governance-records/run-notifications/run_notification_wYeDGkdMi3g_2026_05_07.md`; no duplicate routing occurred.
+- Run-summary note: this run’s canonical reopening point is the per-run summary artifact in the same run folder.
+- Next-step recommendation: stop with the current draft set unless a separate approval is later given for the secondary review-guidance recommendation.
+
+### Verification Notes
+
+- Acquired source VTT length: 3,168 lines.
+- Additional acquired subtitle artifact length: 3,168 lines.
+- Cleaned transcript length: 117 lines.
+- Analysis report length: 169 lines.
+- Repo mapping report length: 209 lines.
+- Roadmap-fit artifact length: 150 lines.
+- ClickUp-ready draft length: 118 lines.
+- Run summary length: 87 lines.
+- URL validation passed locally before transcript acquisition.
+- `yt-dlp` acquisition succeeded and preserved both subtitle artifacts in `input/`.
+- Original VTT files were not modified during cleanup or analysis.
+- FinOpsAI repo mapping was completed as a read-only assessment against `/Users/Dev/Prototypes/FinOpsAI`, which exposed only `docs/engineering/clickup_sprint_kanban_title_guide.md` in this environment.
+- The roadmap-fit artifact now records route approval, `Product Design required: No`, the approved identifier `programming_guide_boolean_flag_thresholds`, and successful Phase 4 task-card gate results.
+- No lessons-learned update was needed for this run.
+- Catalog entry updated after the artifact verification pass.
+
+---
+
+## 2026-05-07 - Why Senior Devs Keep Shipping Slow (And How to Stop) (`bNKRiN86cho`)
+
+### Source
+
+- Input transcript: `input/Why Senior Devs Keep Shipping Slow (And How to Stop) [bNKRiN86cho]_2026_05_07.en-orig.vtt`
+- Additional acquired subtitle artifact: `input/Why Senior Devs Keep Shipping Slow (And How to Stop) [bNKRiN86cho]_2026_05_07.en.vtt`
+- Source title: Why Senior Devs Keep Shipping Slow (And How to Stop)
+- Video ID: `bNKRiN86cho`
+- Source URL: `https://www.youtube.com/watch?v=bNKRiN86cho&list=PL87U3ZM6Qb-QwL4MVLNXpTo1xVn3G4Z6b&index=23`
+- Pipeline skill: `youtube-transcript-pipeline`
+
+### Generated Files
+
+| File | Type | Purpose |
+| --- | --- | --- |
+| `output/Why Senior Devs Keep Shipping Slow (And How to Stop) [bNKRiN86cho]_2026_05_07/Why Senior Devs Keep Shipping Slow (And How to Stop) [bNKRiN86cho]_cleaned_2026_05_07.txt` | Cleaned transcript | Analysis-ready transcript with timestamps preserved and only mechanical cleanup plus a small set of high-confidence readability corrections applied. |
+| `output/Why Senior Devs Keep Shipping Slow (And How to Stop) [bNKRiN86cho]_2026_05_07/Why Senior Devs Keep Shipping Slow (And How to Stop) [bNKRiN86cho]_analysis_2026_05_07.md` | Analysis report | Structured Phase 1 transcript-lane analysis of anti-over-engineering architecture guidance, leadership implications, practical value, evidence limits, and recommended stop-at-catalog-only closure. |
+| `output/Why Senior Devs Keep Shipping Slow (And How to Stop) [bNKRiN86cho]_2026_05_07/Why Senior Devs Keep Shipping Slow (And How to Stop) [bNKRiN86cho]_workflow_analysis_2026_05_07.md` | Workflow analysis | Follow-on Lane 5 artifact converting the transcript's bounded practical value into explicit architecture guardrails, review prompts, and documentation/process-oriented carry-forward guidance without repo mapping. |
+| `output/Why Senior Devs Keep Shipping Slow (And How to Stop) [bNKRiN86cho]_2026_05_07/Why Senior Devs Keep Shipping Slow (And How to Stop) [bNKRiN86cho]_repo_mapping_2026_05_07.md` | Repo mapping report | Narrow Phase 2 FinOpsAI mapping assessing whether the current repo snapshot exposes an existing workflow or engineering-guidance surface where architecture guardrails could be wired in, and concluding that the visible checkout lacks that surface. |
+| `output/Why Senior Devs Keep Shipping Slow (And How to Stop) [bNKRiN86cho]_2026_05_07/Why Senior Devs Keep Shipping Slow (And How to Stop) [bNKRiN86cho]_roadmap_fit_2026_05_07.md` | Roadmap-fit classification | Phase 3 and Phase 4 decision record preserving the minimal-repo findings, advancing the missing architecture-review surface into one approved `docs` draft cycle, and rejecting placement of the guardrails into the ClickUp title guide. |
+| `output/Why Senior Devs Keep Shipping Slow (And How to Stop) [bNKRiN86cho]_2026_05_07/Why Senior Devs Keep Shipping Slow (And How to Stop) [bNKRiN86cho]_clickup_card_draft_2026_05_07_architecture_review_guidance_surface.md` | ClickUp-ready draft | Single approved `docs` draft for defining a dedicated FinOpsAI architecture-review guidance surface where architecture guardrails can later live without being mixed into task-card naming guidance. |
+| `output/Why Senior Devs Keep Shipping Slow (And How to Stop) [bNKRiN86cho]_2026_05_07/Why Senior Devs Keep Shipping Slow (And How to Stop) [bNKRiN86cho]_run_summary_2026_05_07.md` | Run summary | Canonical reopening summary for the completed run across transcript analysis, workflow extraction, narrow repo mapping, roadmap-fit routing, one approved ClickUp-ready draft cycle, and governance intake handoff. |
+
+### Analysis Reference
+
+- Primary topic: avoiding premature architecture complexity and choosing the simplest architecture that fits current product needs.
+- Main thesis: teams often ship slowly because they adopt architecture for imagined future scale rather than present requirements, and leadership should treat simplicity as a deliberate design constraint.
+- Key technical areas: architecture selection heuristics, microservices overhead, event-driven consistency trade-offs, plugin-style extensibility, and testability-versus-complexity framing.
+- Practical relevance: useful as background leadership guidance for future architecture decisions, especially for a desktop-first product that may later grow into a broader platform.
+- Main caveat: the transcript is short, highly compressed, and not grounded in concrete repo evidence, implementation examples, measurable thresholds, or maintainability mechanics that would support direct repo mapping or pre-commit guidance.
+- Cited context note: no concrete repository reference was detected in the source or cleaned transcript.
+- Cross-lane note: no secondary-lane signal was strong enough to justify GitHub repo assessment, business requirement triage, accounting review, or product workflow analysis during Phase 1.
+- Workflow analysis note: after explicit approval, a bounded Lane 5 follow-on converted the source into architecture guardrails for documentation and review use, while still keeping the run out of repo mapping and task-card territory.
+- Repo mapping note: the narrow Phase 2 check was useful because it established that the available FinOpsAI repo snapshot contains no visible `AGENTS.md`, programming-guidance document, or architecture-review workflow surface. The visible `docs/engineering/clickup_sprint_kanban_title_guide.md` is too narrow and too differently scoped to serve as the attachment point for architecture guardrails.
+- Roadmap-fit note: the minimal-repo findings were preserved into a Phase 3 decision record, and the exact recommendation `Define a dedicated FinOpsAI architecture-review guidance surface and place the new architecture guardrails there` advanced to an approved one-card `docs` draft after explicit identifier approval.
+- ClickUp-draft note: one approved ClickUp-ready draft was generated with identifier `architecture_review_guidance_surface`; no additional approved recommendation remains in this run.
+- Governance handoff note: the approved draft was deposited to `/Users/Dev/Ops/finopsai-research-to-backlog-ops/BacklogGovernanceOps/governance-states/01_intake/` with receipt `/Users/Dev/Ops/finopsai-research-to-backlog-ops/BacklogGovernanceOps/governance-records/run-notifications/run_notification_bNKRiN86cho_2026_05_07.md`; no duplicate routing occurred.
+- Run-summary note: this run’s canonical reopening point is the per-run summary artifact in the same run folder.
+- Next-step recommendation: stop with the current draft set unless a fuller FinOpsAI checkout or a separate follow-up approval is later provided.
+
+### Verification Notes
+
+- Acquired source VTT length: 776 lines.
+- Additional acquired subtitle artifact length: 776 lines.
+- Cleaned transcript length: 27 lines.
+- Analysis report length: 162 lines.
+- Workflow analysis length: 204 lines.
+- Repo mapping report length: 140 lines.
+- Roadmap-fit classification length: 123 lines.
+- ClickUp-ready draft length: 115 lines.
+- Run summary length: 111 lines.
+- URL validation passed locally before transcript acquisition.
+- `yt-dlp` acquisition succeeded and preserved both subtitle artifacts in `input/`.
+- Original VTT files were not modified during cleanup or analysis.
+- Approved Lane 5 workflow analysis was completed in the same run folder using only saved transcript-lane artifacts before the later narrow Phase 2 mapping step.
+- Narrow Phase 2 mapping inspected only the visible FinOpsAI checkout at `/Users/Dev/Prototypes/FinOpsAI`, found no repo-local `AGENTS.md`, and found only one workflow doc: `/Users/Dev/Prototypes/FinOpsAI/docs/engineering/clickup_sprint_kanban_title_guide.md`.
+- Phase 3 roadmap-fit recording now preserves the same minimal-repo findings in the run folder rather than leaving them only in chat.
+- Catalog entry updated after the artifact verification pass.

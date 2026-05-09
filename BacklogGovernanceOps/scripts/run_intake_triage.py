@@ -22,7 +22,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 INTAKE_DIR = REPO_ROOT / "governance-states" / "01_intake"
 RECEIPTS_DIR = REPO_ROOT / "governance-records" / "run-notifications"
 TRIAGE_LOG = REPO_ROOT / "governance-records" / "intake-triage" / "INTAKE_TRIAGE_LOG.md"
-GOVERNANCE_LOG = REPO_ROOT / "governance-records" / "governance-log" / "GOVERNANCE_LOG.md"
+CARD_ACTIVITY_DIR = REPO_ROOT / "governance-records" / "card-activity"
 REVIEW_DIR = REPO_ROOT / "governance-states" / "02_review"
 APPROVED_DIR = REPO_ROOT / "governance-states" / "03_approved"
 
@@ -126,26 +126,22 @@ def parse_triage_batches() -> list[TriageBatch]:
 
 
 def parse_governance_decisions() -> list[GovernanceDecision]:
-    if not GOVERNANCE_LOG.exists():
+    if not CARD_ACTIVITY_DIR.exists():
         return []
-    text = read_text(GOVERNANCE_LOG)
-    sections = re.split(r"(?=^## )", text, flags=re.MULTILINE)
     decisions: list[GovernanceDecision] = []
-    for section in sections:
-        if section.startswith("## INTAKE: "):
+    for path in sorted(CARD_ACTIVITY_DIR.glob("*__activity.md")):
+        text = read_text(path)
+        artifact_path = match_field(text, "Source draft artifact")
+        sections = re.split(r"(?=^### )", text, flags=re.MULTILINE)
+        for section in sections:
+            decision_value = match_field(section, "Decision")
+            if not decision_value:
+                continue
             decision = GovernanceDecision(
                 heading=section.splitlines()[0].strip(),
-                artifact_path=match_field(section, "Source draft artifact"),
-                decision=match_field(section, "Decision"),
-                next_state=match_field(section, "Next state"),
-            )
-            decisions.append(decision)
-        elif section.startswith("## REJECTED: "):
-            decision = GovernanceDecision(
-                heading=section.splitlines()[0].strip(),
-                artifact_path=match_field(section, "Source draft artifact"),
-                decision="Reject",
-                next_state="closed",
+                artifact_path=artifact_path,
+                decision=decision_value,
+                next_state=match_field(section, "State after event"),
             )
             decisions.append(decision)
     return decisions
@@ -364,7 +360,7 @@ def render_next_step(
             "- Resolve the anomalies before treating the intake state as clean governance input.",
             "",
             "### Records To Update",
-            "- Correct the inconsistent receipt, triage, governance-log, or folder-state records identified in the anomaly section.",
+            "- Correct the inconsistent receipt, triage, card-activity, or folder-state records identified in the anomaly section.",
             "",
             "### Re-Run",
             "- Re-run `python3 scripts/run_intake_triage.py` after the corrections are complete.",
@@ -392,7 +388,7 @@ def render_next_step(
             "- The intake-triage acknowledgment is now recorded. Review each surfaced artifact and make one explicit intake decision per item: `Hold`, `Admit to review`, or `Reject`.",
             "",
             "### Records To Update",
-            "- Record each decision in `governance-records/governance-log/GOVERNANCE_LOG.md`.",
+            "- Record each decision in the matching `governance-records/card-activity/<draft-artifact-stem>__activity.md` file.",
             "",
             "### State Move To Perform",
             "- Move each admitted artifact into `governance-states/02_review/` after its decision is recorded.",
@@ -408,7 +404,7 @@ def render_next_step(
             f"- Review the {awaiting_count} artifact(s) currently in `Awaiting intake decision` status and decide `Hold`, `Admit to review`, or `Reject` for each one.",
             "",
             "### Records To Update",
-            "- Record each intake decision in `governance-records/governance-log/GOVERNANCE_LOG.md`.",
+            "- Record each intake decision in the matching `governance-records/card-activity/<draft-artifact-stem>__activity.md` file.",
             "",
             "### State Move To Perform",
             "- Move each admitted artifact into `governance-states/02_review/` after its decision is recorded.",
@@ -421,7 +417,7 @@ def render_next_step(
         "- No immediate intake-triage action is required.",
         "",
         "### Continue From",
-        "- If governance work continues, proceed from the current recorded state in `02_review`, `03_approved`, and `GOVERNANCE_LOG.md`.",
+        "- If governance work continues, proceed from the current recorded state in `02_review`, `03_approved`, and the matching `card-activity/` file.",
     ]
 
 
@@ -495,7 +491,7 @@ def escape_table(value: str) -> str:
 
 def validate_paths() -> list[str]:
     missing = []
-    for path in [INTAKE_DIR, RECEIPTS_DIR, GOVERNANCE_LOG]:
+    for path in [INTAKE_DIR, RECEIPTS_DIR, CARD_ACTIVITY_DIR]:
         if not path.exists():
             missing.append(str(path))
     return missing

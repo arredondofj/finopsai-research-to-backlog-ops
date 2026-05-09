@@ -6,7 +6,7 @@ This folder holds auto-acknowledgment receipts generated at research run close. 
 
 ## Important distinction
 
-These receipts record that a handoff was initiated and received, not that the PO reviewed or acted on the intake. PO intake decisions and publication decisions are recorded in `../governance-log/GOVERNANCE_LOG.md`.
+These receipts record that a handoff was initiated and received, not that the PO reviewed or acted on the intake. Card-specific lifecycle decisions belong in `../card-activity/`. Workspace-level summaries, when needed, belong in `../governance-log/GOVERNANCE_LOG.md`.
 
 ## Receipt naming convention
 
@@ -26,4 +26,4 @@ These receipts record that a handoff was initiated and received, not that the PO
 
 ## Escalation reference
 
-If a receipt shows artifacts deposited but the governance log shows no corresponding intake decision after the configured threshold, escalation to the Scrum Master should be triggered. See `config/governance_config.md` for threshold values.
+If a receipt shows artifacts deposited but the matching card-activity file shows no corresponding intake decision after the configured threshold, escalation to the Scrum Master should be triggered. See `config/governance_config.md` for threshold values.

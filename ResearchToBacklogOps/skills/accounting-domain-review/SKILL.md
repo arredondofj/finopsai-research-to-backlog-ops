@@ -71,7 +71,10 @@ source-only review.
 ### Step 3: Optional repo mapping
 Use this only if the user explicitly asks for a FinOpsAI repo-grounded mapping
 or the applicability assessment produces ideas that need repo evidence.
-- For FinOpsAI mapping, read `/Users/Sites/Repo-FinOpsAI/AGENTS.md` first.
+- For FinOpsAI mapping, use `/Users/Dev/Apps/finopsai-desktop` as the canonical
+  local repo path, read `/Users/Dev/Apps/finopsai-desktop/AGENTS.md` first, and
+  stop for human confirmation if that path is missing and another checkout is
+  the only visible candidate.
 - If the mapping target is not FinOpsAI, read that target repo's `AGENTS.md` first.
 - Inspect only the relevant FinOpsAI docs, specs, source files, tests, or
   tooling needed to answer the mapping question.

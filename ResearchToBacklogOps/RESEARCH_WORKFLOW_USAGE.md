@@ -259,6 +259,42 @@ Catalog:
   be measured from the saved artifact after write and before the catalog entry
   is finalized.
 
+## Optional Notes Rule
+
+When a human provides a `Notes:` block in a Phase 1 Step 2 lane prompt, treat
+it as optional run-specific context only.
+
+Allowed use:
+- refine scope
+- refine emphasis
+- refine exclusions
+- refine transaction-specific handling
+
+Disallowed use:
+- override required outputs
+- weaken or skip evidence standards
+- bypass approval gates
+- bypass access rules
+- conflict with any explicit do-not instruction
+- change the lane contract or route the run into a different workflow without
+  following the normal workflow decisions
+
+Deterministic handling rule:
+- consider only the specific note content that stays within the active lane's
+  existing contract and guardrails
+- ignore any note content that violates the lane contract, controlling
+  instructions, or workflow guardrails
+- if only part of a note violates the rules, keep the valid portion and ignore
+  only the violating portion
+
+User-facing violation disclosure:
+- if any note content is ignored, add a paragraph section titled
+  `Notes Violation:` to the user-facing response
+- identify the specific note text, or the specific portion of it, that was not
+  considered
+- explain which rule, guardrail, approval boundary, or controlling instruction
+  it would violate
+
 ## External Source Evidence Discipline
 
 For internet-derived sources, record enough metadata that a later reviewer can
@@ -338,8 +374,13 @@ Multi-source evidence rule:
   analysis without stating the relationship.
 
 When FinOpsAI is the target repo:
-- read `/Users/Sites/Repo-FinOpsAI/AGENTS.md` first,
+- use `/Users/Dev/Apps/finopsai-desktop` as the canonical local repo path unless
+  the human explicitly names a different target,
+- read `/Users/Dev/Apps/finopsai-desktop/AGENTS.md` first,
 - apply nested `AGENTS.md` files if present in relevant areas,
+- if that canonical path is missing or a different local checkout is the only
+  visible candidate, stop and ask the human to confirm the intended repo path
+  before any Phase 2 mapping or Phase 4 drafting continues,
 - treat the task as read-only unless implementation is explicitly requested,
 - preserve deterministic accounting, review, approval, posting, credential, dependency, privacy, and testing constraints.
 
@@ -483,10 +524,10 @@ ClickUp draft collision rule:
 - Do not overwrite an existing ClickUp-ready draft artifact silently.
 
 Use FinOpsAI's card guidance as the source of truth:
-- `/Users/Sites/Repo-FinOpsAI/docs/engineering/task_card_generation_guide.md`
-- `/Users/Sites/Repo-FinOpsAI/docs/engineering/clickup_sprint_kanban_title_guide.md`
-- `/Users/Sites/Repo-FinOpsAI/docs/engineering/finopsai-product-development-workflow.html`
-- `/Users/Sites/Repo-FinOpsAI/docs/engineering/finopsai-product-design-workflow.html`
+- `/Users/Dev/Apps/finopsai-opscontrol/docs/workflows/task_card_generation_guide.md`
+- `/Users/Dev/Apps/finopsai-opscontrol/docs/workflows/clickup_sprint_kanban_title_guide.md`
+- `/Users/Dev/Apps/finopsai-desktop/docs/engineering/workflows/finopsai-product-development-workflow.html`
+- `/Users/Dev/Apps/finopsai-desktop/docs/engineering/workflows/finopsai-product-design-workflow.html`
 
 The task-card guide requires:
 - Request Appropriateness gate first,
@@ -579,9 +620,50 @@ transition into the run-closure sequence:
 - and then perform the End-of-Run Retrospective Check before declaring the run
   closed.
 
+## Intake Re-Processing Gate
+
+Before normal intake continues, check whether the source appears to have been
+processed already using existing durable records. At minimum, inspect:
+
+- `notes/output_catalog.md`
+- matching or likely matching run folders under `output/`
+- existing per-run summary artifacts when they exist
+
+If no likely prior match is found, continue normal intake.
+
+If a likely prior match is found:
+
+- stop before normal lane execution continues
+- present the likely prior run or source match explicitly
+- require explicit human approval before re-processing continues
+- do not treat a new date, new identifier, or new run folder as automatic
+  justification to proceed
+
+Approved re-processing must use one of these bounded Phase 1 reasons:
+
+- `refresh_new_evidence`
+- `correct_prior_run`
+- `alternate_lane_by_explicit_decision`
+- `superseding_analysis`
+
+Do not continue with silent freeform re-processing that lacks a reason.
+
+For approved re-processing, record a durable note in the run summary and, when
+applicable, the roadmap-fit artifact or catalog note that captures:
+
+- the prior run or source match that triggered the gate
+- the approval decision
+- the selected re-processing reason
+- whether the cycle is a refresh, correction, alternate-lane run, or
+  superseding analysis
+
+This gate is Phase 1 workflow control, not autonomous deduplication. Use the
+existing durable records above; do not introduce a new heavy registry for
+Phase 1.
+
 ## Standard Research Flow
 
-1. Register source and select lane.
+1. Register source, check likely prior processing, and select lane.
 2. Produce lane-specific source analysis.
 3. Run cross-lane applicability detection when the active lane defines one:
    - For the YouTube transcript lane: evaluate the analysis report and cleaned
@@ -621,8 +703,9 @@ transition into the run-closure sequence:
     next one-recommendation cycle.
 14. If no additional eligible card candidate remains, do not stop at a
     descriptive state update. Present an explicit user-facing closure prompt
-    that states the run is ready for closure and asks for approval to write the
-    end-of-run summary. Use wording substantially like:
+    as its own gate before any run summary is written or any governance handoff
+    occurs. The prompt must state the run is ready for closure and ask for
+    approval to write the end-of-run summary. Use wording substantially like:
 
     `No additional eligible ClickUp card candidates remain for this run.`
 
@@ -637,19 +720,89 @@ transition into the run-closure sequence:
     The same closure-prompt requirement also applies when a run ends earlier at
     Phase 1 `stop at catalog-only closure`; do not skip run closure merely
     because later phases were not entered.
-15. Before declaring the run complete, write a per-run summary artifact to
+15. Do not write the run summary, do not mark `Run Closure` complete, and do
+    not perform the `Bridge` handoff until the user has explicitly approved
+    the end-of-run summary using the required format.
+16. Before declaring the run complete, write a per-run summary artifact to
     `output/<n>_YYYY_MM_DD/<n>_run_summary_YYYY_MM_DD.md`, measure any
     recorded verification metadata from disk, and update
     `notes/output_catalog.md` so the run summary is referenced as the canonical
     reopening point for the run.
-16. Perform the End-of-Run Retrospective Check. If a reusable workflow lesson
+17. If one or more approved ClickUp-ready draft artifacts exist in the run,
+    automatically hand them off to the Backlog Governance intake workflow after
+    run-summary approval:
+    - copy each approved draft artifact into the canonical governance intake
+      folder `governance-states/01_intake/` in the governance workspace,
+    - never move or overwrite the research copy,
+    - quarantine duplicates into
+      `governance-states/01_intake_duplicates/` instead of overwriting,
+    - generate one delivery receipt for the run and record it back into the
+      research workspace run log or run summary,
+    - and update `notes/output_catalog.md` so the handoff result is visible in
+      the run entry.
+    This step is an automatic intake deposit only. It is not ClickUp
+    publication and it does not bypass Product Owner intake, review, or
+    governance decisions.
+18. Perform the End-of-Run Retrospective Check. If a reusable workflow lesson
     is detected, add or update `notes/lessons_learned.md` before closing the
     run.
+
+## Backlog Governance Intake Handoff
+
+Backlog Governance intake handoff is the automatic bridge between:
+- a completed research run that produced one or more approved ClickUp-ready
+  draft artifacts
+- and Backlog Governance Step 1, which begins from the canonical intake folder
+  and Product Owner acknowledgment workflow
+
+Use this handoff when a research run reaches run-summary approval and contains
+at least one approved ClickUp-ready draft artifact.
+
+Purpose:
+- place approved research draft artifacts into the canonical governance intake
+  folder
+- preserve one approved draft artifact to one intake artifact
+- generate a durable receipt that proves deposit without claiming Product Owner
+  acknowledgment
+- make Backlog Governance Step 1 operational immediately after research
+  closure, without manual scavenging across research run folders
+
+Rules:
+- The handoff should happen after run-summary approval, not during
+  `Another approved recommendation to process?` and not inside Phase 4 Step 3.
+- Do not make deposit conditional on publication timing. Deposit to intake is
+  earlier than publication and is not equivalent to creating a ClickUp PBI.
+- Copy the approved draft artifact; do not move it out of the research run
+  folder.
+- If the target intake artifact already exists or a duplicate is detected, send
+  the duplicate to `governance-states/01_intake_duplicates/` and record that
+  result instead of overwriting the governed copy.
+- Generate one receipt per run close with run ID and approved-draft count.
+- Record the receipt or intake-deposit result in the run summary or roadmap-fit
+  artifact so the research run has a durable reopening reference for the
+  handoff event.
+
+Recommended intake record:
+- store a concise intake-handoff note in the run summary or roadmap-fit
+  artifact that records:
+  - approved recommendation name
+  - approved identifier
+  - governance intake destination path
+  - deposit timestamp
+  - duplicate or quarantine result when applicable
+  - receipt reference
+
+Boundary:
+- Research owns draft creation and automatic intake deposit.
+- Backlog Governance owns intake acknowledgment, review, admit/hold/reject,
+  approval, publication, stewardship, and sprint-readiness.
+- Product Development begins only after the PBI is already published and later
+  selected into Sprint Backlog.
 
 ## Backlog Publication Bridge
 
 Backlog publication is a separate workflow boundary between:
-- completed research runs that produced approved ClickUp-ready draft artifacts
+- Backlog Governance artifacts that have already passed intake and review
 - the FinOpsAI Product Development Workflow, which starts from already
   published backlog items selected into Sprint Backlog
 
@@ -665,8 +818,9 @@ Purpose:
 
 Rules:
 - Do not treat Phase 4 draft generation as equivalent to publication.
+- Do not treat Backlog Governance intake deposit as equivalent to publication.
 - Do not treat Product Development Sprint intake as the place where a draft is
-  first created or normalized.
+  first created, deposited, or normalized.
 - Backlog publication may be manual or MCP-assisted, but it remains a governed
   step with explicit owner approval.
 - Publication must preserve one approved recommendation to one published PBI.
@@ -683,7 +837,10 @@ Recommended publication record:
   - whether the item is backlog-only or selected for later sprint intake
 
 Boundary:
-- Research workflow ends with approved draft candidates and run closure.
+- Research workflow ends with approved draft candidates, run closure, and
+  intake deposit when approved draft artifacts exist.
+- Backlog Governance begins from the deposited intake artifact and governs
+  admit/hold/reject, approval, publication, and stewardship.
 - Backlog Publication creates or updates the real PBI.
 - Product Development begins when the Product Owner selects existing PBIs into
   Sprint Backlog.
@@ -707,7 +864,9 @@ This chat-visible requirement applies to:
 - Phase 3 Step 1 route selection,
 - Phase 3 Step 2 design readiness,
 - Phase 4 Step 1 readiness and approval verification,
-- Phase 4 Step 2 task-card gate outcomes.
+- Phase 4 Step 2 task-card gate outcomes,
+- and the Backlog Governance intake handoff result when approved draft
+  artifacts are deposited automatically after run-summary approval.
 
 Do not treat artifact creation alone as sufficient evidence that a later gate
 was checked.
@@ -763,8 +922,10 @@ Required tracker rows:
 | Phase 4 | Step 2: Run task-card gates (Request Appropriateness, Information Sufficiency, both-pass) |  |  |  |  |
 | Phase 4 | Step 3: Generate one ClickUp-ready draft only if all gates pass |  |  |  |  |
 | Loop Decision | Another approved recommendation to process? (yes -> return to Phase 3 Step 1; no -> end run) |  |  |  |  |
+| Closure Approval | Ask for and record end-of-run summary approval |  |  |  |  |
 | Catalog | Update `notes/output_catalog.md` for durable artifacts from Phases 2–4 |  |  |  |  |
 | Run Closure | Write per-run summary artifact and update catalog reference |  |  |  |  |
+| Bridge | Deposit approved draft artifact(s) to Backlog Governance intake and record receipt |  |  |  |  |
 | Retrospective | End-of-run retrospective check completed; lessons-learned entry added or explicitly not needed |  |  |  |  |
 
 Phase 1 cross-lane rows use lane-specific applicability rules:
@@ -782,8 +943,14 @@ because they generate and qualify repo-mapping and roadmap-fit outcomes.
 Phase 3 rows are mandatory whenever actionable recommendations exist because
 they record the governed human decision path before any card candidate work.
 Phase 4 rows are mandatory whenever a ClickUp-ready draft is attempted.
+The `Closure Approval` row is mandatory for every completed run regardless of
+which phase the run reaches, because formal closure requires explicit human
+approval before the run summary is written.
 The `Run Closure` row is mandatory for every completed run regardless of which
 phase the run reaches, because it records the canonical reopening summary.
+The `Bridge` row is mandatory whenever one or more approved ClickUp-ready draft
+artifacts exist, because it records whether the automatic intake deposit and
+receipt succeeded, was skipped, or was quarantined as duplicate.
 
 If a workflow lane uses more detailed local steps, keep these required rows and
 add lane-specific rows underneath them. Do not remove blocked Phase 3 or Phase
@@ -1010,7 +1177,7 @@ Repo scope rule for Phase 2:
 - Do not review the entire FinOpsAI repo by default.
 - Start with repo guidance first.
 - For Lane 6 Product Workflow Analysis, begin with
-  `/Users/Sites/Repo-FinOpsAI/docs/engineering/` and other obviously relevant
+  `/Users/Dev/Apps/finopsai-desktop/docs/engineering/` and other obviously relevant
   workflow/process docs.
 - Expand only when needed to enforcement surfaces such as CI workflows,
   automation scripts, prompt/agent/harness files, templates, checklists, and

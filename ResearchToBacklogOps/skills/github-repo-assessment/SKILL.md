@@ -56,9 +56,12 @@ Optional:
   snapshot identifier when visible, and access method in the durable artifact.
 - Distinguish reusable ideas from code reuse; do not copy code or recommend
   code reuse without explicit review.
-- If the assessment continues into FinOpsAI mapping, read
-  `/Users/Sites/Repo-FinOpsAI/AGENTS.md` first and keep the mapping read-only
-  unless implementation is explicitly requested.
+- If the assessment continues into FinOpsAI mapping, use
+  `/Users/Dev/Apps/finopsai-desktop` as the canonical local repo path, read
+  `/Users/Dev/Apps/finopsai-desktop/AGENTS.md` first, stop for human
+  confirmation if that path is missing and another checkout is the only visible
+  candidate, and keep the mapping read-only unless implementation is explicitly
+  requested.
 - If the run needs roadmap-fit, approval gating, or ClickUp-ready drafting,
   hand off to `RESEARCH_WORKFLOW_USAGE.md` and
   `finopsai_research-to-backlog_workflow.md` after lane outputs are complete.

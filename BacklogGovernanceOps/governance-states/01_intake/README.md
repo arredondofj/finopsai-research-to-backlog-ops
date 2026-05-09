@@ -15,7 +15,7 @@ This folder is the designated intake inbox for valid draft artifacts produced by
 
 - Files already admitted to review; move those to `../02_review/`.
 - Duplicate handoff candidates; those belong in `../01_intake_duplicates/`.
-- Governance log entries; those belong in `../../governance-records/governance-log/`.
+- Card activity entries; those belong in `../../governance-records/card-activity/`.
 - Research run notification receipts; those belong in `../../governance-records/run-notifications/`.
 
 ## How items arrive (Phase 1 — current)
@@ -38,7 +38,7 @@ This folder is the designated intake inbox for valid draft artifacts produced by
 - Use `../../scripts/run_intake_triage.py --write` only when the surfaced batch should be acknowledged in `../../governance-records/intake-triage/INTAKE_TRIAGE_LOG.md`.
 - Review intake contents at the next available governance session.
 - Admit selected artifacts to `../02_review/` as a deliberate batch decision.
-- For `Hold`, record the hold decision and rationale in `../../governance-records/governance-log/GOVERNANCE_LOG.md` and leave the draft artifact in place.
+- For `Hold`, record the hold decision and rationale in the matching file under `../../governance-records/card-activity/` and leave the draft artifact in place.
 - Optional: add a companion `_hold.md` note beside the draft artifact for local visibility, but do not use filename edits as the canonical record.
 - Do not delete items from intake without a recorded reason.
 

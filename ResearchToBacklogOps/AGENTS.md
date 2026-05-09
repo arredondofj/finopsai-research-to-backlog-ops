@@ -50,9 +50,14 @@ Use this workspace for transcript ingestion, cleanup, technical analysis, repo-a
 
 - Treat Phase B as an assessment workflow, not an implementation workflow.
 - Read the cleaned transcript and analysis report from this workspace.
+- When FinOpsAI is the target repo, use `/Users/Dev/Apps/finopsai-desktop` as the
+  canonical local repo path unless the user explicitly names a different target.
 - Read the target repo only as needed.
 - If the target repo has an `AGENTS.md`, read it before assessing applicability.
 - If the target repo has nested `AGENTS.md` files in relevant areas, apply the closest applicable guidance for those areas.
+- If the canonical FinOpsAI path is missing or a different local checkout is the
+  only visible candidate, stop and ask the user to confirm the intended repo
+  path before continuing Phase B.
 - If no target-repo `AGENTS.md` exists, state that explicitly in the assessment.
 - Save repo-application reports back to this workspace under `output/<name>_YYYY_MM_DD/<name>_repo_mapping_YYYY_MM_DD.md`.
 - Update `notes/output_catalog.md` with the repo-mapping artifact and a high-level mapping note.

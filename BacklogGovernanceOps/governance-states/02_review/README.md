@@ -14,7 +14,7 @@ This folder holds draft artifacts that the Product Owner has explicitly admitted
 - Review each candidate against the publication readiness criteria in `docs/BACKLOG_GOVERNANCE_USAGE.md`.
 - Check for duplication or collision with existing ClickUp PBIs before approving.
 - Move approved candidates to `../03_approved/`.
-- Do not silently discard rejected candidates; close them with a reason note appended to the file or recorded in `../../governance-records/governance-log/GOVERNANCE_LOG.md`.
+- Do not silently discard rejected candidates; close them with a reason note appended to the matching file in `../../governance-records/card-activity/`.
 - Hold items needing more information in this folder with a status note; do not return them to `../01_intake/`.
 
 ## What does not belong here

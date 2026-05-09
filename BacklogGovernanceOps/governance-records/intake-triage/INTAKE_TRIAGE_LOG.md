@@ -2,29 +2,6 @@
 
 This log records when Codex first surfaced intake artifacts to the Product Owner. It is not a PO decision log.
 
-## Entry format
-
-```md
-## Intake triage batch: YYYY-MM-DD HH:MM TZ
-
-- **Triage run timestamp:** YYYY-MM-DD HH:MM TZ
-- **Triaged by:** Codex
-- **Receipt file count:** [number]
-- **Receipt files:**
-  - [full path to receipt 1]
-  - [full path to receipt 2]
-- **Research run ID count:** [number]
-- **Research run IDs:**
-  - [run identifier 1]
-  - [run identifier 2]
-- **Artifact count surfaced:** [number]
-- **Artifact paths surfaced to PO:**
-  - [full path to artifact 1]
-  - [full path to artifact 2]
-- **Outcome:** surfaced_to_po
-- **Notes:** [optional narrow note]
-```
-
 ## Intake triage batch: 2026-04-26 03:36 PDT
 
 - **Triage run timestamp:** 2026-04-26 03:36 PDT

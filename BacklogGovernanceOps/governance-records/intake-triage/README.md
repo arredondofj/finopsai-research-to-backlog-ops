@@ -14,7 +14,7 @@ This folder closes that gap without turning acknowledgment into a business decis
 
 - `Run notification` = research-to-governance delivery acknowledgment.
 - `Intake triage acknowledgment` = Codex surfaced specific intake artifacts to the PO.
-- `Governance log entry` = the PO made a business decision.
+- `Card activity entry` = the PO made or recorded a card-specific governance decision.
 
 ## Operating rule
 
@@ -33,4 +33,24 @@ Do not use this folder to record:
 - rejection decisions
 - ClickUp publication
 
-Those remain governed by `../governance-log/GOVERNANCE_LOG.md`.
+Those remain governed by the matching file in `../card-activity/`.
+
+## Entry format
+
+```md
+## Intake triage batch: YYYY-MM-DD HH:MM TZ
+
+- **Triage run timestamp:** YYYY-MM-DD HH:MM TZ
+- **Triaged by:** Codex
+- **Receipt file count:** [number]
+- **Receipt files:**
+  - [full path to receipt 1]
+- **Research run ID count:** [number]
+- **Research run IDs:**
+  - [run identifier 1]
+- **Artifact count surfaced:** [number]
+- **Artifact paths surfaced to PO:**
+  - [full path to artifact 1]
+- **Outcome:** surfaced_to_po
+- **Notes:** [optional narrow note]
+```

@@ -25,4 +25,4 @@ Only items that originated in this state flow may move forward through governanc
 - Treat `01_intake_duplicates/` as an exception surface, not as a review state.
 - Do not skip a state.
 - Do not silently collapse multiple approved drafts into one PBI.
-- Reopen status from the governance log when needed, but treat these folders as the live working states.
+- Reopen status from the matching card-activity file when needed, but treat these folders as the live working states.

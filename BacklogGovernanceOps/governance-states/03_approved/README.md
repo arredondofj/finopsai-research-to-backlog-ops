@@ -15,12 +15,12 @@ This folder holds draft artifacts that the Product Owner has approved for public
 
 - Complete the publication readiness checklist before publishing each item; see `docs/BACKLOG_GOVERNANCE_USAGE.md`.
 - Publish or create the PBI in ClickUp; the manual path is the default.
-- Record the publication result in `../../governance-records/governance-log/GOVERNANCE_LOG.md` immediately after publishing.
-- After recording, archive or mark the source draft artifact as published; do not delete it without a governance log entry confirming publication.
+- Record the publication result in the matching file under `../../governance-records/card-activity/` immediately after publishing.
+- After recording, archive or mark the source draft artifact as published; do not delete it without a card-activity entry confirming publication.
 
 ## One draft to one PBI rule
 
-Each approved draft artifact maps to exactly one published PBI. Multiple approved drafts must never be silently collapsed into a single PBI. If consolidation appears warranted, record the decision explicitly in the governance log before acting.
+Each approved draft artifact maps to exactly one published PBI. Multiple approved drafts must never be silently collapsed into a single PBI. If consolidation appears warranted, record the decision explicitly in the matching card-activity file before acting.
 
 ## Future MCP path
 
