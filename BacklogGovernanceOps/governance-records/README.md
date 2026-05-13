@@ -11,6 +11,7 @@ The Product Owner uses one set of folders for active governance movement and a s
 ## Record folders
 
 - `card-activity/` — the canonical per-card lifecycle record for workflow 2.
+- `collision-decisions/` — bounded collision-resolution notes for unresolved multi-artifact groups or real overlap cases that need explicit PO resolution.
 - `governance-log/` — a workspace-level governance summary register for major outcomes and archival rollups.
 - `intake-triage/` — Codex-managed acknowledgment records that mark which newly deposited intake artifacts have already been surfaced to the PO.
 - `run-notifications/` — auto-acknowledgment receipts that confirm research-run deposit into `../governance-states/01_intake/` and PO notification timing.
@@ -18,12 +19,13 @@ The Product Owner uses one set of folders for active governance movement and a s
 
 ## Operating rule
 
-These folders record what happened; they do not replace the active governance states. Use `card-activity/` as the first reopening point when verifying one card's lifecycle, and use `governance-log/` only when a workspace-level summary view is needed.
+These folders record what happened; they do not replace the active governance states. Use `card-activity/` as the first reopening point when verifying one card's lifecycle, use `collision-decisions/` when overlap or multi-artifact collision handling is in scope, and use `governance-log/` only when a workspace-level summary view is needed.
 
 ## PO guidance
 
 - Record card-specific decisions in the matching file under `card-activity/`.
 - Record publication results in the matching card-activity file first.
+- Use collision decision notes only when multiple active artifacts remain in play or a real overlap with an existing backlog/PBI needs explicit PO resolution.
 - Use intake triage records to distinguish `new to PO review` from `already surfaced by Codex`.
 - Use run notifications to confirm that handoff occurred, not to infer PO action.
 - Use the duplicate log to record duplicate handoff events, not a generic error log.
