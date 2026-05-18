@@ -4,6 +4,86 @@ This file catalogs generated transcript-pipeline artifacts after each run. Entri
 
 ---
 
+## 2026-05-17 - Somebody Leaked the System Prompts of 32 AI Agents (Cursor, Claude Code) (`XOddQHz4gtA`)
+
+### Source
+
+- Input transcript: `input/Somebody Leaked the System Prompts of 32 AI Agents (Cursor, Claude Code) [XOddQHz4gtA]_2026_05_17.en-orig.vtt`
+- Additional acquired subtitle artifact: `input/Somebody Leaked the System Prompts of 32 AI Agents (Cursor, Claude Code) [XOddQHz4gtA]_2026_05_17.en.vtt`
+- Source title: Somebody Leaked the System Prompts of 32 AI Agents (Cursor, Claude Code)
+- Video ID: `XOddQHz4gtA`
+- Source URL: `https://www.youtube.com/watch?v=XOddQHz4gtA`
+- Pipeline skill: `youtube-transcript-pipeline`
+
+### Generated Files
+
+| File | Type | Purpose |
+| --- | --- | --- |
+| `output/Somebody Leaked the System Prompts of 32 AI Agents (Cursor, Claude Code) [XOddQHz4gtA]_2026_05_17/Somebody Leaked the System Prompts of 32 AI Agents (Cursor, Claude Code) [XOddQHz4gtA]_cleaned_2026_05_17.txt` | Cleaned transcript | Analysis-ready transcript with VTT scaffolding removed, timestamps preserved, and only high-confidence caption defects corrected. |
+| `output/Somebody Leaked the System Prompts of 32 AI Agents (Cursor, Claude Code) [XOddQHz4gtA]_2026_05_17/Somebody Leaked the System Prompts of 32 AI Agents (Cursor, Claude Code) [XOddQHz4gtA]_analysis_2026_05_17.md` | Analysis report | Structured Phase 1 analysis covering agent operating manuals, tool-routing and edit-discipline control surfaces, workflow-engine implications, evidence limits, and next-step recommendation. |
+| `output/Somebody Leaked the System Prompts of 32 AI Agents (Cursor, Claude Code) [XOddQHz4gtA]_2026_05_17/Somebody Leaked the System Prompts of 32 AI Agents (Cursor, Claude Code) [XOddQHz4gtA]_repo_mapping_2026_05_17.md` | Repo mapping report | Refreshed read-only FinOpsAI applicability assessment using the combined transcript, GitHub repo assessment, and workflow-analysis evidence base; the strongest fit remains high-risk staged-test routing, with a stronger secondary docs/process candidate around guidance precedence and external prompt-source handling. |
+| `output/Somebody Leaked the System Prompts of 32 AI Agents (Cursor, Claude Code) [XOddQHz4gtA]_2026_05_17/Somebody Leaked the System Prompts of 32 AI Agents (Cursor, Claude Code) [XOddQHz4gtA]_github_repo_assessment_2026_05_17.md` | GitHub repo assessment | Read-only assessment of the cited external GitHub repo showing it is useful as comparative prompt-governance research input, but weak as a direct engineering implementation model due to provenance, validation, and legal-use uncertainty. |
+| `output/Somebody Leaked the System Prompts of 32 AI Agents (Cursor, Claude Code) [XOddQHz4gtA]_2026_05_17/Somebody Leaked the System Prompts of 32 AI Agents (Cursor, Claude Code) [XOddQHz4gtA]_workflow_analysis_2026_05_17.md` | Workflow analysis | Lane 6 process-focused analysis showing that the durable value is explicit governance of instruction hierarchy, tool routing, permission boundaries, and research-versus-adoption workflow controls, not direct prompt or code reuse. |
+| `output/Somebody Leaked the System Prompts of 32 AI Agents (Cursor, Claude Code) [XOddQHz4gtA]_2026_05_17/Somebody Leaked the System Prompts of 32 AI Agents (Cursor, Claude Code) [XOddQHz4gtA]_roadmap_fit_2026_05_17.md` | Roadmap-fit record | Refreshed combined-evidence status register preserving the approved staged-test-routing draft cycle and re-entering the follow-on clarification item as a bounded `Immediate candidate` after process review, while keeping explicit rejected paths. |
+| `output/Somebody Leaked the System Prompts of 32 AI Agents (Cursor, Claude Code) [XOddQHz4gtA]_2026_05_17/Somebody Leaked the System Prompts of 32 AI Agents (Cursor, Claude Code) [XOddQHz4gtA]_clickup_card_draft_2026_05_17_high_risk_staged_test_routing.md` | ClickUp-ready draft | Single approved ClickUp-style task-card draft for tightening high-risk staged-change unit-test routing in the pre-commit workflow without broad CI redesign, runtime behavior changes, or unrelated process expansion. |
+| `output/Somebody Leaked the System Prompts of 32 AI Agents (Cursor, Claude Code) [XOddQHz4gtA]_2026_05_17/Somebody Leaked the System Prompts of 32 AI Agents (Cursor, Claude Code) [XOddQHz4gtA]_clickup_card_draft_2026_05_17_guidance_precedence_external_prompt_policy.md` | ClickUp-ready draft | Single approved ClickUp-style `docs` card draft for clarifying AI-assisted engineering guidance precedence and external prompt-source policy through one governing specification and minimal cross-reference updates, without tooling or harness redesign. |
+| `output/Somebody Leaked the System Prompts of 32 AI Agents (Cursor, Claude Code) [XOddQHz4gtA]_2026_05_17/Somebody Leaked the System Prompts of 32 AI Agents (Cursor, Claude Code) [XOddQHz4gtA]_run_summary_2026_05_17.md` | Run summary | Canonical reopening summary for the completed run across transcript analysis, approved secondary lanes, refreshed repo mapping, two approved ClickUp-ready draft cycles, follow-on process review, and governance intake handoff. |
+| `output/Somebody Leaked the System Prompts of 32 AI Agents (Cursor, Claude Code) [XOddQHz4gtA]_2026_05_17/Somebody Leaked the System Prompts of 32 AI Agents (Cursor, Claude Code) [XOddQHz4gtA]_workflow_applicability_2026_05_17.md` | Workflow applicability | Follow-on bounded process assessment of whether the embedded harness can support explicit guidance-precedence and external prompt-source policy without structural refactoring; concludes clarification is sufficient and broad re-engineering is not justified. |
+| `output/Somebody Leaked the System Prompts of 32 AI Agents (Cursor, Claude Code) [XOddQHz4gtA]_2026_05_17/Somebody Leaked the System Prompts of 32 AI Agents (Cursor, Claude Code) [XOddQHz4gtA]_process_decision_note_2026_05_17.md` | Process decision note | Process-owner decision surface converting the bounded harness-precedence assessment into a concrete route recommendation: approve one bounded docs/process clarification cycle first, and treat any refactor as conditional rather than assumed. |
+
+### Analysis Reference
+
+- Primary topic: leaked system-prompt and tool-schema analysis for AI coding tools.
+- Main thesis: the durable product layer is the workflow engine around the model, especially instructions, permissions, tool routing, and constraints.
+- Key technical areas: instruction precedence, stack locks, search-tool routing, file-editing discipline, environment assumptions, and workflow-engine moats.
+- Practical relevance: strong source material for evaluating or tightening FinOpsAI's workflow harness, prompt governance, and tool-boundary rules.
+- Main caveat: the source is short, partly rhetorical, and does not independently prove the external repo claims it summarizes.
+- Cited context note: a concrete repository reference was detected in the source description and recorded as cited context only: `https://github.com/x1xhlol/system-prompts-and-models-of-ai-tools`.
+- Secondary lane signals: Product workflow analysis is now completed. The lane confirmed that the source is strongest as workflow-governance research around instruction hierarchy, tool routing, permission boundaries, and explicit research-versus-adoption controls for external prompt corpora. No business-requirement or accounting-domain signal was detected.
+- Repo-mapping note: the Phase 2 mapping was refreshed using the combined transcript, GitHub repo assessment, and workflow-analysis evidence base. The strongest FinOpsAI fit still sits in workflow/tooling surfaces the repo already owns, especially pre-commit control surfaces, explicit review boundaries, and staged test routing.
+- GitHub-repo note: the cited external repo remains useful as bounded research input, but weak as a direct engineering implementation model because scoped web-visible evidence did not establish provenance discipline, test/CI rigor, or safe downstream reuse assumptions.
+- Workflow-analysis note: Lane 6 concluded that the durable takeaway is to govern AI workflow control surfaces as explicit process assets and to keep a hard boundary between comparative prompt research and direct adoption.
+- Roadmap-fit note: the status register now records the already-completed immediate-candidate draft cycle for `Review and tighten high-risk staged-change unit-test routing in the pre-commit workflow`, and it now records `Clarify AI-assisted engineering guidance precedence and external prompt-source handling across canonical workflow and repo-local guidance surfaces` as a second bounded follow-on immediate-candidate draft cycle after process review and approval.
+- ClickUp-draft note: one approved ClickUp-ready draft was generated for the exact recommendation `Review and tighten high-risk staged-change unit-test routing in the pre-commit workflow` with identifier `high_risk_staged_test_routing`.
+- Follow-on ClickUp-draft note: one approved ClickUp-ready `docs` draft was generated for the exact recommendation `Clarify AI-assisted engineering guidance precedence and external prompt-source handling across canonical workflow and repo-local guidance surfaces` with identifier `guidance_precedence_external_prompt_policy`.
+- Governance handoff note: the approved drafts were deposited to `/Users/Dev/Ops/finopsai-research-to-backlog-ops/BacklogGovernanceOps/governance-states/01_intake/` with receipt `/Users/Dev/Ops/finopsai-research-to-backlog-ops/BacklogGovernanceOps/governance-records/run-notifications/run_notification_XOddQHz4gtA_2026_05_17.md`; no duplicate routing occurred.
+- Run-summary note: `output/Somebody Leaked the System Prompts of 32 AI Agents (Cursor, Claude Code) [XOddQHz4gtA]_2026_05_17/Somebody Leaked the System Prompts of 32 AI Agents (Cursor, Claude Code) [XOddQHz4gtA]_run_summary_2026_05_17.md` is the canonical reopening point for this completed run.
+- Follow-on workflow-applicability note: post-run bounded assessment under identifier `harness_precedence_policy_assessment` found that the embedded harness already has enough authority layers and control surfaces to support explicit guidance-precedence and external prompt-source policy without structural re-engineering; the recommended path is bounded docs/process clarification, with only a narrow documentation-authority refactor if clarification proves insufficient.
+- Process-decision note: the follow-on decision note converts that assessment into a process-owner choice surface and recommends approving one bounded docs/process clarification cycle first rather than escalating immediately to harness refactor or re-engineering.
+- Next-step recommendation: the follow-on closure refresh is complete; no additional approved ClickUp card candidates remain for this run lineage.
+
+### Verification Notes
+
+- Acquired source VTT length: 752 lines.
+- Additional acquired subtitle artifact length: 752 lines.
+- Cleaned transcript length: 29 lines.
+- Analysis report length: 166 lines.
+- Repo mapping report length: 322 lines.
+- GitHub repo assessment length: 261 lines.
+- Workflow analysis length: 212 lines.
+- Roadmap-fit record length: 237 lines.
+- Follow-on `docs` ClickUp-ready draft length: 135 lines.
+- ClickUp-ready draft length: 126 lines.
+- Run summary length: 128 lines.
+- Workflow applicability report length: 294 lines.
+- Process decision note length: 150 lines.
+- URL validation passed locally before transcript acquisition.
+- Transcript acquisition created preserved `.vtt` artifacts in `input/`.
+- Original VTT files were preserved and not modified during cleanup or analysis.
+- Repo-reference scan found a concrete repository reference in the source description; the referenced repo was not inspected during Phase 1.
+- Phase 2 repo mapping was completed as a read-only assessment against `/Users/Dev/Apps/finopsai-desktop` after reading the root `AGENTS.md`, pre-commit implementation docs, engineering standards, staged review scripts, SAST flow, and current unit-test routing hook behavior; no FinOpsAI files were modified and no tests were run.
+- The repo-mapping artifact was refreshed after the same-run GitHub repo assessment and workflow analysis were completed so the current mapping reflects the combined evidence base.
+- GitHub repo assessment was completed from GitHub web and raw-file views only for `https://github.com/x1xhlol/system-prompts-and-models-of-ai-tools`; no local clone was created and no external repo code or workflows were executed.
+- Phase 4 readiness, task-card gates, and single-card draft generation were completed for the approved identifier `high_risk_staged_test_routing`.
+- Lane 6 Product Workflow Analysis was completed from same-run saved artifacts only; no additional external repo inspection, FinOpsAI code changes, or workflow-implementation changes were performed in this step.
+- Roadmap-fit classification was completed from the refreshed combined-evidence repo mapping, and the approved immediate candidate advanced through Phase 4 single-card drafting. The later roadmap-fit re-entry then elevated the clarification candidate to a bounded follow-on `Immediate candidate` after the workflow-applicability assessment and process decision note.
+- Run summary generation completed and the approved drafts were deposited to Backlog Governance intake with receipt `run_notification_XOddQHz4gtA_2026_05_17.md`.
+- No new reusable workflow lesson was identified beyond existing guidance, so no `notes/lessons_learned.md` entry was added.
+- The follow-on workflow applicability assessment and process decision note were also read-only; no OpsControl, FinOpsAI, ResearchToBacklogOps, or BacklogGovernanceOps implementation files were modified as part of those follow-on steps.
+- Cross-lane applicability detection was completed before the Phase 1 completion response.
+
+---
+
 ## 2026-05-07 - adversarial-dev GitHub repo assessment
 
 ### Source
