@@ -20,6 +20,7 @@ from typing import Iterable
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 INTAKE_DIR = REPO_ROOT / "governance-states" / "01_intake"
+REJECTED_DIR = REPO_ROOT / "governance-states" / "01_intake_rejected"
 RECEIPTS_DIR = REPO_ROOT / "governance-records" / "run-notifications"
 TRIAGE_LOG = REPO_ROOT / "governance-records" / "intake-triage" / "INTAKE_TRIAGE_LOG.md"
 CARD_ACTIVITY_DIR = REPO_ROOT / "governance-records" / "card-activity"
@@ -219,8 +220,9 @@ def build_governance_index(
     return index
 
 
-def state_presence(filename: str) -> tuple[bool, bool]:
+def state_presence(filename: str) -> tuple[bool, bool, bool]:
     return (
+        (REJECTED_DIR / filename).exists(),
         (REVIEW_DIR / filename).exists(),
         (APPROVED_DIR / filename).exists(),
     )
@@ -240,7 +242,7 @@ def classify_artifacts(
         receipts = receipt_index.get(filename, [])
         triage_batches = triage_index.get(filename, [])
         decisions = governance_index.get(filename, [])
-        in_review, in_approved = state_presence(filename)
+        in_rejected, in_review, in_approved = state_presence(filename)
 
         anomalies: list[str] = []
         status = "New to PO review"
@@ -267,6 +269,10 @@ def classify_artifacts(
             elif decision_value == "Reject":
                 status = "Rejected"
 
+        if in_rejected:
+            anomalies.append("artifact still present in intake and rejected")
+            status = "Rejected"
+
         if in_review:
             if status in {"New to PO review", "Awaiting intake decision", "Held in intake"}:
                 anomalies.append("artifact still present in intake and review")
@@ -283,7 +289,7 @@ def classify_artifacts(
             status = "Awaiting intake decision"
 
         if decisions and status in {"Held in intake", "Admitted to review", "Rejected"}:
-            if status != "Held in intake":
+            if status not in {"Held in intake", "Rejected"}:
                 anomalies.append("artifact remains in intake after PO decision")
 
         if anomalies and status != "Anomalous":
@@ -392,6 +398,7 @@ def render_next_step(
             "",
             "### State Move To Perform",
             "- Move each admitted artifact into `governance-states/02_review/` after its decision is recorded.",
+            "- Move each rejected artifact into `governance-states/01_intake_rejected/` after its decision is recorded.",
         ]
 
     awaiting_count = counts.get("Awaiting intake decision", 0)
@@ -408,6 +415,7 @@ def render_next_step(
             "",
             "### State Move To Perform",
             "- Move each admitted artifact into `governance-states/02_review/` after its decision is recorded.",
+            "- Move each rejected artifact into `governance-states/01_intake_rejected/` after its decision is recorded.",
         ]
 
     return [

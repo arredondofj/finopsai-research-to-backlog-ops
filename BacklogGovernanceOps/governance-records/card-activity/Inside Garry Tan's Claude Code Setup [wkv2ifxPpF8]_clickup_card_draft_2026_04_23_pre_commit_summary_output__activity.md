@@ -18,3 +18,10 @@
 - **Triage record:** `/Users/Dev/Ops/finopsai-research-to-backlog-ops/BacklogGovernanceOps/governance-records/intake-triage/INTAKE_TRIAGE_LOG.md`
 - **State after event:** `governance-states/01_intake/`
 - **Notes:** Item was surfaced in the intake triage batch.
+
+### 2026-05-18 16:08 PDT - Intake decision
+- **Event type:** intake_decision
+- **Recorded by:** Product Owner via Codex
+- **Decision:** Reject
+- **Decision rationale:** Reject at intake because the artifact is missing the workspace's critical task-card structure required for governable review, including Title, Requirement / Problem Statement, Expected Outcome, Scope, Acceptance Criteria, Constraints, and Dependencies / References. It is not review-ready enough to enter formal PO workflow responsibly.
+- **State after event:** `closed`

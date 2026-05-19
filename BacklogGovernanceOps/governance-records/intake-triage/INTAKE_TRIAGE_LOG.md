@@ -48,3 +48,26 @@ This log records when Codex first surfaced intake artifacts to the Product Owner
   - `/Users/Admin/Documents/CodeX/BacklogGovernanceOps/governance-states/01_intake/oh_my_codex_clickup_card_draft_2026_04_24_precommit_test_mapping_coverage.md`
 - **Outcome:** surfaced_to_po
 - **Notes:** Deterministic Step 1 and Step 2 intake triage pass.
+
+## Intake triage batch: 2026-05-18 14:17 PDT
+
+- **Triage run timestamp:** 2026-05-18 14:17 PDT
+- **Triaged by:** Codex
+- **Receipt file count:** 3
+- **Receipt files:**
+  - `/Users/Dev/Ops/finopsai-research-to-backlog-ops/BacklogGovernanceOps/governance-records/run-notifications/run_notification_XOddQHz4gtA_2026_05_17.md`
+  - `/Users/Dev/Ops/finopsai-research-to-backlog-ops/BacklogGovernanceOps/governance-records/run-notifications/run_notification_bNKRiN86cho_2026_05_07.md`
+  - `/Users/Dev/Ops/finopsai-research-to-backlog-ops/BacklogGovernanceOps/governance-records/run-notifications/run_notification_wYeDGkdMi3g_2026_05_07.md`
+- **Research run ID count:** 3
+- **Research run IDs:**
+  - `XOddQHz4gtA_2026_05_17`
+  - `bNKRiN86cho_2026_05_07`
+  - `wYeDGkdMi3g_2026_05_07`
+- **Artifact count surfaced:** 4
+- **Artifact paths surfaced to PO:**
+  - `/Users/Dev/Ops/finopsai-research-to-backlog-ops/BacklogGovernanceOps/governance-states/01_intake/Don’t Use Boolean Flags in Python, Use Policies Instead [wYeDGkdMi3g]_clickup_card_draft_2026_05_07_programming_guide_boolean_flag_thresholds.md`
+  - `/Users/Dev/Ops/finopsai-research-to-backlog-ops/BacklogGovernanceOps/governance-states/01_intake/Somebody Leaked the System Prompts of 32 AI Agents (Cursor, Claude Code) [XOddQHz4gtA]_clickup_card_draft_2026_05_17_guidance_precedence_external_prompt_policy.md`
+  - `/Users/Dev/Ops/finopsai-research-to-backlog-ops/BacklogGovernanceOps/governance-states/01_intake/Somebody Leaked the System Prompts of 32 AI Agents (Cursor, Claude Code) [XOddQHz4gtA]_clickup_card_draft_2026_05_17_high_risk_staged_test_routing.md`
+  - `/Users/Dev/Ops/finopsai-research-to-backlog-ops/BacklogGovernanceOps/governance-states/01_intake/Why Senior Devs Keep Shipping Slow (And How to Stop) [bNKRiN86cho]_clickup_card_draft_2026_05_07_architecture_review_guidance_surface.md`
+- **Outcome:** surfaced_to_po
+- **Notes:** Deterministic Step 1 and Step 2 intake triage pass.

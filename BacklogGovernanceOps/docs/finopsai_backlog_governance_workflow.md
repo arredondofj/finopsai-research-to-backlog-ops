@@ -172,7 +172,7 @@ review.
 6. Record that decision in the matching file under `governance-records/card-activity/`.
 7. If the decision is `Admit to review`, move the artifact file from `governance-states/01_intake/` to `governance-states/02_review/`.
 8. If the decision is `Hold`, leave the artifact file in `governance-states/01_intake/` and optionally add a companion `<draft-artifact-filename>_hold.md` note beside it.
-9. If the decision is `Reject`, record the rejection in the matching card-activity file and do not leave the outcome implied or undocumented.
+9. If the decision is `Reject`, record the rejection in the matching card-activity file and then move the artifact into `governance-states/01_intake_rejected/`.
 10. Repeat the same sequence for each remaining artifact in the intake batch until every surfaced item has an explicit decision recorded.
 
 - `Admit to review`
@@ -189,6 +189,7 @@ review.
   - Optional: add a companion note beside the draft artifact named `<draft-artifact-filename>_hold.md` for quick local visibility.
 - `Reject`
   - Record the rejection in the matching card-activity file.
+  - Move the artifact into `governance-states/01_intake_rejected/`.
   - Do not leave rejection as an implied folder state with no record.
 
 The matching card-activity file is the canonical hold note location. The optional companion `_hold.md` file is only a local convenience reminder, not the system of record.
@@ -301,6 +302,7 @@ This workflow does not perform sprint commitment, velocity planning, or delivery
 - Research ends with draft artifacts on the file system.
 - `governance-states/01_intake/` is the canonical shared state.
 - `governance-states/01_intake_duplicates/` is a quarantine exception surface, not an active governance state.
+- `governance-states/01_intake_rejected/` is a closed decision surface for explicitly rejected intake artifacts.
 - Nothing may be published or MCP-loaded unless it originated from `governance-states/03_approved/`.
 - One approved draft artifact maps to exactly one published PBI.
 - The matching card-activity file is the canonical chain of custody from source draft to live ClickUp PBI.
@@ -332,6 +334,7 @@ This distinction matters because a dashboard should never infer Product Owner ac
 |---|---|---|---|
 | `governance-states/01_intake/` | Live shared state | Research workflow / PO | Current inventory of newly handed-off draft artifacts |
 | `governance-states/01_intake_duplicates/` | Governed exception surface | Research workflow / PO | Quarantine for duplicate handoff candidates blocked from active intake |
+| `governance-states/01_intake_rejected/` | Closed decision surface | Product Owner | Explicitly rejected intake artifacts retained for durable reopening |
 | `governance-records/run-notifications/` | Run-level event record | Research workflow | Delivery receipt and notification proof |
 | `governance-records/intake-triage/INTAKE_TRIAGE_LOG.md` | Intake-triage record | Codex / PO support | Proof that specific intake artifacts were already surfaced to the PO |
 | `governance-records/duplicate-log/DUPLICATE_LOG.md` | Duplicate-event record | Research workflow / PO | Canonical trace for duplicate handoff exceptions |
@@ -349,6 +352,7 @@ The dashboard should derive status from records, not manual interpretation:
 | `New to PO review` | Receipt exists, no triage acknowledgment exists yet, and no PO decision exists |
 | `Awaiting intake decision` | Triage acknowledgment exists but no intake decision is logged yet |
 | `Held in intake` | Governance log records explicit hold |
+| `Rejected` | Artifact moved to `01_intake_rejected` and rejection logged |
 | `Admitted to review` | Artifact moved to `02_review` and intake decision logged |
 | `Approved for publication` | Artifact moved to `03_approved` and approval logged |
 | `Published` | Governance log has publication record with ClickUp ID/URL |

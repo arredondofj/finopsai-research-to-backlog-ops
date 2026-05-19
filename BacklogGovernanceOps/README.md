@@ -8,7 +8,7 @@ This workspace is a sibling to `ResearchToBacklogOps`. Research ends with markdo
 
 1. Run `python3 scripts/run_intake_triage.py` to check `governance-states/01_intake/` for new valid draft artifacts from completed research runs.
 2. Check `governance-states/01_intake_duplicates/` and `governance-records/duplicate-log/` for any duplicate exceptions raised at handoff.
-3. Record each card decision in the matching file under `governance-records/card-activity/`; move admitted artifacts to `governance-states/02_review/` and leave held artifacts in `governance-states/01_intake/`.
+3. Record each card decision in the matching file under `governance-records/card-activity/`; move admitted artifacts to `governance-states/02_review/`, leave held artifacts in `governance-states/01_intake/`, and move rejected artifacts to `governance-states/01_intake_rejected/`.
 4. Review admitted candidates in `governance-states/02_review/` and move items that pass review into `governance-states/03_approved/`; record explicit rejection reasons rather than leaving outcomes implied.
 5. Complete the publication readiness check before publishing.
 6. Publish or create the PBI in ClickUp from `governance-states/03_approved/`.
@@ -28,7 +28,7 @@ This workspace is a sibling to `ResearchToBacklogOps`. Research ends with markdo
 | `api/` | Phase 2 reserved — API endpoint specs and agentic path definitions | No — future state |
 | `notes/` | Durable lessons learned as the workflow matures | As needed |
 
-> Sprint planning artifacts, delivery records, and velocity data belong in the Product Development workspace. Research run source files and original draft artifacts belong in `ResearchToBacklogOps/output/`. This workspace receives governed copies for `governance-states/01_intake/`, quarantined duplicate copies for `governance-states/01_intake_duplicates/`, and governed movement through `governance-states/02_review/` and `governance-states/03_approved/`; it does not own the upstream research run source.
+> Sprint planning artifacts, delivery records, and velocity data belong in the Product Development workspace. Research run source files and original draft artifacts belong in `ResearchToBacklogOps/output/`. This workspace receives governed copies for `governance-states/01_intake/`, quarantined duplicate copies for `governance-states/01_intake_duplicates/`, rejected copies for `governance-states/01_intake_rejected/`, and governed movement through `governance-states/02_review/` and `governance-states/03_approved/`; it does not own the upstream research run source.
 
 ## Workspace family
 

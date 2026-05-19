@@ -18,3 +18,10 @@
 - **Triage record:** `/Users/Dev/Ops/finopsai-research-to-backlog-ops/BacklogGovernanceOps/governance-records/intake-triage/INTAKE_TRIAGE_LOG.md`
 - **State after event:** `governance-states/01_intake/`
 - **Notes:** Item was surfaced in the intake triage batch.
+
+### 2026-05-18 16:21 PDT - Intake decision
+- **Event type:** intake_decision
+- **Recorded by:** Product Owner via Codex
+- **Decision:** Hold
+- **Decision rationale:** Daily intake review assessed the card as directionally useful and well-evidenced, but not yet admission-ready because its scope boundaries do not state explicit exclusions in the stronger pattern used by already-admitted cards. Hold in intake until the draft is clarified to make the exclusion boundary explicit.
+- **State after event:** `governance-states/01_intake/`
